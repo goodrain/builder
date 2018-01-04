@@ -1,0 +1,119 @@
+#!/bin/bash
+
+# info    : buildpack 预处理脚本
+# Author  : ethan@goodrain.com
+# CTime   : 2015.07.13
+# History : 0.1 first release
+# Comment : 根据用户的选择，添加必要依赖及Procfile内容
+
+[ $DEBUG ] && set -x
+
+APIHOST="http://console.goodrain.me/service/codecheck/?service_id=$SERVICE_ID"
+TMPJSON="/tmp/.result.json"
+#TMPJSON="./.result.json"
+BUILD_DIR=$1
+#BUILD_DIR="./build"
+LIBDIR="/tmp/pre-compile/lib"
+
+#### Language runtimes file
+PHPfile="composer.json"
+PythonRuntimefile="runtime.txt"
+JAVARuntimefile="system.properties"
+NodejsRuntimefile="package.json"
+RubyRuntimefile="Gemfile"
+
+### default runtimes 
+PHPDefault="5.6.11"
+
+## deps file
+Pythondeps="requirements.txt"
+Rubydeps="Gemfile"
+
+JQBIN="/tmp/pre-compile/bin/jq"
+
+# get json result
+#set -e
+for i in {1..3}
+do
+  curl -k -s $APIHOST > $TMPJSON
+  if [ $? -ne 0 ];then
+    echo "read api error,retry $i time(s)"
+    continue
+  else
+    break
+  fi
+done
+
+#set +e
+
+read_json() {
+  key=$1
+  if test -f $TMPJSON; then
+    $JQBIN --raw-output "$key // \"\"" $TMPJSON || return 1
+  else
+    echo ""
+  fi
+}
+
+function output_redirect() {
+    if [[ "$slug_file" == "-" ]]; then
+        cat - 1>&2
+    else
+        cat -
+    fi
+}
+
+# 定义debug输出信息
+function debug_info(){
+    DEBUG=${DEBUG:=false}
+    current_time=`date '+%Y-%m-%d %H:%M:%S'`
+    if [ "$DEBUG" == "true" ];then
+      echo $'debug:======>' $current_time $* | output_redirect
+    fi
+}
+
+function echo_title() {
+    current_time=`date '+%Y-%m-%d %H:%M:%S'`
+    #echo $'\e[1G----->' $current_time $* | output_redirect
+    echo $'builder:----->' $current_time $* | output_redirect
+}
+
+function echo_normal() {
+    #echo $'\e[1G      ' $* | output_redirect
+    echo $'builder:      ' $* | output_redirect
+}
+
+function ensure_indent() {
+    while read line; do
+        if [[ "$line" == --* ]]; then
+            current_time=`date '+%Y-%m-%d %H:%M:%S'`
+            #echo $'\e[1G'$line | sed -e "s/--> /--> $current_time /" | output_redirect
+            echo $'builder:'$line | sed -e "s/--> /--> $current_time /" | output_redirect
+        else
+            #echo $'\e[1G      ' "$line" | output_redirect
+            echo $'builder:      ' "$line" | output_redirect
+        fi
+    done
+}
+
+LANG=`read_json ".language"`      # null|(php|ruby|python|nodejs|java-war|java-maven|static)
+RUNTIMES=`read_json ".runtimes"`  # null|(确切的版本)
+DEPDS=`read_json ".dependencies"` # {}| 相应的依赖
+PROCFILE=`read_json ".procfile"`  # null|确切值
+
+# import process fuctions
+source $LIBDIR/depds.sh
+source $LIBDIR/procfile.sh
+source $LIBDIR/runtimes.sh
+
+
+#============ main ==========
+
+# 处理运行时版本
+Save_Runtimes $LANG $RUNTIMES
+
+# 处理依赖
+Save_Deps $LANG "$DEPDS"
+
+# 处理Procfile
+Save_Procfile $LANG "$PROCFILE"

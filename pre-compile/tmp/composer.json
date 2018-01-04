@@ -1,0 +1,7 @@
+{
+  "require": {
+    "psr/log": "*",
+    "monolog/monolog": "*",
+    "php": "5.6.11"
+  }
+}
