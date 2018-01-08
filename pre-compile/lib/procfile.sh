@@ -79,16 +79,27 @@ function Save_Procfile(){
     esac
   ;;
    java-maven)
-     if [ ! -f $BUILD_DIR/Procfile ];then
-       tomcat=`grep webapp-runner $BUILD_DIR/pom.xml`
-       jetty=`grep jetty-runner $BUILD_DIR/pom.xml`
-       if [ "$tomcat" ];then
-         echo "web: java \$JAVA_OPTS -jar target/dependency/webapp-runner.jar   --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-       fi
+    if [ ! -f $BUILD_DIR/Procfile ] && [ -d $BUILD_DIR/target ]; then
+      tomcat=`grep webapp-runner $BUILD_DIR/pom.xml`
+      jetty=`grep jetty-runner $BUILD_DIR/pom.xml`
+      if [ "$tomcat" ];then
+        echo "web: java \$JAVA_OPTS -jar target/dependency/webapp-runner.jar   --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+      fi
       
-       if [ "$jetty" ];then
-         echo "web: java \$JAVA_OPTS -jar target/dependency/jetty-runner.jar --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-       fi
+      if [ "$jetty" ];then
+        echo "web: java \$JAVA_OPTS -jar target/dependency/jetty-runner.jar --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+      fi
+      
+      cd $BUILD_DIR
+      
+      for jarFile in $(find target -maxdepth 1 -name "*.jar" -type f); do
+        if is_spring_boot $BUILD_DIR; then
+          echo "web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar $jarFile" > $BUILD_DIR/Procfile
+        elif is_wildfly_swarm $BUILD_DIR; then
+          echo "web: java -Dswarm.http.port=\$PORT \$JAVA_OPTS -jar $jarFile" > $BUILD_DIR/Procfile
+        fi
+        break;
+      done
     fi
      
   ;;
