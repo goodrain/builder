@@ -92,7 +92,7 @@ function Save_Procfile(){
     esac
   ;;
    java-maven)
-    if [ ! -f $BUILD_DIR/Procfile ] && [ -d $BUILD_DIR/target ]; then
+    if [ ! -f $BUILD_DIR/Procfile ] ; then
       tomcat=`grep webapp-runner $BUILD_DIR/pom.xml`
       jetty=`grep jetty-runner $BUILD_DIR/pom.xml`
       if [ "$tomcat" ];then
