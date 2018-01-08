@@ -3,6 +3,19 @@
 # web页面无法定义启动命令的语言，先查看是否有Procfile，如果没有再处理，否则忽略处理
 # web页面可以定义启动命令的语言，先查看接口返回值是否为空，如果为空代表之前探测出用户已经定义Procfile，不处理，否则处理
 
+is_spring_boot() {
+  local buildDir=${1}
+  test -f ${buildDir}/pom.xml &&
+  test -n "$(grep "<groupId>org.springframework.boot" ${buildDir}/pom.xml)" &&
+  test -n "$(grep "<artifactId>spring-boot" ${buildDir}/pom.xml)"
+}
+
+is_wildfly_swarm() {
+  local buildDir=${1}
+  test -f ${buildDir}/pom.xml &&
+    test -n "$(grep "<groupId>org.wildfly.swarm" ${buildDir}/pom.xml)"
+}
+
 # $1 language
 function Save_Procfile(){
   lang=`echo $1| tr A-Z a-z`
