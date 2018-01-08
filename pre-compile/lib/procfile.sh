@@ -105,14 +105,11 @@ function Save_Procfile(){
       
       cd $BUILD_DIR
       
-      for jarFile in $(find target -maxdepth 1 -name "*.jar" -type f); do
-        if is_spring_boot $BUILD_DIR; then
-          echo "web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar $jarFile" > $BUILD_DIR/Procfile
-        elif is_wildfly_swarm $BUILD_DIR; then
-          echo "web: java -Dswarm.http.port=\$PORT \$JAVA_OPTS -jar $jarFile" > $BUILD_DIR/Procfile
-        fi
-        break;
-      done
+      if is_spring_boot $BUILD_DIR; then
+        echo "web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar target/*.jar" > $BUILD_DIR/Procfile
+      elif is_wildfly_swarm $BUILD_DIR; then
+        echo "web: java -Dswarm.http.port=\$PORT \$JAVA_OPTS -jar target/*.jar" > $BUILD_DIR/Procfile
+      fi
     fi
      
   ;;
