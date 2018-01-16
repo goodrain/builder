@@ -7,7 +7,8 @@ is_spring_boot() {
   local buildDir=${1}
   test -f ${buildDir}/pom.xml &&
   test -n "$(grep "<groupId>org.springframework.boot" ${buildDir}/pom.xml)" &&
-  test -n "$(grep "<artifactId>spring-boot" ${buildDir}/pom.xml)"
+  test -n "$(grep "<artifactId>spring-boot" ${buildDir}/pom.xml)" &&
+  test ! -n "$(grep "<packaging>war</packaging>" ${buildDir}/pom.xml)"
 }
 
 is_wildfly_swarm() {
