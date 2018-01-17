@@ -94,14 +94,10 @@ function Save_Procfile(){
   ;;
    java-maven)
     if [ ! -f $BUILD_DIR/Procfile ] ; then
-      tomcat=`grep webapp-runner $BUILD_DIR/pom.xml`
-      jetty=`grep jetty-runner $BUILD_DIR/pom.xml`
-      if [ "$tomcat" ];then
-        echo "web: java \$JAVA_OPTS -jar target/dependency/webapp-runner.jar   --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-      fi
+      iswar="$(grep "<packaging>war</packaging>" ${BUILD_DIR}/pom.xml)"
       
-      if [ "$jetty" ];then
-        echo "web: java \$JAVA_OPTS -jar target/dependency/jetty-runner.jar --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+      if [ "$iswar" ];then
+        echo "web: java \$JAVA_OPTS -jar /opt/webapp-runner.jar   --port \$PORT target/*.war" > $BUILD_DIR/Procfile
       fi
       
       cd $BUILD_DIR
