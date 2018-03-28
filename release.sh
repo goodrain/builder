@@ -53,7 +53,7 @@ case $release_type in
     release $1 $release_ver
     ;;
 "master")
-    release $1
+    release $1 $release_ver
     ;;
 "all")
     release "community" $release_ver
