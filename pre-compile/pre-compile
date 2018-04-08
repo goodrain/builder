@@ -8,8 +8,10 @@
 
 [ $DEBUG ] && set -x
 
-APIHOST="http://console.goodrain.me/service/codecheck/?service_id=$SERVICE_ID"
-TMPJSON="/tmp/.result.json"
+PROC_ENV=${PROC_ENV:-{}}
+
+#APIHOST="http://console.goodrain.me/service/codecheck/?service_id=$SERVICE_ID"
+#TMPJSON="/tmp/.result.json"
 #TMPJSON="./.result.json"
 BUILD_DIR=$1
 #BUILD_DIR="./build"
@@ -33,26 +35,31 @@ JQBIN="/tmp/pre-compile/bin/jq"
 
 # get json result
 #set -e
-for i in {1..3}
-do
-  curl -k -L -s $APIHOST > $TMPJSON
-  if [ $? -ne 0 ];then
-    echo "read api error,retry $i time(s)"
-    continue
-  else
-    break
-  fi
-done
+# for i in {1..3}
+# do
+#   curl -k -L -s $APIHOST > $TMPJSON
+#   if [ $? -ne 0 ];then
+#     echo "read api error,retry $i time(s)"
+#     continue
+#   else
+#     break
+#   fi
+# done
 
 #set +e
 
+# read_json() {
+#   key=$1
+#   if test -f $TMPJSON; then
+#     $JQBIN --raw-output "$key // \"\"" $TMPJSON || return 1
+#   else
+#     echo ""
+#   fi
+# }
+
 read_json() {
   key=$1
-  if test -f $TMPJSON; then
-    $JQBIN --raw-output "$key // \"\"" $TMPJSON || return 1
-  else
-    echo ""
-  fi
+  echo $PROC_ENV | $JQBIN --raw-output "$key // \"\"" || return 1
 }
 
 function output_redirect() {
