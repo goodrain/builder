@@ -8,7 +8,7 @@
 
 [ $DEBUG ] && set -x
 
-PROC_ENV=${PROC_ENV:-{}}
+PROC_ENV=${PROC_ENV:-\{\}}
 
 #APIHOST="http://console.goodrain.me/service/codecheck/?service_id=$SERVICE_ID"
 #TMPJSON="/tmp/.result.json"
