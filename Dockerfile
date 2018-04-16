@@ -1,4 +1,4 @@
-FROM hub.goodrain.com/dc-deploy/cedar14
+FROM rainbond/cedar14:20180416
 MAINTAINER zhouyq <zhouyq@goodrain.com>
 
 # 时区设置
