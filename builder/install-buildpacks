@@ -39,7 +39,7 @@ download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-gradle.git 
 download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-grails.git        enterprise-3.3
 download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-play.git          enterprise-3.3
 download_buildpack git@github.com:goodrain/heroku-buildpack-python.git                 v102.2018041801
-download_buildpack git@github.com:goodrain/heroku-buildpack-php.git                    v82.2018041701
+download_buildpack git@github.com:goodrain/heroku-buildpack-php.git                    v82.2018052901
 download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-clojure.git       enterprise-3.3
 download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-scala.git         enterprise-3.3
 download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-go.git            enterprise-3.3
