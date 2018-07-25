@@ -2,8 +2,8 @@
 set -xe
 
 image_name="builder"
-release_ver=${1:-master}
-docker_tag=${1:-latest}
+release_ver=${1:-v3.7}
+docker_tag=${1:-v3.7}
 
 
 trap 'clean_tmp; exit' QUIT TERM EXIT
@@ -26,8 +26,8 @@ function release(){
   sed "s/__RELEASE_DESC__/$release_desc/" Dockerfile >Dockerfile.release
   docker build -t rainbond/${image_name}:${docker_tag} -f Dockerfile.release .
   docker tag rainbond/${image_name}:${docker_tag}  rainbond/${image_name}
-  docker push rainbond/${image_name}:${docker_tag}
-  docker push rainbond/${image_name}
+  #docker push rainbond/${image_name}:${docker_tag}
+  #docker push rainbond/${image_name}
 }
 
 release
