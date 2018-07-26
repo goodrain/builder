@@ -26,8 +26,7 @@ function release(){
   sed "s/__RELEASE_DESC__/$release_desc/" Dockerfile >Dockerfile.release
   docker build -t rainbond/${image_name}:${docker_tag} -f Dockerfile.release .
   docker tag rainbond/${image_name}:${docker_tag}  rainbond/${image_name}
-  #docker push rainbond/${image_name}:${docker_tag}
-  #docker push rainbond/${image_name}
+  docker push rainbond/${image_name}:${docker_tag}
 }
 
 release
