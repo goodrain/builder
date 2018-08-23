@@ -1,5 +1,5 @@
 #!/bin/bash 
-set -eo pipefail
+set -xeo pipefail
 
 if [[ -f /etc/environment_proxy ]]; then
     source /etc/environment_proxy
@@ -105,57 +105,41 @@ export STACK=cedar-14
 export TYPE=${TYPE:-online}
 
 ## Buildpack detection
+case "$LANGUAGE" in
+"Java-maven")
+selected_buildpack="heroku-buildpack-java.git"
+;;
+"Java-jar")
+selected_buildpack="heroku-buildpack-java-jar.git"
+;;
+"Java-war")
+selected_buildpack="heroku-buildpack-java-war.git"
+;;
+"PHP")
+selected_buildpack="heroku-buildpack-php-1.git"
+;;
+"Python")
+selected_buildpack="heroku-buildpack-python-1.git"
+;;
+"Node.js")
+selected_buildpack="heroku-buildpack-nodejs-1.git"
+;;
+"Go")
+selected_buildpack="heroku-buildpack-go-1.git"
+;;
+"no"|"")
+echo_title "Unable to select a buildpack"
+exit 1
+;;
+esac
 
-buildpacks=($buildpack_root/*)
-selected_buildpack=
-
-if [[ -n "$BUILDPACK_URL" ]]; then
-    echo_title "Fetching custom buildpack"
-
-    buildpack="$buildpack_root/custom"
-    rm -fr "$buildpack"
-
-    url=${BUILDPACK_URL%#*}
-    committish=${BUILDPACK_URL#*#}
-
-    if [ "$committish" == "$url" ]; then
-        committish="master"
-    fi
-
-    set +e
-    git clone --branch "$committish" --depth=1 "$url" "$buildpack" &> /dev/null
-    SHALLOW_CLONED=$?
-    set -e
-    if [ $SHALLOW_CLONED -ne 0 ]; then
-        # if the shallow clone failed partway through, clean up and try a full clone
-        rm -rf "$buildpack"
-        git clone --quiet "$url" "$buildpack"
-        pushd "$buildpack" &>/dev/null
-            git checkout --quiet "$committish"
-        popd &>/dev/null
-    fi
-
-    selected_buildpack="$buildpack"
-    buildpack_name=$($buildpack/bin/detect "$build_root") && selected_buildpack=$buildpack
-else
-    for buildpack in "${buildpacks[@]}"; do
-        buildpack_name=$($buildpack/bin/detect "$build_root") && selected_buildpack=$buildpack && break
-    done
-fi
-
-if [[ -n "$selected_buildpack" ]]; then
-    echo_title "$buildpack_name app detected"
-else
-    echo_title "Unable to select a buildpack"
-    exit 1
-fi
+selected_buildpack="$buildpack_root/$selected_buildpack"
 
 ## Buildpack compile
 $selected_buildpack/bin/compile "$build_root" "$cache_root" 2>&1 | ensure_indent
 $selected_buildpack/bin/release "$build_root" "$cache_root" > $build_root/.release
 
 ## Display process types
-
 echo_title "Discovering process types"
 if [[ -f "$build_root/Procfile" ]]; then
     types=$(ruby -e "require 'yaml';puts YAML.load_file('$build_root/Procfile').keys().join(', ')")
@@ -164,7 +148,7 @@ fi
 default_types=""
 if [[ -s "$build_root/.release" ]]; then
     default_types=$(ruby -e "require 'yaml';puts (YAML.load_file('$build_root/.release')['default_process_types'] || {}).keys().join(', ')")
-    [[ $default_types ]] && echo_normal "Default process types for $buildpack_name -> $default_types"
+    [[ $default_types ]] && echo_normal "Default process types for $LANGUAGE -> $default_types"
 fi
 
 # pause
@@ -173,9 +157,9 @@ sleep ${PAUSE:-0}
 ## Produce slug
 
 if [[ -f "$build_root/.slugignore" ]]; then
-    tar -z --exclude='.git' -X "$build_root/.slugignore" -C $build_root -cf $slug_file . | cat
+    tar -z --exclude='.git' -X "$build_root/.slugignore" -C $build_root -cf $slug_file .
 else
-    tar -z --exclude='.git' -C $build_root -cf $slug_file . | cat
+    tar -z --exclude='.git' -C $build_root -cf $slug_file .
 fi
 
 if [[ "$slug_file" != "-" ]]; then
