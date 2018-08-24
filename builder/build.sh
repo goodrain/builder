@@ -104,6 +104,12 @@ export REQUEST_ID=$(openssl rand -base64 32)
 export STACK=cedar-14
 export TYPE=${TYPE:-online}
 
+## Write Procfile
+
+if [ $PROCFILE ];then
+	echo $PROCFILE > $build_root/Procfile
+fi
+
 ## Buildpack detection
 case "$LANGUAGE" in
 "Java-maven")
@@ -126,6 +132,9 @@ selected_buildpack="heroku-buildpack-nodejs-1.git"
 ;;
 "Go")
 selected_buildpack="heroku-buildpack-go-1.git"
+;;
+"static")
+selected_buildpack="heroku-buildpack-static.git"
 ;;
 "no"|"")
 echo_title "Unable to select a buildpack"
