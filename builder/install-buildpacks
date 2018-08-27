@@ -33,7 +33,7 @@ mkdir -p $BUILDPACK_INSTALL_PATH
 
 #download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-multi.git         master
 #download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-ruby.git          enterprise-3.3
-#download_buildpack git@github.com:goodrain/heroku-buildpack-nodejs.git                 v76.20180103
+download_buildpack git@github.com:goodrain/heroku-buildpack-nodejs.git                 rainbond
 #download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-java.git          v38.2017102702
 #download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-gradle.git        enterprise-3.3
 #download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-grails.git        enterprise-3.3
