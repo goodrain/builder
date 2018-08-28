@@ -43,7 +43,7 @@ download_buildpack https://github.com/goodrain/heroku-buildpack-python.git      
 #download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-clojure.git       enterprise-3.3
 #download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-scala.git         enterprise-3.3
 download_buildpack https://github.com/goodrain/heroku-buildpack-go.git                 rainbond
-#download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-static.git        enterprise-3.3
+download_buildpack https://github.com/goodrain/heroku-buildpack-static.git             rainbond
 #download_buildpack git@code.goodrain.com:buildpacks/goodrain-buildpack-java-war.git    enterprise-3.3
 #download_buildpack git@code.goodrain.com:buildpacks/goodrain-buildpack-java-jar.git    enterprise-3.3
 
