@@ -21,7 +21,7 @@ function release(){
   release_desc=${release_ver}-${git_commit}
 
   sed "s/__RELEASE_DESC__/$release_desc/" Dockerfile >Dockerfile.release
-  docker build -t rainbond/${image_name}:${docker_tag} -f Dockerfile.release .
+  docker build --no-cache -t rainbond/${image_name}:${docker_tag} -f Dockerfile.release .
   docker tag rainbond/${image_name}:${docker_tag}  rainbond/${image_name}
   if [ -z "$1" ];then
     docker push rainbond/${image_name}:${docker_tag}
