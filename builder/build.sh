@@ -1,5 +1,7 @@
 #!/bin/bash 
-set -xeo pipefail
+set -eo pipefail
+
+[ "$DEBUG" ] && set -x
 
 if [[ -f /etc/environment_proxy ]]; then
     source /etc/environment_proxy
