@@ -122,19 +122,19 @@ selected_buildpack="heroku-buildpack-java-jar.git"
 selected_buildpack="heroku-buildpack-java-war.git"
 ;;
 "PHP")
-selected_buildpack="heroku-buildpack-php-1.git"
+selected_buildpack="heroku-buildpack-php.git"
 ;;
 "Python")
-selected_buildpack="heroku-buildpack-python-1.git"
+selected_buildpack="heroku-buildpack-python.git"
 ;;
 "Node.js")
-selected_buildpack="heroku-buildpack-nodejs-1.git"
+selected_buildpack="heroku-buildpack-nodejs.git"
 ;;
 "Go")
-selected_buildpack="heroku-buildpack-go-1.git"
+selected_buildpack="heroku-buildpack-go.git"
 ;;
 "static")
-selected_buildpack="heroku-buildpack-static.git"
+selected_buildpack="heroku-buildpack-static-backports.git"
 ;;
 "no"|"")
 echo_title "Unable to select a buildpack"
