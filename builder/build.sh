@@ -104,6 +104,11 @@ export REQUEST_ID=$(openssl rand -base64 32)
 export STACK=cedar-14
 export TYPE=${TYPE:-online}
 
+## Write Procfile
+if [ $PROCFILE ];then
+	echo $PROCFILE > $build_root/Procfile
+fi
+
 ## Buildpack detection
 
 buildpacks=($buildpack_root/*)

@@ -2,8 +2,8 @@
 set -xe
 
 image_name="builder"
-release_ver=${1:-v3.7}
-docker_tag=${1:-v3.7}
+release_ver=${1:-v3.7.2}
+docker_tag=${1:-v3.7.2}
 
 
 trap 'clean_tmp; exit' QUIT TERM EXIT
