@@ -1,10 +1,11 @@
+[![Build Status](https://travis-ci.org/goodrain/builder.svg?branch=v5.0)](https://travis-ci.org/goodrain/builder)
+
 # Builder
 
 借助于 [Docker](http://docker.io) 和 [Buildpacks](https://devcenter.heroku.com/articles/buildpacks) 来生成 Heroku 风格的 [slug](https://devcenter.heroku.com/articles/slug-compiler) 为app提供运行环境。
 
 ## 组件做了哪那些事呢？
 
-首先，应用程序源码通过管道的方式传给Docker容器。
 源码会通过 buildpacks 运行, 如果源码被检测是被支持的app则就会进行编译，生成gzip的压缩包形式，以备在各处运行。
 
 ## 使用 Builder

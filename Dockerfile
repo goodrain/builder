@@ -1,5 +1,6 @@
 FROM rainbond/cedar14:20180416
-MAINTAINER zhouyq <zhouyq@goodrain.com>
+
+LABEL MAINTAINER ="zhengys <zhengys@goodrain.com>"
 
 # 时区设置
 RUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata
