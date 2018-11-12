@@ -7,7 +7,7 @@ if [[ -f /etc/environment_proxy ]]; then
     source /etc/environment_proxy
 fi
 
-# 判断第一个参数来决定slug包的路径
+# Determine the first parameter to determine the path of the slug package
 if [[ "$1" == "-" ]]; then
     slug_file="$1"
 elif [[ "$1" == "local" ]];then
@@ -50,35 +50,27 @@ function output_redirect() {
     fi
 }
 
-# 定义debug输出信息
+# define debug info
 function debug_info() {
     DEBUG=${DEBUG:=false}
-    #current_time=`date '+%Y-%m-%d %H:%M:%S'`
     if [ "$DEBUG" == "true" ];then
-      #echo $'debug:======>' $current_time $* | output_redirect
       echo $'debug:======>' $* | output_redirect
     fi
 }
 
 function echo_title() {
-    #current_time=`date '+%Y-%m-%d %H:%M:%S'`
-    #echo $'\e[1G----->' $current_time $* | output_redirect
     echo $'builder:----->' $* | output_redirect
 }
 
 function echo_normal() {
-    #echo $'\e[1G      ' $* | output_redirect
     echo $'builder:      ' $* | output_redirect
 }
 
 function ensure_indent() {
     while read line; do
         if [[ "$line" == --* ]]; then
-            #current_time=`date '+%Y-%m-%d %H:%M:%S'`
-            #echo $'\e[1G'$line | sed -e "s/--> /--> $current_time /" | output_redirect
             echo $'builder:'$line | sed -e "s/--> /--> /" | output_redirect
         else
-            #echo $'\e[1G      ' "$line" | output_redirect
             echo $'builder:      ' "$line" | output_redirect
         fi
     done
@@ -91,7 +83,7 @@ else
     cat | tar -xmC $app_dir
 fi
 
-# 执行预编译命令,对用户代码进行预编译处理
+# Precompile commands are executed to pre-compile the user code
 debug_info "start pre-compile..."
 /bin/bash /tmp/pre-compile/pre-compile $app_dir
 
@@ -99,7 +91,7 @@ debug_info "start pre-compile..."
 # buildpacks expect that.
 cp -r $app_dir/. $build_root
 
-## 定义一些buildpack需要的变量
+## Define some of the variables needed for the buildpack
 export APP_DIR="$app_dir"
 export HOME="$app_dir"
 export REQUEST_ID=$(openssl rand -base64 32)
