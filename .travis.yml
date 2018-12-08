@@ -12,4 +12,4 @@ before_install:
 script:
 - ./release.sh
 - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-- docker push rainbond/builder:v5.0
+- docker push rainbond/rbd-builder:5.0
