@@ -1,0 +1,9 @@
+#!/bin/bash
+
+[ -f /app/LANGUAGE ] && LANG=`grep java-jar /app/LANGUAGE`
+
+if [ "$LANG" == "java-jar" ];then
+    echo "Java jar App" && exit 0
+else
+    exit 1
+fi

@@ -128,7 +128,7 @@ selected_buildpack="heroku-buildpack-nodejs.git"
 selected_buildpack="heroku-buildpack-go.git"
 ;;
 "static")
-selected_buildpack="heroku-buildpack-static-backports.git"
+selected_buildpack="heroku-buildpack-static.git"
 ;;
 "no"|"")
 echo_title "Unable to select a buildpack"

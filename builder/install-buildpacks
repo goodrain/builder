@@ -29,24 +29,15 @@ download_buildpack() {
     echo "Done."
 }
 
+
 mkdir -p $BUILDPACK_INSTALL_PATH
 
 download_buildpack https://github.com/goodrain/heroku-buildpack-nodejs.git             rainbond
 download_buildpack https://github.com/goodrain/heroku-buildpack-python.git             rainbond
 download_buildpack https://github.com/goodrain/heroku-buildpack-php.git                rainbond
 download_buildpack https://github.com/goodrain/heroku-buildpack-go.git                 rainbond
-download_buildpack https://github.com/goodrain/heroku-buildpack-static-backports.git   master
+download_buildpack https://github.com/goodrain/heroku-buildpack-static.git             rainbond
 download_buildpack https://github.com/goodrain/heroku-buildpack-java.git               master
-download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-multi.git         master
-download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-ruby.git          enterprise-3.3
-download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-gradle.git        enterprise-3.3
-download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-grails.git        enterprise-3.3
-download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-play.git          enterprise-3.3
-download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-clojure.git       enterprise-3.3
-download_buildpack git@code.goodrain.com:buildpacks/heroku-buildpack-scala.git         enterprise-3.3
-download_buildpack git@code.goodrain.com:buildpacks/goodrain-buildpack-java-war.git    enterprise-3.3
-download_buildpack git@code.goodrain.com:buildpacks/goodrain-buildpack-java-jar.git    enterprise-3.3
-
+download_buildpack https://github.com/goodrain/heroku-buildpack-gradle.git             master
 # 修改权限
 chown rain.rain /tmp/buildpacks -R
-
