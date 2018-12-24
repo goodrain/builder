@@ -110,10 +110,10 @@ case "$LANGUAGE" in
 selected_buildpack="heroku-buildpack-java.git"
 ;;
 "Java-jar")
-selected_buildpack="heroku-buildpack-java-jar.git"
+selected_buildpack="goodrain-buildpack-java-jar.git"
 ;;
 "Java-war")
-selected_buildpack="heroku-buildpack-java-war.git"
+selected_buildpack="goodrain-buildpack-java-war.git"
 ;;
 "PHP")
 selected_buildpack="heroku-buildpack-php.git"
