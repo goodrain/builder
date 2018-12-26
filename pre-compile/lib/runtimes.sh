@@ -36,7 +36,11 @@ function Save_Runtimes(){
     fi
   ;;
   go)
-    : # 目前不做处理
+    if [ $runtime ];then
+      LANGUAGE_VERSION=$runtime
+    else
+      echo "runtime不存在"
+    fi
   ;;
   node.js)
     : # 目前不做处理
