@@ -2,11 +2,12 @@
 # usage: bin/compile <build-dir> <cache-dir> <env-dir>
 
 set -eo pipefail
-
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 env_dir="${3}"
+BUILD_DIR=$1
+GolangRuntimefile=$1"/runtime.txt"
 
 buildpack=$(cd "$(dirname $0)/.." && pwd)
 source "${buildpack}/lib/common.sh"
@@ -339,8 +340,8 @@ setGoVersionFromEnvironment() {
         warn ""
     fi
     ver=${GOVERSION:-$DefaultGoVersion}
-    if [ $LANGUAGE_VERSION != "" ];then
-      ver=$LANGUAGE_VERSION
+    if [ -f $GolangRuntimefile ];then
+      ver=`cat $GolangRuntimefile`
     else
       echo "LANGUAGE_VERSION不存在"
     fi
@@ -400,8 +401,8 @@ trap clearGitCredHelper INT TERM EXIT
 determineTool
 
 ver=$(expandVer $ver)
-if [ $LANGUAGE_VERSION != "" ];then
-  ver=$LANGUAGE_VERSION
+if [ -f $GolangRuntimefile ];then
+  ver=`cat $GolangRuntimefile`
 else
   echo "--LANGUAGE_VERSION不存在"
 fi

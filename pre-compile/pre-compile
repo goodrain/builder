@@ -23,6 +23,7 @@ PythonRuntimefile="runtime.txt"
 JAVARuntimefile="system.properties"
 NodejsRuntimefile="package.json"
 RubyRuntimefile="Gemfile"
+GolangRuntimefile="runtime.txt"
 
 ### default runtimes 
 PHPDefault="5.6.11"
@@ -117,6 +118,7 @@ source $LIBDIR/runtimes.sh
 #============ main ==========
 
 # 处理运行时版本
+echo $RUNTIMES,"---------------------------------"
 Save_Runtimes $LANG $RUNTIMES
 
 # 处理依赖

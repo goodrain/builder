@@ -36,10 +36,16 @@ function Save_Runtimes(){
     fi
   ;;
   go|golang)
-    if [ $runtime ];then
-      export LANGUAGE_VERSION=go$runtime
-    else
-      export LANGUAGE_VERSION=""
+    #echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    #if [ $runtime ];then
+    #  export LANGUAGE_VERSION=go$runtime
+    #  echo $LANGUAGE_VERSION,"####################"
+    #else
+    #  export LANGUAGE_VERSION=""
+    #fi
+  #;;
+    if [[ ! -f ${BUILD_DIR}/$GolangRuntimefile && $runtime != "" ]];then
+      echo "go$runtime" > ${BUILD_DIR}/$GolangRuntimefile
     fi
   ;;
   node.js)

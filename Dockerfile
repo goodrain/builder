@@ -20,7 +20,7 @@ RUN addgroup --quiet --gid 200 rain && \
     useradd rain --uid=200 --gid=200 --home-dir /app --no-create-home
 
 ADD ./builder/ /tmp/builder
-#RUN /tmp/builder/install-buildpacks
+RUN /tmp/builder/install-buildpacks
 
 ADD ./pre-compile/ /tmp/pre-compile
 ADD ./buildpacks /tmp/buildpacks
