@@ -339,7 +339,7 @@ setGoVersionFromEnvironment() {
         warn ""
     fi
     ver=${GOVERSION:-$DefaultGoVersion}
-    if [ -z $LANGUAGE_VERSION ];then
+    if [ ! -z $LANGUAGE_VERSION ];then
       ver=$LANGUAGE_VERSION
     else
       echo "LANGUAGE_VERSION不存在"
@@ -400,7 +400,7 @@ trap clearGitCredHelper INT TERM EXIT
 determineTool
 
 ver=$(expandVer $ver)
-if [ -z $LANGUAGE_VERSION ];then
+if [ ! -z $LANGUAGE_VERSION ];then
   ver=$LANGUAGE_VERSION
 else
   echo "LANGUAGE_VERSION不存在"
