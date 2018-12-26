@@ -39,7 +39,7 @@ function Save_Runtimes(){
     if [ $runtime ];then
       export LANGUAGE_VERSION=$runtime
     else
-      echo "runtime不存在"
+      export LANGUAGE_VERSION=""
     fi
   ;;
   node.js)
