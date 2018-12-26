@@ -125,7 +125,7 @@ selected_buildpack="heroku-buildpack-python.git"
 selected_buildpack="heroku-buildpack-nodejs.git"
 ;;
 "Go")
-selected_buildpack="heroku-buildpack-go.git"
+selected_buildpack="heroku-buildpack-go"
 ;;
 "Gradle")
 selected_buildpack="heroku-buildpack-gradle.git"

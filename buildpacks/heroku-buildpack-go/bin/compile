@@ -339,6 +339,11 @@ setGoVersionFromEnvironment() {
         warn ""
     fi
     ver=${GOVERSION:-$DefaultGoVersion}
+    if [ $LANGUAGE_VERSION ];then
+      ver=$LANGUAGE_VERSION
+    else
+      echo "LANGUAGE_VERSION不存在"
+    fi
 }
 
 warnGoVersionOverride() {
@@ -404,6 +409,11 @@ if [ -e "${build}/bin" -a ! -d "${build}/bin" ]; then
 fi
 
 reportVer "${ver}"
+if [ $LANGUAGE_VERSION ];then
+  ver=$LANGUAGE_VERSION
+else
+  echo "LANGUAGE_VERSION不存在"
+fi
 
 ensureGo "${ver}"
 

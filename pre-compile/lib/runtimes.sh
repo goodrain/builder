@@ -35,6 +35,9 @@ function Save_Runtimes(){
       fi
     fi
   ;;
+  go)
+    : # 目前不做处理
+  ;;
   node.js)
     : # 目前不做处理
   ;;
