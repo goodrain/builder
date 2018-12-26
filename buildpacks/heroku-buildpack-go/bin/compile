@@ -338,8 +338,6 @@ setGoVersionFromEnvironment() {
         warn "for future builds"
         warn ""
     fi
-    echo "##############################"
-    echo $LANGUAGE_VERSION
     ver=${GOVERSION:-$DefaultGoVersion}
     if [ $LANGUAGE_VERSION != "" ];then
       ver=$LANGUAGE_VERSION
@@ -402,8 +400,6 @@ trap clearGitCredHelper INT TERM EXIT
 determineTool
 
 ver=$(expandVer $ver)
-echo "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-echo $LANGUAGE_VERSION
 if [ $LANGUAGE_VERSION != "" ];then
   ver=$LANGUAGE_VERSION
 else
