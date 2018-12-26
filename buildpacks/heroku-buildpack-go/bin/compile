@@ -404,7 +404,7 @@ ver=$(expandVer $ver)
 if [ -f $GolangRuntimefile ];then
   ver=`cat $GolangRuntimefile`
 else
-  echo "--LANGUAGE_VERSION不存在"
+  echo "LANGUAGE_VERSION不存在"
 fi
 
 if [ -e "${build}/bin" -a ! -d "${build}/bin" ]; then
