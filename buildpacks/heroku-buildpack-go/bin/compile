@@ -400,6 +400,11 @@ trap clearGitCredHelper INT TERM EXIT
 determineTool
 
 ver=$(expandVer $ver)
+if [ $LANGUAGE_VERSION ];then
+  ver=$LANGUAGE_VERSION
+else
+  echo "LANGUAGE_VERSION不存在"
+fi
 
 if [ -e "${build}/bin" -a ! -d "${build}/bin" ]; then
     err ""
@@ -409,11 +414,6 @@ if [ -e "${build}/bin" -a ! -d "${build}/bin" ]; then
 fi
 
 reportVer "${ver}"
-if [ $LANGUAGE_VERSION ];then
-  ver=$LANGUAGE_VERSION
-else
-  echo "LANGUAGE_VERSION不存在"
-fi
 
 ensureGo "${ver}"
 

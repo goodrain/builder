@@ -35,7 +35,7 @@ function Save_Runtimes(){
       fi
     fi
   ;;
-  go)
+  go|golang)
     if [ $runtime ];then
       export LANGUAGE_VERSION=$runtime
     else
