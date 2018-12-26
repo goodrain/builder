@@ -12,4 +12,4 @@ before_install:
 script:
 - ./release.sh
 - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-- docker push rainbond/rbd-builder:5.0
+- 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then docker push rainbond/rbd-builder:5.0; fi'
