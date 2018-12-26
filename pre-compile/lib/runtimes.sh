@@ -37,7 +37,7 @@ function Save_Runtimes(){
   ;;
   go)
     if [ $runtime ];then
-      LANGUAGE_VERSION=$runtime
+      export LANGUAGE_VERSION=$runtime
     else
       echo "runtime不存在"
     fi
