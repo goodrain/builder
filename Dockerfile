@@ -23,9 +23,9 @@ ADD ./builder/ /tmp/builder
 RUN /tmp/builder/install-buildpacks
 
 ADD ./pre-compile/ /tmp/pre-compile
+ADD ./buildpacks /tmp/buildpacks
 RUN chown rain.rain -R /tmp/pre-compile /tmp/builder /tmp/buildpacks
 
-ADD buildpacks /tmp/buildpacks
 RUN chown -R rain:rain /app
 
 USER rain

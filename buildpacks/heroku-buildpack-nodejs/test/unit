@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+
+# testing monitor_memory_usage
+
+# allocate ~14 mb of memory and wait a bit
+use_memory() {
+  for index in $(seq 10); do
+    value=$(seq -w -s '' $index $(($index + 100000)))
+    eval array$index=$value
+  done
+  sleep 0.5
+}
+
+# print each argument to a separate line on stdout
+print_args() {
+  while (( "$#" )); do 
+    echo $1 
+    shift 
+  done
+}
+
+testMonitorMemory() {
+  local mem_output=$(mktemp)
+  local stdout_capture=$(mktemp)
+
+  monitor_memory_usage $mem_output echo "this is a test" > /dev/null
+  assertTrue "should use less than 2mb" "[[ $(cat $mem_output) -lt 2 ]]"
+
+  monitor_memory_usage $mem_output use_memory
+  assertTrue "should use more than 10mb" "[[ $(cat $mem_output) -gt 10 ]]"
+
+  monitor_memory_usage $mem_output print_args --foo --bar="baz lol hi" > $stdout_capture
+  assertTrue "should use less than 2mb" "[[ $(cat $mem_output) -lt 2 ]]"
+  assertTrue "should output 2 lines" "[[ $(wc -l < $stdout_capture) -eq 2 ]]"
+  assertEquals "first line" "--foo" "$(head -n 1 $stdout_capture)"
+  assertEquals "second line" "--bar=baz lol hi" "$(tail -n 1 $stdout_capture)"
+}
+
+testOutput() {
+  local stdout
+
+  stdout=$(echo '    Indented line' | output /dev/null)
+  assertEquals 'should preserve leading whitespace' '           Indented line' "${stdout}"
+
+  stdout=$(echo 'Foo \ bar' | output /dev/null)
+  assertEquals 'should preserve unescaped backslashes' '       Foo \ bar' "${stdout}"
+}
+
+testKeyValue() {
+  local store=$(mktemp)
+
+  kv_create $store
+
+  kv_set $store key value
+  kv_set $store foo bar
+  kv_set $store key other_value
+  kv_set $store bar baz
+
+  assertEquals "other_value" "$(kv_get $store key)"
+  assertEquals "bar" "$(kv_get $store foo)"
+  assertEquals "baz" "$(kv_get $store bar)"
+
+  # if the key isn't there it should return an empty string
+  assertEquals "" "$(kv_get $store not_there)"
+
+  # kv_keys returns each key on a new line
+  assertEquals "$(printf "%s\n" bar foo key)" "$(kv_keys $store)"
+
+  # kv_list returns key=value on individual lines
+  assertEquals "$(printf "%s\n" bar=baz foo=bar key=other_value)" "$(kv_list $store)"
+
+  # calling create on an existing store doesn't erase it
+  kv_create $store
+  assertEquals "$(printf "%s\n" bar=baz foo=bar key=other_value)" "$(kv_list $store)"
+
+  # now clear the store
+  kv_clear $store
+
+  assertEquals "" "$(kv_get $store key)"
+  assertEquals "" "$(kv_keys $store)"
+  assertEquals "" "$(kv_list $store)"
+}
+
+# if the file doesn't exist, everything should be a no-op
+testKeyValueNoFile() {
+  # empty file argument
+  local empty=""
+
+  kv_set $empty key value
+
+  assertEquals "$(kv_get $empty key)" ""
+  assertEquals "$(kv_keys $empty)" ""
+  assertEquals "$(kv_list $empty)" ""
+
+  local store="/tmp/does-not-exist"
+
+  kv_set $store key value
+
+  assertEquals "" "$(kv_get $store key)"
+  assertEquals "" "$(kv_keys $store)"
+  assertEquals "" "$(kv_list $store)"
+
+  # running these commands has not created this file
+  assertTrue "[[ ! -e $store ]]"
+
+  local space=" "
+  kv_set $space key value
+
+  assertEquals "$(kv_get $space key)" ""
+  assertEquals "$(kv_keys $space)" ""
+  assertEquals "$(kv_list $space)" ""
+}
+
+# the modules to be tested
+source "$(pwd)"/lib/monitor.sh
+source "$(pwd)"/lib/output.sh
+source "$(pwd)"/lib/kvstore.sh
+
+# import the testing framework
+source "$(pwd)"/test/shunit2

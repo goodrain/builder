@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# bin/test-compile <build-dir> <cache-dir> <env-dir>
+
+# fail fast
+set -e
+
+BP_DIR=$(cd $(dirname $0)/..; pwd) # absolute path
+BIN_DIR=$BP_DIR/bin
+LIB_DIR=$BP_DIR/lib
+. $LIB_DIR/common.sh
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+ENV_DIR=$3
+
+export GRADLE_TASK="testClasses"
+export GRADLE_USER_HOME=$BUILD_DIR/.gradle
+
+cache_copy ".gradle" $CACHE_DIR $BUILD_DIR
+
+$BIN_DIR/compile "$BUILD_DIR" "$CACHE_DIR" "$ENV_DIR"
+
+HEROKU_GRADLE_INIT_SCRIPT="/tmp/resolve.gradle"
+cat << EOF > $HEROKU_GRADLE_INIT_SCRIPT
+apply plugin:HerokuInitPlugin
+
+class HerokuInitPlugin implements Plugin<Gradle> {
+  @Override
+  void apply(Gradle gradle) {
+    gradle.allprojects{ project ->
+      project.task('resolveTestRuntime') {
+        doLast {
+          project.configurations.testRuntime.resolve()
+        }
+      }
+    }
+  }
+}
+EOF
+
+echo "-----> Resolving testRuntime dependencies..."
+cd $BUILD_DIR
+./gradlew --no-daemon --init-script $HEROKU_GRADLE_INIT_SCRIPT resolveTestRuntime 2>&1 | output /tmp/.resolveTestRuntime.log
+
+cache_copy ".gradle" $BUILD_DIR $CACHE_DIR

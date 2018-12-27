@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# fail fast
+set -e
+
+# config
+APACHE_VERSION="2.2.19"
+APACHE_PATH="apache"
+
+BIN_DIR=$(dirname $0)
+BUILD_DIR=$1
+CACHE_DIR=$2
+LP_DIR=`cd $(dirname $0); cd ..; pwd`
+
+# include .files when moving things around
+shopt -s dotglob
+
+cd $BUILD_DIR
+
+# move app things to www
+mkdir -p /tmp/www
+mv * /tmp/www
+mv /tmp/www .
+
+
+# keep Procfile
+if [ -f www/Procfile ]; then
+  mv www/Procfile .
+fi
+
+# unpack cache
+# for DIR in $APACHE_PATH ; do
+#   rm -rf $DIR
+#   if [ -d $CACHE_DIR/$DIR ]; then
+#     cp -r $CACHE_DIR/$DIR $DIR
+#   fi
+# done
+
+# install apache if needed
+if [ ! -d $APACHE_PATH ]; then
+  APACHE_URL="http://lang.goodrain.me/static/apache-$APACHE_VERSION.tar.gz"
+  echo "-----> Bundling Apache $APACHE_VERSION"
+  curl --silent --max-time 60 --location $APACHE_URL | tar xz
+fi
+
+# update config files
+cp $LP_DIR/conf/httpd.conf $APACHE_PATH/conf
+
+cat >>boot.sh <<EOF
+sed -i 's/Listen 80/Listen '\$PORT'/' /app/apache/conf/httpd.conf
+for var in \`env|cut -f1 -d=\`; do
+  echo "PassEnv \$var" >> /app/apache/conf/httpd.conf;
+done
+touch /app/apache/logs/error_log
+touch /app/apache/logs/access_log
+tail -F /app/apache/logs/error_log &
+tail -F /app/apache/logs/access_log &
+echo "Launching apache"
+exec /app/apache/bin/httpd -DNO_DETACH
+EOF
+
+chmod +x boot.sh
+
+# repack cache
+# mkdir -p $CACHE_DIR
+# for DIR in $APACHE_PATH ; do
+#   rm -rf $CACHE_DIR/$DIR
+#   cp -R $DIR $CACHE_DIR/$DIR
+# done

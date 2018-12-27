@@ -35,6 +35,11 @@ function Save_Runtimes(){
       fi
     fi
   ;;
+  go|golang)
+    if [[ ! -f ${BUILD_DIR}/$GolangRuntimefile && $runtime != "" ]];then
+      echo "go$runtime" > ${BUILD_DIR}/$GolangRuntimefile
+    fi
+  ;;
   node.js)
     : # 目前不做处理
   ;;
