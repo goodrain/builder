@@ -107,7 +107,7 @@ fi
 ## Buildpack detection
 case "$LANGUAGE" in
 "Java-maven")
-selected_buildpack="heroku-buildpack-java.git"
+selected_buildpack="heroku-buildpack-java"
 ;;
 "Java-jar")
 selected_buildpack="goodrain-buildpack-java-jar"
@@ -119,7 +119,7 @@ selected_buildpack="goodrain-buildpack-java-war"
 selected_buildpack="heroku-buildpack-php.git"
 ;;
 "Python")
-selected_buildpack="heroku-buildpack-python.git"
+selected_buildpack="heroku-buildpack-python"
 ;;
 "Node.js")
 selected_buildpack="heroku-buildpack-nodejs"
@@ -128,10 +128,10 @@ selected_buildpack="heroku-buildpack-nodejs"
 selected_buildpack="heroku-buildpack-go"
 ;;
 "Gradle")
-selected_buildpack="heroku-buildpack-gradle.git"
+selected_buildpack="heroku-buildpack-gradle"
 ;;
 "static")
-selected_buildpack="heroku-buildpack-static-backports.git"
+selected_buildpack="heroku-buildpack-static-backports"
 ;;
 "no"|"")
 echo_title "Unable to select a buildpack"
