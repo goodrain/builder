@@ -122,7 +122,7 @@ selected_buildpack="heroku-buildpack-php.git"
 selected_buildpack="heroku-buildpack-python.git"
 ;;
 "Node.js")
-selected_buildpack="heroku-buildpack-nodejs.git"
+selected_buildpack="heroku-buildpack-nodejs"
 ;;
 "Go")
 selected_buildpack="heroku-buildpack-go"

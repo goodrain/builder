@@ -32,7 +32,7 @@ download_buildpack() {
 
 mkdir -p $BUILDPACK_INSTALL_PATH
 
-download_buildpack https://github.com/goodrain/heroku-buildpack-nodejs.git             rainbond
+#download_buildpack https://github.com/goodrain/heroku-buildpack-nodejs.git             rainbond
 download_buildpack https://github.com/goodrain/heroku-buildpack-python.git             rainbond
 download_buildpack https://github.com/goodrain/heroku-buildpack-php.git                rainbond
 #download_buildpack https://github.com/goodrain/heroku-buildpack-go.git                 rainbond
