@@ -1,0 +1,18 @@
+{
+  "hatchet": {
+    "directory": "spec/fixtures"
+  },
+  "java": [
+    "kissaten/java-servlets-sample",
+    "kissaten/webapp-runner-sample",
+    "kissaten/korvan",
+    "kissaten/maven-polyglot"
+  ],
+  "spring": [
+    "kissaten/spring-boot-webapp-runner",
+    "kissaten/spring-boot-executable"
+  ],
+  "db": [
+    "kissaten/java-apache-dbcp-sample"
+  ]
+}

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# convenience functions
+source "$(cd $(dirname $0); cd ..; pwd)"/bin/util/common.sh
+
+if [[ -f "$1/composer.json" || -f "$1/index.php" ]]; then
+	echo "PHP" && exit 0
+else
+	error <<-EOF
+		Application not supported by php buildpack!
+	EOF
+fi

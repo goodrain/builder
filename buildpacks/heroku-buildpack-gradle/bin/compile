@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+# fail fast
+set -e
+
+BPLOG_PREFIX="buildpack.gradle"
+
+BP_DIR=$(cd $(dirname $0)/..; pwd) # absolute path
+BIN_DIR=$BP_DIR/bin
+OPT_DIR=$BP_DIR/opt
+LIB_DIR=$BP_DIR/lib
+
+# parse args
+BUILD_DIR=$1
+CACHE_DIR=$2
+ENV_DIR=$3
+
+source $LIB_DIR/common.sh
+source $LIB_DIR/failures.sh
+source <(curl --retry 3 -fsSL $BUILDPACK_STDLIB_URL)
+
+export_env $ENV_DIR "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
+
+if has_stage_task $BUILD_DIR; then
+  mcount "task.stage"
+  DEFAULT_GRADLE_TASK="stage"
+elif is_spring_boot $BUILD_DIR; then
+  if is_webapp_runner $BUILD_DIR; then
+    echo "-----> Spring Boot and Webapp Runner detected"
+    mcount "task.webapprunner"
+  else
+    echo "-----> Spring Boot detected"
+    mcount "task.spring"
+  fi
+  DEFAULT_GRADLE_TASK="build -x test"
+elif is_ratpack $BUILD_DIR; then
+  echo "-----> Ratpack detected"
+  mcount "task.ratpack"
+  DEFAULT_GRADLE_TASK="installDist -x test"
+else
+  DEFAULT_GRADLE_TASK="stage"
+fi
+
+if [ -z "$GRADLE_TASK" ]; then
+  GRADLE_TASK="${DEFAULT_GRADLE_TASK}"
+fi
+
+install_jdk ${BUILD_DIR}
+
+export GRADLE_OPTS=${GRADLE_OPTS-"-Dorg.gradle.daemon=false"}
+
+mkdir -p "$CACHE_DIR/.gradle"
+export GRADLE_USER_HOME=${GRADLE_USER_HOME:-$CACHE_DIR/.gradle}
+
+create_project_cache_symlink "$CACHE_DIR" "$BUILD_DIR"
+
+if [ ! -f $BUILD_DIR/gradlew ] ; then
+  mcount "wrapperless"
+  echo "-----> Installing Gradle Wrapper..."
+  echo "       WARNING: Your application does not have it's own gradlew file."
+  echo "       We'll install one for you, but this is a deprecated feature and"
+  echo "       in the future may not be supported."
+  cp -rn ${OPT_DIR}/wrapper/* ${BUILD_DIR}
+fi
+BUILDCMD="./gradlew"
+chmod +x ${BUILD_DIR}/gradlew
+
+BUILDCMD="$BUILDCMD $GRADLE_TASK"
+
+cd $BUILD_DIR
+
+[ -n "$(find . -type f -name "*.kt")" ] && mcount "kotlin.source"
+[ -n "$(find . -type f -name "*.groovy")" ] && mcount "groovy.source"
+
+# build app
+echo "-----> Building Gradle app..."
+echo "-----> executing $BUILDCMD"
+
+buildLogFile=$(create_build_log_file)
+
+let start=$(nowms)
+$BUILDCMD 2>&1 | output $buildLogFile
+
+if [ "${PIPESTATUS[*]}" != "0 0" ]; then
+  handle_gradle_errors $buildLogFile
+fi
+
+mtime "build.time" "${start}"
