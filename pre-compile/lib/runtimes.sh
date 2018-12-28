@@ -20,20 +20,27 @@ function Save_Runtimes(){
   ruby)
     : # 目前不做处理
   ;;
-  java-war|java-maven)
-    if [[ ! -f ${BUILD_DIR}/$JAVARuntimefile && $runtime != "" ]];then
-      if [ -f $BUILD_DIR/pom.xml ]; then
+  java-war|java-maven|java-jar)
+    if [[ $runtime != "" ]];then
+      java_version=$runtime
+      echo "java.runtime.version=$java_version" > ${BUILD_DIR}/$JAVARuntimefile
+    fi
+    if [ -f $BUILD_DIR/pom.xml ]; then
+      if [[ $runtime != "" ]];then
+        java_version=$runtime
+      else 
         set +e
         java_version=$(grep -oE '<java.version>[0-9.]+</java.version>' ${BUILD_DIR}/pom.xml | tail -n 1 | awk -F '[<>]' '{print $3}')
         set -e
         [ "x$java_version" == "x" ] && java_version="1.8"
-        echo "java.runtime.version=$java_version" > ${BUILD_DIR}/$JAVARuntimefile
+      fi
+      echo "java_version----------->" $java_version
+      echo "java.runtime.version=$java_version" > ${BUILD_DIR}/$JAVARuntimefile
       
-        if [ "$java_version" == "1.6" ] || [ "$java_version" == "1.5" ]; then
-          echo "maven.version=3.2.5" >> ${BUILD_DIR}/$JAVARuntimefile
-        else
-          echo "maven.version=3.3.9" >> ${BUILD_DIR}/$JAVARuntimefile
-        fi
+      if [ "$java_version" == "1.6" ] || [ "$java_version" == "1.5" ]; then
+        echo "maven.version=3.2.5" >> ${BUILD_DIR}/$JAVARuntimefile
+      else
+        echo "maven.version=3.3.9" >> ${BUILD_DIR}/$JAVARuntimefile
       fi
     fi
   ;;
