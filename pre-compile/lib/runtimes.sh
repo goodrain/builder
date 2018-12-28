@@ -8,7 +8,9 @@ function Save_Runtimes(){
 
   case $lang in
   php)
-   : # 与依赖一起处理 
+    if [[ $runtime != "" ]];then
+      sed -i "s#\(\"php\": \"\).*\(\"\)#\1$runtime\2#" ${BUILD_DIR}/composer.lock 
+    fi
   ;;
   python)
     if [[ $runtime != "" ]];then

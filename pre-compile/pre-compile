@@ -118,7 +118,7 @@ source $LIBDIR/runtimes.sh
 #============ main ==========
 
 # 处理运行时版本
-echo $RUNTIMES,"---------------------------------"
+echo "预编译环境变量" $RUNTIMES
 Save_Runtimes $LANG $RUNTIMES
 
 # 处理依赖
