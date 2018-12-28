@@ -51,7 +51,7 @@ export VENDOR_URL
 # Note: When 3.7 lands, I recommend switching to LATEST_36 and LATEST_37.
 DEFAULT_PYTHON_VERSION="python-3.6.6"
 LATEST_36="python-3.6.6"
-LATEST_37="python-3.7.0"
+LATEST_37="python-3.7.1"
 LATEST_2="python-2.7.15"
 
 # Which stack is used (for binary downloading), if none is provided (e.g. outside of Heroku)?

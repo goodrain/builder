@@ -11,7 +11,7 @@ function Save_Runtimes(){
    : # 与依赖一起处理 
   ;;
   python)
-    if [[ ! -f ${BUILD_DIR}/$PythonRuntimefile && $runtime != "" ]];then
+    if [[ $runtime != "" ]];then
       echo "python-$runtime" > ${BUILD_DIR}/$PythonRuntimefile
     fi
   ;;
@@ -36,7 +36,7 @@ function Save_Runtimes(){
     fi
   ;;
   go|golang)
-    if [[ ! -f ${BUILD_DIR}/$GolangRuntimefile && $runtime != "" ]];then
+    if [[ $runtime != "" ]];then
       echo "go$runtime" > ${BUILD_DIR}/$GolangRuntimefile
     fi
   ;;
