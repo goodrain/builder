@@ -116,7 +116,7 @@ selected_buildpack="goodrain-buildpack-java-jar"
 selected_buildpack="goodrain-buildpack-java-war"
 ;;
 "PHP")
-selected_buildpack="heroku-buildpack-php.git"
+selected_buildpack="heroku-buildpack-php"
 ;;
 "Python")
 selected_buildpack="heroku-buildpack-python"
