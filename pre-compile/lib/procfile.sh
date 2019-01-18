@@ -18,7 +18,7 @@ is_wildfly_swarm() {
 }
 iswar() {
   local buildDir=${1}
-  test -n $(grep "<packaging>war</packaging>" ${buildDir}/pom.xml)
+  test -n "$(grep "<packaging>war</packaging>" ${buildDir}/pom.xml)"
 }
 
 # $1 language
