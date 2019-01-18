@@ -94,21 +94,15 @@ function Save_Procfile(){
   ;;
    java-maven)
     if [ ! -f $BUILD_DIR/Procfile ] ; then
-      iswar="$(grep "<packaging>war</packaging>" ${BUILD_DIR}/pom.xml)"
-      
+      iswar=$(grep "<packaging>war</packaging>" ${BUILD_DIR}/pom.xml)
       if [ "$iswar" ];then
-        echo "web: java \$JAVA_OPTS -jar /opt/webapp-runner.jar   --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-      fi
-      
-      cd $BUILD_DIR
-      
-      if is_spring_boot $BUILD_DIR; then
+        echo "web: java \$JAVA_OPTS -jar /opt/webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+      elif is_spring_boot $BUILD_DIR; then
         echo "web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar target/*.jar" > $BUILD_DIR/Procfile
       elif is_wildfly_swarm $BUILD_DIR; then
-        echo "web: java -Dswarm.http.port=\$PORT \$JAVA_OPTS -jar target/*.jar" > $BUILD_DIR/Procfile
+        echo "web: java -Dswarm.http.port=\$PORT \$JAVA_OPTS -jar target/*.jar" > $BUILD_DIR/Procfile  
       fi
-    fi
-     
+    fi  
   ;;
   node.js)
     if [ ! -f $BUILD_DIR/Procfile ];then

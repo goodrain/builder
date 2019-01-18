@@ -118,7 +118,8 @@ source $LIBDIR/runtimes.sh
 #============ main ==========
 
 # 处理运行时版本
-echo $RUNTIMES,"---------------------------------"
+echo "Prepare Handle $RUNTIMES"
+
 Save_Runtimes $LANG $RUNTIMES
 
 # 处理依赖
@@ -126,3 +127,5 @@ Save_Deps $LANG "$DEPDS"
 
 # 处理Procfile
 Save_Procfile $LANG "$PROCFILE"
+
+echo "Prepare Handle $RUNTIMES Success"

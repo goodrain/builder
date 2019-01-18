@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# fail fast
+set -e
+
+# parse args
+export BUILD_DIR=$1
+
+BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+. $BIN_DIR/java
+. $BIN_DIR/util
+
+# Install JDK
+install_java_with_overlay ${BUILD_DIR}

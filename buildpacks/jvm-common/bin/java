@@ -1,0 +1,213 @@
+#!/usr/bin/env bash
+
+LATEST_JDK_VERSION="1.8"
+
+if [ ${STACK:-""} = "cedar" ]; then
+  DEFAULT_JDK_VERSION="1.6"
+  JDK_URL_1_8=${JDK_URL_1_8:-"http://lang.goodrain.me/jdk/openjdk1.8.0_20.tar.gz"}
+  JDK_URL_1_7=${JDK_URL_1_7:-"http://lang.goodrain.me/jdk/openjdk1.7.0_55.tar.gz"}
+  JDK_URL_1_6=${JDK_URL_1_6:-"http://lang.goodrain.me/jdk/openjdk1.6.0_27.tar.gz"}
+else
+  DEFAULT_JDK_VERSION="1.8"
+  JDK_BASE_URL=${JDK_BASE_URL:-"http://lang.goodrain.me/jdk/cedar-14"}
+  JDK_URL_1_9=${JDK_URL_1_9:-"$JDK_BASE_URL/openjdk1.9-latest.tar.gz"}
+  JDK_URL_1_8=${JDK_URL_1_8:-"$JDK_BASE_URL/openjdk1.8.0_74.tar.gz"}
+  JDK_URL_1_7=${JDK_URL_1_7:-"$JDK_BASE_URL/openjdk1.7.0_95.tar.gz"}
+  JDK_URL_1_6=${JDK_URL_1_6:-"http://lang.goodrain.me/jdk/openjdk1.6.0_27.tar.gz"}
+fi
+
+install_java_with_overlay() {
+  local buildDir=${1}
+  local javaVersion=$(detect_java_version ${buildDir})
+
+  if [ "$javaVersion" = "stack" ]; then
+    status "Using stack JDK"
+  else
+    status_pending "Installing OpenJDK ${javaVersion}"
+    install_java ${buildDir} ${javaVersion}
+    jdk_overlay ${buildDir}
+    status_done
+  fi
+}
+
+install_java() {
+  local baseDir=$1
+  if [ ! -d "${baseDir}" ]; then
+    error_return "Invalid directory to install java."
+    return 1
+  fi
+
+  local javaVersion=${2:-$(get_default_java_version)}
+  local jdkUrl=$(_get_jdk_download_url "${javaVersion}")
+  local jdkDir="${baseDir}"/.jdk
+  local jdkTarball="${jdkDir}"/jdk.tar.gz
+  local javaExe="${jdkDir}/bin/java"
+  mkdir -p "${jdkDir}"
+  if [ ! -f "${jdkTarball}" ] && [ ! -f "${javaExe}" ] || is_java_version_change "${jdkDir}" "${javaVersion}"; then
+    rm -rf "${jdkDir}"
+    mkdir -p "${jdkDir}"
+    validate_jdk_url ${jdkUrl} ${jdkVersion}
+    curl --retry 3 --silent --location ${jdkUrl} --output ${jdkTarball}
+    tar pxzf ${jdkTarball} -C "${jdkDir}"
+    rm ${jdkTarball}
+    echo "${javaVersion}" > "${jdkDir}/version"
+    if [ ! -f "${javaExe}" ]; then
+      error_return "Unable to retrieve the JDK."
+      return 1
+    fi
+  fi
+  export JAVA_HOME=${jdkDir}
+  export PATH="${jdkDir}/bin:${PATH}"
+
+  _install_tools ${baseDir}
+  _create_profile_script ${baseDir}
+  _create_export_script ${JAVA_HOME} "$(pwd)"
+  _install_pgconfig ${JAVA_HOME}
+}
+
+validate_jdk_url() {
+  local jdkUrl=${1}
+  local jdkVersion={2}
+  status=$(curl --retry 3 --silent --head -w %{http_code} -L ${jdkUrl} -o /dev/null)
+  if [ "$status" != "200" ]; then
+    echo ""
+    error_return "Unsupported Java version: $javaVersion
+
+Please check your system.properties file to ensure the java.runtime.version
+is among the list of supported version on the Document Center:
+https://www.rainbond.com/docs/stable/user-manual/app-creation/language-support/java.html
+You can also remove the system.properties from your repo to install
+the default ${DEFAULT_JDK_VERSION} version.
+If you continue to have trouble, you can open a support ticket here:
+http://www.rainbond.com/docs
+
+Thanks,
+Goodrain"
+    return 1
+  fi
+}
+
+jdk_overlay() {
+  baseDir=$1
+  shopt -s dotglob
+  if [ -d ${baseDir}/.jdk ] && [ -d ${baseDir}/.jdk-overlay ]; then
+    if [ -f ${baseDir}/.jdk-overlay/jre/lib/security/cacerts ]; then
+      # delete the symlink because a cp will error
+      rm ${baseDir}/.jdk/jre/lib/security/cacerts
+    fi
+    cp -r ${baseDir}/.jdk-overlay/* ${baseDir}/.jdk/
+  fi
+}
+
+is_java_version_change() {
+  jdkDir=$1
+  javaVersion=${2:-${DEFAULT_JDK_VERSION}}
+  if [ ! -d "${jdkDir}" ]; then echo "Invalid JDK directory."; return 1; fi
+  test -f "${jdkDir}/version" && [ "$(cat ${jdkDir}/version)" != "${javaVersion}" ]
+}
+
+_get_jdk_download_url() {
+  local jdkVersion=${1:-${DEFAULT_JDK_VERSION}}
+
+  if [ "$(expr "${jdkVersion}" : '1.[6-9]$')" != 0 ]; then
+    # hacky way of parsing the variable name.
+    # bash 4 would solve this with associative arrays, but shunit
+    # tests don't seem to respect the correct bash version.
+    local minorJdkVersion=\$JDK_URL_1_$(expr "${jdkVersion}" : '1.\([6-9]\)')
+    local jdkUrl=$(eval echo \$JDK_URL_1_${minorJdkVersion})
+  elif [ "$(expr "${jdkVersion}" : '1.[6-9]')" != 0 ]; then
+    local jdkUrl="${JDK_BASE_URL}/openjdk${jdkVersion}.tar.gz"
+  fi
+
+  # check that it exists with a head request
+  echo "${jdkUrl}"
+}
+
+get_default_java_version() {
+  if [ ${STACK:-""} = "cedar" ]; then
+    echo "1.6"
+  else
+    echo "$DEFAULT_JDK_VERSION"
+  fi
+}
+
+detect_java_version() {
+  baseDir=${1:-"No Dir"}
+  if [ "${baseDir}" = "No Dir" ] || [ ! -d "${baseDir}" ] ; then
+    error_return "Invalid directory specified for pom file."
+    return 1
+  fi
+  if [ -f ${baseDir}/system.properties ]; then
+    echo "$(get_app_system_value ${baseDir}/system.properties "java.runtime.version")"
+  else
+    echo "$(get_default_java_version)"
+  fi
+}
+
+get_app_system_value() {
+  local file=${1?"No file specified"}
+  local key=${2?"No key specified"}
+
+  # escape for regex
+  local escaped_key=$(echo $key | sed "s/\./\\\./g")
+
+  [ -f $file ] && \
+  grep -E ^$escaped_key[[:space:]=]+ $file | \
+  sed -E -e "s/$escaped_key([\ \t]*=[\ \t]*|[\ \t]+)([_A-Za-z0-9\.-]*).*/\2/g"
+}
+
+_create_profile_script() {
+  local profileScript="${1}/.profile.d/jvmcommon.sh"
+  local jdbcProfileScript="${1}/.profile.d/jdbc.sh"
+  local curDir=${JVM_COMMON_DIR:-$(cd $(dirname ${BASH_SOURCE[0]}) && cd .. && pwd )}
+
+  mkdir -p $(dirname $profileScript)
+  cp $curDir/opt/jvmcommon.sh $profileScript
+  cp $curDir/opt/jdbc.sh $jdbcProfileScript
+}
+
+_install_tools() {
+  local ctxDir=${1:-BUILD_DIR}
+  local curDir=${JVM_COMMON_DIR:-$(cd $(dirname ${BASH_SOURCE[0]}) && cd .. && pwd )}
+
+  mkdir -p $ctxDir/.heroku/bin
+  mkdir -p $ctxDir/.heroku/with_jmap/bin
+  cp $curDir/opt/with_jmap $ctxDir/.heroku/bin/with_jmap
+  cp $curDir/opt/with_jmap_java $ctxDir/.heroku/with_jmap/bin/java
+  chmod +x $ctxDir/.heroku/bin/with_jmap
+  chmod +x $ctxDir/.heroku/with_jmap/bin/java
+
+  mkdir -p $ctxDir/.heroku/with_jstack/bin
+  cp $curDir/opt/with_jstack $ctxDir/.heroku/bin/with_jstack
+  cp $curDir/opt/with_jstack_java $ctxDir/.heroku/with_jstack/bin/java
+  chmod +x $ctxDir/.heroku/bin/with_jstack
+  chmod +x $ctxDir/.heroku/with_jstack/bin/java
+
+  mkdir -p $ctxDir/.heroku/with_jmap_and_jstack/bin
+  cp $curDir/opt/with_jmap_and_jstack $ctxDir/.heroku/bin/with_jmap_and_jstack
+  cp $curDir/opt/with_jmap_and_jstack_java $ctxDir/.heroku/with_jmap_and_jstack/bin/java
+  chmod +x $ctxDir/.heroku/bin/with_jmap_and_jstack
+  chmod +x $ctxDir/.heroku/with_jmap_and_jstack/bin/java
+
+}
+
+_create_export_script() {
+  local javaHome=${1:-JAVA_HOME}
+  local ctxDir=${2:-CWD}
+
+  if [ -w ${ctxDir} ]; then
+    cat << EOF > ${ctxDir}/export
+export JAVA_HOME=$javaHome
+export PATH=\$JAVA_HOME/bin:\$PATH
+EOF
+  fi
+}
+
+_install_pgconfig() {
+  local javaHome=${1:-JAVA_HOME}
+  local extDir="${javaHome}/jre/lib/ext"
+
+  if [ -d "${extDir}" ] && [ -z "${SKIP_PGCONFIG_INSTALL:-}"  ]; then
+    curl --retry 3 -s -L "http://lang.goodrain.me/jvm/pgconfig.jar" -o ${extDir}/pgconfig.jar
+  fi
+}
