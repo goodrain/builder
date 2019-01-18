@@ -16,6 +16,10 @@ is_wildfly_swarm() {
   test -f ${buildDir}/pom.xml &&
     test -n "$(grep "<groupId>org.wildfly.swarm" ${buildDir}/pom.xml)"
 }
+iswar() {
+  local buildDir=${1}
+  test -n $(grep "<packaging>war</packaging>" ${buildDir}/pom.xml)
+}
 
 # $1 language
 function Save_Procfile(){
@@ -94,8 +98,7 @@ function Save_Procfile(){
   ;;
    java-maven)
     if [ ! -f $BUILD_DIR/Procfile ] ; then
-      iswar=$(grep "<packaging>war</packaging>" ${BUILD_DIR}/pom.xml)
-      if [ "$iswar" ];then
+      if iswar $BUILD_DIR;then
         echo "web: java \$JAVA_OPTS -jar /opt/webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
       elif is_spring_boot $BUILD_DIR; then
         echo "web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar target/*.jar" > $BUILD_DIR/Procfile

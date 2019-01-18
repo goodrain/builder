@@ -118,7 +118,7 @@ source $LIBDIR/runtimes.sh
 #============ main ==========
 
 # 处理运行时版本
-echo "Prepare Handle $RUNTIMES"
+echo "Prepare Handle Language $LANG RuntimeVersion $RUNTIMES"
 
 Save_Runtimes $LANG $RUNTIMES
 
