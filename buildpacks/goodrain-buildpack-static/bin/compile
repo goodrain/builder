@@ -60,10 +60,10 @@ EOF
 
     cat >>boot.sh <<EOF
 sed -i -r  "s/(listen ).*/\1\$PORT;/" /app/nginx/conf.d/web.conf
-echo '' > /app/nginx/logs/access.log
-echo '' > /app/nginx/logs/error.log
-tail -F /app/nginx/logs/error.log &
-tail -F /app/nginx/logs/access.log &
+touch /app/nginx/logs/access.log
+touch /app/nginx/logs/error.log
+ln -sf /dev/stdout /app/nginx/logs/error.log
+ln -sf /dev/stderr /app/nginx/logs/access.log
 echo "Launching nginx"
 exec /app/nginx/sbin/nginx -g 'daemon off;'
 EOF

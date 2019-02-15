@@ -131,7 +131,7 @@ selected_buildpack="heroku-buildpack-go"
 selected_buildpack="heroku-buildpack-gradle"
 ;;
 "static")
-selected_buildpack="heroku-buildpack-static-backports"
+selected_buildpack="goodrain-buildpack-static"
 ;;
 "no"|"")
 echo_title "Unable to select a buildpack"
