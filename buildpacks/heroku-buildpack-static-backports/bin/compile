@@ -29,27 +29,43 @@ fi
 
 fetch_nginx_tarball() {
     local version="1.14.2"
-    local tarball_file="nginx-$version.tar.gz"
-    local stack="cedar-14"
-    local nginx_tarball_url="http://lang.goodrain.me/static/heroku/nginx/${stack}/nginx-${version}.tar.gz"
-    local dest_path="$CACHE_DIR/$stack/$tarball_file"
+    local nginx_tarball_url="http://lang.goodrain.me/static/r6d/nginx/nginx-${version}.tar.gz"
     local NGINX_PATH="nginx"
-    mkdir -p $BUILD_DIR/$NGINX_PATH
     # install nginx if needed
     if [ ! -d "$NGINX_PATH" ]; then
-        echo "-----> Installed Nginx ${version} from ${nginx_tarball_url}"
-        curl --silent --max-time 60 --location $nginx_tarball_url | tar xf -strip-components 3 -C $BUILD_DIR/$NGINX_PATH
+        echo "-----> Installed Nginx ${version}"
+        mkdir -p $NGINX_PATH/conf.d
+        curl --silent --max-time 60 --location $nginx_tarball_url | tar xz --strip-components 2 -C $NGINX_PATH
     fi
 
     # update config files
+    cp -a $LP_DIR/conf/nginx.conf $NGINX_PATH/conf/nginx.conf
     
+    if [ -f "www/web.conf" ]; then
+        echo "-----> Detected custom configuration: web.conf"
+        mv www/web.conf $NGINX_PATH/conf.d/
+    else
+        echo "-----> Use the default configuration: web.conf"
+        cat > $NGINX_PATH/conf.d/web.conf <<EOF
+server {
+    listen       80;
+    
+    location / {
+        root   /app/www;
+        index  index.html index.htm;
+    }
+}
+EOF
+    fi
+
     cat >>boot.sh <<EOF
-touch /app/nginx/logs/error_log
-touch /app/nginx/logs/access_log
-tail -F /app/nginx/logs/error_log &
-tail -F /app/nginx/logs/access_log &
+sed -i -r  "s/(listen ).*/\1\$PORT;/" /app/nginx/conf.d/web.conf
+echo '' > /app/nginx/logs/access.log
+echo '' > /app/nginx/logs/error.log
+tail -F /app/nginx/logs/error.log &
+tail -F /app/nginx/logs/access.log &
 echo "Launching nginx"
-exec /app/nginx/
+exec /app/nginx/sbin/nginx -g 'daemon off;'
 EOF
 }
 
@@ -59,11 +75,11 @@ fetch_apache_tarball() {
     local APACHE_URL="http://lang.goodrain.me/static/apache-$APACHE_VERSION.tar.gz"
     # install apache if needed
     if [ ! -d "$APACHE_PATH" ]; then
-      echo "-----> Installing Apache $APACHE_VERSION from ${APACHE_URL}"
+      echo "-----> Installing Apache $APACHE_VERSION"
       curl --silent --max-time 60 --location $APACHE_URL | tar xz
     fi
     # update config files
-    cp $LP_DIR/conf/apache.conf $APACHE_PATH/conf
+    cp $LP_DIR/conf/apache.conf $APACHE_PATH/conf/httpd.conf
 
     cat >>boot.sh <<EOF
 sed -i 's/Listen 80/Listen '\$PORT'/' /app/apache/conf/httpd.conf
