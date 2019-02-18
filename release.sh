@@ -3,7 +3,7 @@
 set -xe
 
 commitid=$(git log -n 1 --pretty --format=%h)
-release_ver=5.0
+release_ver=$(git branch | grep '^*' | cut -d ' ' -f 2 | awk -F'V' '{print $2}')
 
 build::local(){
     release_desc=${release_ver}-${commitid}
@@ -15,6 +15,9 @@ build::local(){
 
 build::public(){
     docker tag goodrain.me/builder rainbond/rbd-builder:${release_ver}
+    if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then 
+        docker push rainbond/rbd-builder:${release_ver}
+    fi
 }
 
 case $1 in
