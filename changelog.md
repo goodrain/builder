@@ -1,3 +1,6 @@
+## 1902101
+- static buildpack 支持nginx选择
+
 ## 112301
 - php buildpack: compile 文件请求 api.github.com 添加超时和重试机制
 
