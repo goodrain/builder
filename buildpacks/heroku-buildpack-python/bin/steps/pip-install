@@ -29,7 +29,7 @@ if [ ! "$SKIP_PIP_INSTALL" ]; then
     fi
 
     # Set RUN_PIP_INDEX_URL
-    RUN_PIP_INDEX_URL="${PIP_INDEX_URL:-https://mirrors.ustc.edu.cn/pypi/web/simple}"
+    RUN_PIP_INDEX_URL="${PIP_INDEX_URL:-https://pypi.tuna.tsinghua.edu.cn/simple}"
     puts-step "Default Mirrors: $RUN_PIP_INDEX_URL"
 
     set +e

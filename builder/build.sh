@@ -133,6 +133,9 @@ selected_buildpack="heroku-buildpack-gradle"
 "static")
 selected_buildpack="goodrain-buildpack-static"
 ;;
+"nodestatic")
+selected_buildpack="goodrain-buildpack-nodestatic"
+;;
 "no"|"")
 echo_title "Unable to select a buildpack"
 exit 1
