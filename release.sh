@@ -3,7 +3,8 @@
 set -xe
 
 commitid=$(git log -n 1 --pretty --format=%h)
-release_ver=$(git branch | grep '^*' | cut -d ' ' -f 2)
+#release_ver=$(git branch | grep '^*' | cut -d ' ' -f 2)
+release_ver=5.1
 
 build::local(){
     release_desc=${release_ver}-${commitid}
