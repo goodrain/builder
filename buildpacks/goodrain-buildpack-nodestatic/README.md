@@ -54,6 +54,16 @@ NODE_ENV 环境变量默认是 production。
 NODE_ENV=${NODE_ENV:-production}
 ```
 
+## 编译支持
+
+`nodestatic.json`
+
+```
+{
+  "path": "dist"
+}
+```
+
 ## 授权
 
 根据 MIT 授权获得许可。 请参阅LICENSE文件
