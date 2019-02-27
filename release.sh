@@ -3,20 +3,28 @@
 set -xe
 
 commitid=$(git log -n 1 --pretty --format=%h)
-release_ver=$(git branch | grep '^*' | cut -d ' ' -f 2 | awk -F'V' '{print $2}')
+release_ver=$(git branch | grep '^*' | cut -d ' ' -f 2)
 
 build::local(){
     release_desc=${release_ver}-${commitid}
     sed "s/__RELEASE_DESC__/$release_desc/" Dockerfile >Dockerfile.release
     docker build --no-cache -t goodrain.me/builder -f Dockerfile.release .
     rm -rf Dockerfile.release
-    [ "$1" == "push" ] && docker push goodrain.me/builder
+    if [ "$1" == "push" ]; then
+        docker push goodrain.me/builder
+    else
+        # TODO
+        echo ''
+    fi
 }
 
 build::public(){
     docker tag goodrain.me/builder rainbond/rbd-builder:${release_ver}
     if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then 
         docker push rainbond/rbd-builder:${release_ver}
+    else
+        # TODO
+        echo ''
     fi
 }
 

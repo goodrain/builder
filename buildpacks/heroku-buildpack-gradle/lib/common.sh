@@ -89,10 +89,20 @@ install_jdk() {
   local install_dir=${1}
 
   let start=$(nowms)
+
   JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-http://lang.goodrain.me/java/new-jvm.tgz}
-  mkdir -p /tmp/jvm-common
-  curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
-  source /tmp/jvm-common/bin/util
+  [ -d "/tmp/buildpacks/jvm-common" ] && (
+    status_pending "Use local Jvm common"
+    cp -a /tmp/buildpacks/jvm-common /tmp/jvm-common
+    status_done
+  ) || (
+    mkdir -p /tmp/jvm-common
+    [ -z "$DEBUG_URL" ] && status_pending "Download Jvm common" || status_pending "Download Jvm common from $JVM_COMMON_BUILDPACK"
+    curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
+    status_done
+  )
+
+#  source /tmp/jvm-common/bin/util
   source /tmp/jvm-common/bin/java
   source /tmp/jvm-common/opt/jdbc.sh
   mtime "jvm-common.install.time" "${start}"

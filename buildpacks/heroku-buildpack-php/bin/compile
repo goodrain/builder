@@ -28,12 +28,12 @@ trap 'err_trap' ERR
 
 # stdlib
 # download to a file first, as the function restarts the entire download on code 18 connection reset (not all servers support -C)
-curl_retry_on_18 --fail --silent --location -o $bp_dir/bin/util/stdlib.sh http://lang.goodrain.me/common/buildpack-stdlib/v8/stdlib.sh || {
-	error <<-EOF
-		Failed to download standard library for bootstrapping!
-		Check Download http://lang.goodrain.me/common/buildpack-stdlib/v8/stdlib.sh
-	EOF
-}
+#curl_retry_on_18 --fail --silent --location -o $bp_dir/bin/util/stdlib.sh http://lang.goodrain.me/common/buildpack-stdlib/v8/stdlib.sh || {
+#	error <<-EOF
+#		Failed to download standard library for bootstrapping!
+#		Check Download http://lang.goodrain.me/common/buildpack-stdlib/v8/stdlib.sh
+#	EOF
+#}
 source $bp_dir/bin/util/stdlib.sh
 rm $bp_dir/bin/util/stdlib.sh
 

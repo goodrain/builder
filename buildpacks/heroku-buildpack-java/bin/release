@@ -24,8 +24,6 @@ has_postgres() {
     test -n "$(grep "<groupId>com.impossibl.pgjdbc-ng" ${buildDir}/pom.xml)")
 }
 
-#echo "---"
-
 if has_postgres $BUILD_DIR; then
   cat <<EOF
 addons:

@@ -3,11 +3,11 @@ shopt -s extglob
 shopt -s nullglob
 
 # The standard library.
-if [[ ! -f  /tmp/stdlib.sh ]]; then
-  curl --retry 3 -s http://lang.goodrain.me/common/buildpack-stdlib/v8/stdlib.sh > /tmp/stdlib.sh
-fi
+#if [[ ! -f  /tmp/stdlib.sh ]]; then
+#  curl --retry 3 -s http://lang.goodrain.me/common/buildpack-stdlib/v8/stdlib.sh > /tmp/stdlib.sh
+#fi
 # shellcheck source=/dev/null
-source /tmp/stdlib.sh
+#source /tmp/stdlib.sh
 
 if [ "$(uname)" == Darwin ]; then
     sed() { command sed -l "$@"; }
@@ -29,6 +29,10 @@ cleanup() {
 # Buildpack Steps.
 puts-step() {
   echo "-----> $*"
+}
+
+puts-done() {
+  echo " done"
 }
 
 # Buildpack Warnings.

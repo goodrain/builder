@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# bin/detect <build-dir>
+
+error() {
+  local c="2,999 s/^/ !     /"
+	# send all of our output to stderr
+	exec 1>&2
+
+	echo -n " !     ERROR: "
+	# this will be fed from stdin
+  case $(uname) in
+		Darwin) sed -l "$c";; # mac/bsd sed: -l buffers on line boundaries
+		*)      sed -u "$c";; # unix/gnu sed: -u unbuffered (arbitrary) chunks of data
+	esac
+	exit 1
+}
+
+if [[ -f "$1/nodestatic.json" ]] && [[ -f "$1/package.json" ]]; then
+  	echo 'nodestatic'
+  	exit 0
+fi
+
+error <<- EOF
+Application not supported by rainbond buildpack nodestatic
+
+The 'rainbond/nodestatic' buildpack is set on this application, but was
+unable to detect a node.js static codebase.
+    
+A nodestatic app on Rainbond requires a 'package.json' and a 'nodestatic.json' at the root of
+the directory structure.
+
+https://t.goodrain.com
+EOF
+
+exit 1
