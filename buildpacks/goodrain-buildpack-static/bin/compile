@@ -44,6 +44,7 @@ fetch_nginx_tarball() {
     if [ -f "www/web.conf" ]; then
         echo "-----> Detected custom configuration: web.conf"
         mv www/web.conf $NGINX_PATH/conf.d/
+        # Todo check web.conf 
     else
         echo "-----> Use the default configuration: web.conf"
         cat > $NGINX_PATH/conf.d/web.conf <<EOF
