@@ -236,7 +236,6 @@ cache_build() {
 cache_build | output "$LOG_FILE"
 
 static_build() {
-  #monitor "npm-install" npm install --production=$production --unsafe-perm --userconfig $build_dir/.npmrc 2>&1
   npm run build
 }
 
