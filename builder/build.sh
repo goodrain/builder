@@ -98,12 +98,6 @@ export REQUEST_ID=$(openssl rand -base64 32)
 export STACK=cedar-14
 export TYPE=${TYPE:-online}
 
-## Write Procfile
-
-if [ $PROCFILE ];then
-	echo $PROCFILE > $build_root/Procfile
-fi
-
 ## Buildpack detection
 case "$LANGUAGE" in
 "Java-maven")
@@ -133,7 +127,7 @@ selected_buildpack="heroku-buildpack-gradle"
 "static")
 selected_buildpack="goodrain-buildpack-static"
 ;;
-"nodestatic")
+"NodeJSStatic")
 selected_buildpack="goodrain-buildpack-nodestatic"
 ;;
 "no"|"")
@@ -148,8 +142,14 @@ selected_buildpack="$buildpack_root/$selected_buildpack"
 $selected_buildpack/bin/compile "$build_root" "$cache_root" 2>&1 | ensure_indent
 $selected_buildpack/bin/release "$build_root" "$cache_root" > $build_root/.release
 
+
 ## Display process types
 echo_title "Discovering process types"
+
+if [[ "$PROCFILE" ]];then
+	echo "$PROCFILE" > $build_root/Procfile
+fi
+
 if [[ -f "$build_root/Procfile" ]]; then
     types=$(ruby -e "require 'yaml';puts YAML.load_file('$build_root/Procfile').keys().join(', ')")
     echo_normal "Procfile declares types -> $types"
@@ -175,7 +175,7 @@ if [[ "$slug_file" != "-" ]]; then
     slug_size=$(du -Sh "$slug_file" | cut -f1)
     echo_title "Compiled slug size is $slug_size"
 
-    if [[ $put_url ]]; then
+    if [[ "$put_url" ]]; then
         curl -0 -s -o /dev/null -X PUT -T $slug_file "$put_url"
     fi
 fi

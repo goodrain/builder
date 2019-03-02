@@ -42,9 +42,16 @@ EOF
 }
 
 nodestatic_prepare(){
+    local buildpath=$(read_json "$BUILD_DIR/nodestatic.json" ".path")
     mkdir -p /tmp/www/www /tmp/buildxxx
     echo "-----> Synchronous static resources."
-    mv dist/* /tmp/www/www/
+    if [ -n "$buildpath" ]; then
+        mv $buildpath/* /tmp/www/www/
+    else
+        if [ -d "dists" ]; then
+            mv dists/* /tmp/www/www/
+        fi
+    fi
     mv nginx /tmp/www
     mv boot.sh /tmp/www
     mv /tmp/build/* /tmp/buildxxx

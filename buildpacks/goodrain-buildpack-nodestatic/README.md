@@ -48,10 +48,21 @@ iojs  2.x (支持到2.5.0)
 ## **环境变量**
 
 NODE_ENV 环境变量默认是 production。
+NPM_REGISTRY 环境变量默认是 https://registry.npm.taobao.org。
 
 ```bash
 # 默认 NODE_ENV 是 production
 NODE_ENV=${NODE_ENV:-production}
+```
+
+## 编译支持
+
+`nodestatic.json`
+
+```
+{
+  "path": "dist"
+}
 ```
 
 ## 授权
