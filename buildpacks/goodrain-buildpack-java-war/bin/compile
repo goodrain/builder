@@ -9,6 +9,7 @@ source /tmp/buildpacks/functions/common.sh
 
 BP_DIR=$(cd $(dirname $0)/..; pwd) # absolute path
 . $BP_DIR/lib/common.sh
+. $BP_DIR/lib/getrunner.sh
 
 # parse args
 BUILD_DIR=$1
@@ -16,14 +17,6 @@ CACHE_DIR=$2
 ENV_DIR=$3
 
 export_env_dir $ENV_DIR
-
-WEBSERVER=`cat $BUILD_DIR/webserver`
-WEBSERVER=${WEBSERVER:=webapp-runner-7.0.57.2.jar}
-
-WEBTYPE=`echo $WEBSERVER|awk -F '-' '{print $1}'`
-WEBTYPE=${WEBTYPE:=webapp}
-
-DOWNLOAD_URL="http://lang.goodrain.me/java/$WEBTYPE-runner/$WEBSERVER"
 
 JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-http://lang.goodrain.me/jvm/jvm-common.tgz}
 
@@ -49,7 +42,23 @@ jdk_overlay ${BUILD_DIR}
 status_done
 
 # download web runner
-curl --silent --location $DOWNLOAD_URL -o ${BUILD_DIR}/${WEBTYPE}-runner.jar
+WEBSERVER=`cat $BUILD_DIR/webserver`
+WEBSERVER=${WEBSERVER:=webapp-runner-8.5.38.0.jar}
+#WEBSERVER_VER=`echo $WEBSERVER | awk -F '[-.]' '{print $3}'`
+WEBTYPE=`echo $WEBSERVER| awk -F '-' '{print $1}'`
+WEBTYPE=${WEBTYPE:=webapp}
+
+#DOWNLOAD_URL="http://lang.goodrain.me/java/$WEBTYPE-runner/$WEBSERVER"
+#[ -z "$DEBUG_URL" ] && status_pending "URL: $DOWNLOAD_URL" ||  status_pending ""
+#curl --silent --location $DOWNLOAD_URL -o ${BUILD_DIR}/${WEBTYPE}-runner.jar
+#status_pending "status $?"
+#status_done
+
+if [ "$WEBTYPE" == "webapp" ]; then
+    dl_webapp_runner $WEBSERVER $OFFLINE
+else
+    dl_jetty_runner $WEBSERVER $OFFLINE
+fi
 
 cd $BUILD_DIR
 if [[ ! -f Procfile ]]; then

@@ -48,8 +48,8 @@ There are three config variables that can be used to customize the Maven executi
 BUILD_DEBUG_URL: 显示下载runtime url
 BUILD_MAVEN_MIRROR_OF: Maven mirrorof
 BUILD_MAVEN_MIRROR_URL: Maven mirror url
-BUILD_MAVEN_SETTINGS_URL: Maven 配置url
 BUILD_MAVEN_MIRROR_DISABLE: 禁用Maven mirror
+BUILD_MAVEN_SETTINGS_URL: Maven 配置url
 BUILD_MAVEN_CUSTOM_OPTS: 默认-DskipTests
 BUILD_MAVEN_CUSTOM_GOALS: 默认clean dependency:list install
 BUILD_MAVEN_JAVA_OPTS: 默认MAVEN_JAVA_OPTS
