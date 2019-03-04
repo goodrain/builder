@@ -94,10 +94,13 @@ function Save_Procfile(){
     jetty7)
       echo "jetty-runner-7.5.4.v20111024.jar" > $BUILD_DIR/webserver
     ;;
+    *)
+      echo "webapp-runner-8.5.38.0.jar" > $BUILD_DIR/webserver
+    ;;
     esac
   ;;
    java-maven)
-    if [ ! -f $BUILD_DIR/Procfile ] ; then
+    if [ ! -f "$BUILD_DIR/Procfile" ] ; then
       if iswar $BUILD_DIR;then
         echo "web: java \$JAVA_OPTS -jar /opt/webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
       elif is_spring_boot $BUILD_DIR; then
