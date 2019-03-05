@@ -76,14 +76,14 @@ function debug_info(){
     DEBUG=${DEBUG:=false}
     current_time=`date '+%Y-%m-%d %H:%M:%S'`
     if [ "$DEBUG" == "true" ];then
-      echo $'debug:======>' $current_time $* | output_redirect
+      echo $'debug:======>'  $* | output_redirect
     fi
 }
 
 function echo_title() {
     current_time=`date '+%Y-%m-%d %H:%M:%S'`
-    #echo $'\e[1G----->' $current_time $* | output_redirect
-    echo $'builder:----->' $current_time $* | output_redirect
+    #echo $'\e[1G----->'  $* | output_redirect
+    echo $'builder:----->'  $* | output_redirect
 }
 
 function echo_normal() {
@@ -95,8 +95,8 @@ function ensure_indent() {
     while read line; do
         if [[ "$line" == --* ]]; then
             current_time=`date '+%Y-%m-%d %H:%M:%S'`
-            #echo $'\e[1G'$line | sed -e "s/--> /--> $current_time /" | output_redirect
-            echo $'builder:'$line | sed -e "s/--> /--> $current_time /" | output_redirect
+            #echo $'\e[1G'$line | sed -e "s/--> /-->  /" | output_redirect
+            echo $'builder:'$line | sed -e "s/--> /-->  /" | output_redirect
         else
             #echo $'\e[1G      ' "$line" | output_redirect
             echo $'builder:      ' "$line" | output_redirect
@@ -118,7 +118,7 @@ source $LIBDIR/runtimes.sh
 #============ main ==========
 
 # 处理运行时版本
-echo "Prepare Handle Language $LANG RuntimeVersion $RUNTIMES"
+echo_title "Prepare Handle Language $LANG RuntimeVersion $RUNTIMES"
 
 Save_Runtimes $LANG $RUNTIMES
 
@@ -128,4 +128,4 @@ Save_Deps $LANG "$DEPDS"
 # 处理Procfile
 Save_Procfile $LANG "$PROCFILE"
 
-echo "Prepare Handle $RUNTIMES Success"
+echo_title "Prepare Handle $RUNTIMES Success"
