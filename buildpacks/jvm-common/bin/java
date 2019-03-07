@@ -18,6 +18,8 @@ else
   JDK_URL_1_6=${JDK_URL_1_6:-"http://lang.goodrain.me/jdk/openjdk1.6.0_27.tar.gz"}
 fi
 
+ORACLEJDK_URL_11="http://lang.goodrain.me/jdk/jdk-11.0.1_linux-x64_bin.tar.gz"
+
 install_java_with_overlay() {
   local buildDir=${1}
   local javaVersion=$(detect_java_version ${buildDir})
@@ -25,10 +27,10 @@ install_java_with_overlay() {
   if [ "$javaVersion" = "stack" ]; then
     status "Using stack JDK"
   else
-    status_pending "Installing OpenJDK ${javaVersion}"
-    install_java ${buildDir} ${javaVersion}
-    jdk_overlay ${buildDir}
-    status_done
+      [ -z "${ENABLE_ORACLEJDK}" ] && status_pending "Installing OpenJDK ${javaVersion}" || status_pending "Installing OracleJDK"
+      install_java ${buildDir} ${javaVersion}
+      jdk_overlay ${buildDir}
+      status_done
   fi
 }
 
@@ -48,12 +50,23 @@ install_java() {
   if [ ! -f "${jdkTarball}" ] && [ ! -f "${javaExe}" ] || is_java_version_change "${jdkDir}" "${javaVersion}"; then
     rm -rf "${jdkDir}"
     mkdir -p "${jdkDir}"
+    if [ ! -z "${ENABLE_ORACLEJDK}" ]; then
+      jdkUrl=${ORACLEJDK_URL:-$ORACLEJDK_URL_11}
+    fi
     [ -z "$DEBUG_URL" ] && echo "" || echo "Download JDK from ${jdkUrl} "
     validate_jdk_url ${jdkUrl} ${jdkVersion}
     curl --retry 3 --silent --location ${jdkUrl} --output ${jdkTarball}
     tar pxzf ${jdkTarball} -C "${jdkDir}"
     rm ${jdkTarball}
     echo "${javaVersion}" > "${jdkDir}/version"
+    if [ ! -z "${ENABLE_ORACLEJDK}" ]; then
+      if [ ! -f "${javaExe}" ]; then
+        oracle_jdk_name=$(ls ${jdkDir} | grep -v version)
+        status "Synchronize Oracle JDK files ${oracle_jdk_name}"
+        cp -a ${jdkDir}/${oracle_jdk_name}/* ${jdkDir}/
+        rm -rf ${jdkDir}/${oracle_jdk_name}
+      fi
+    fi
     if [ ! -f "${javaExe}" ]; then
       error_return "Unable to retrieve the JDK."
       return 1
