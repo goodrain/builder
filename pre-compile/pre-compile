@@ -20,6 +20,7 @@ LIBDIR="/tmp/pre-compile/lib"
 #### Language runtimes file
 PHPfile="composer.json"
 PythonRuntimefile="runtime.txt"
+PHPRuntimefile="runtime.txt"
 JAVARuntimefile="system.properties"
 NodejsRuntimefile="package.json"
 RubyRuntimefile="Gemfile"
@@ -104,10 +105,11 @@ function ensure_indent() {
     done
 }
 
-LANG=`read_json ".language"`      # null|(php|ruby|python|nodejs|java-war|java-maven|static)
-RUNTIMES=`read_json ".runtimes"`  # null|(确切的版本)
-DEPDS=`read_json ".dependencies"` # {}| 相应的依赖
-PROCFILE=`read_json ".procfile"`  # null|确切值
+#LANG=`read_json ".language"`      # null|(php|ruby|python|nodejs|java-war|java-maven|static)
+#RUNTIMES=`read_json ".runtimes"`  # null|(确切的版本)
+#DEPDS=`read_json ".dependencies"` # {}| 相应的依赖
+#PROCFILE=`read_json ".procfile"`  # null|确切值
+
 
 # import process fuctions
 source $LIBDIR/depds.sh
@@ -118,14 +120,18 @@ source $LIBDIR/runtimes.sh
 #============ main ==========
 
 # 处理运行时版本
-echo_title "Prepare Handle Language $LANG RuntimeVersion $RUNTIMES"
+echo_title "Prepare Handle Language $LANGUAGE RuntimeVersion $RUNTIMES"
 
-Save_Runtimes $LANG $RUNTIMES
+#Save_Runtimes $LANGUAGE $RUNTIMES
+
+R6D_Runtimes $LANGUAGE $RUNTIMES
 
 # 处理依赖
-Save_Deps $LANG "$DEPDS"
+Save_Deps $LANGUAGE "$DEPDS"
 
 # 处理Procfile
-Save_Procfile $LANG "$PROCFILE"
+#Save_Procfile $LANGUAGE "$PROCFILE"
+
+R6D_Procfile $LANGUAGE "$PROCFILE"
 
 echo_title "Prepare Handle $RUNTIMES Success"

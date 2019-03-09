@@ -26,7 +26,7 @@ JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-http://lang.goodrain.me/jvm/jvm-com
   status_done
 ) || (
   mkdir -p /tmp/jvm-common
-  [ -z "$DEBUG_URL" ] && status_pending "Download Jvm common" || status_pending "Download Jvm common from $JVM_COMMON_BUILDPACK"
+  [ -z "$DEBUG_INFO" ] && status_pending "Download Jvm common" || status_pending "Download Jvm common from $JVM_COMMON_BUILDPACK"
   curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common
   status_done
 )
@@ -49,7 +49,7 @@ WEBTYPE=`echo $WEBSERVER| awk -F '-' '{print $1}'`
 WEBTYPE=${WEBTYPE:=webapp}
 
 #DOWNLOAD_URL="http://lang.goodrain.me/java/$WEBTYPE-runner/$WEBSERVER"
-#[ -z "$DEBUG_URL" ] && status_pending "URL: $DOWNLOAD_URL" ||  status_pending ""
+#[ -z "$DEBUG_INFO" ] && status_pending "URL: $DOWNLOAD_URL" ||  status_pending ""
 #curl --silent --location $DOWNLOAD_URL -o ${BUILD_DIR}/${WEBTYPE}-runner.jar
 #status_pending "status $?"
 #status_done

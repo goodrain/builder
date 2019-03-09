@@ -15,7 +15,7 @@ Apache默认使用稳定版本 v2.2.19
 ### 环境变量
 
 ```bash
-BUILD_DEBUG_URL: 显示下载runtime url
+BUILD_DEBUG_INFO: 显示下载runtime url
 BUILD_USE_NGINX: 使用Nginx
 BUILD_USE_APACHE: 使用Apache
 ```

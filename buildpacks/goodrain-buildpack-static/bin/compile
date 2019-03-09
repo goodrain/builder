@@ -33,7 +33,7 @@ fetch_nginx_tarball() {
     local NGINX_PATH="nginx"
     # install nginx if needed
     if [ ! -d "$NGINX_PATH" ]; then
-        [ -z "$DEBUG_URL" ] && echo "-----> Installed Nginx ${NGINX_VERSION}" || echo "-----> Installed Nginx ${NGINX_VERSION} from $NGINX_URL."
+        [ -z "$DEBUG_INFO" ] && echo "-----> Installed Nginx ${NGINX_VERSION}" || echo "-----> Installed Nginx ${NGINX_VERSION} from $NGINX_URL."
         mkdir -p $NGINX_PATH/conf.d
         curl --silent --max-time 60 --location $NGINX_URL | tar xz --strip-components 2 -C $NGINX_PATH
     fi
@@ -76,7 +76,7 @@ fetch_apache_tarball() {
     local APACHE_URL="http://lang.goodrain.me/static/apache-$APACHE_VERSION.tar.gz"
     # install apache if needed
     if [ ! -d "$APACHE_PATH" ]; then
-      [ -z "$DEBUG_URL" ] && echo "-----> Installing Apache $APACHE_VERSION" || echo "-----> Installing Apache $APACHE_VERSION from $APACHE_URL."
+      [ -z "$DEBUG_INFO" ] && echo "-----> Installing Apache $APACHE_VERSION" || echo "-----> Installing Apache $APACHE_VERSION from $APACHE_URL."
       curl --silent --max-time 60 --location $APACHE_URL | tar xz
     fi
     # update config files

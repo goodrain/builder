@@ -53,7 +53,7 @@ install_java() {
     if [ ! -z "${ENABLE_ORACLEJDK}" ]; then
       jdkUrl=${ORACLEJDK_URL:-$ORACLEJDK_URL_11}
     fi
-    [ -z "$DEBUG_URL" ] && echo "" || echo "Download JDK from ${jdkUrl} "
+    [ -z "$DEBUG_INFO" ] && echo "" || echo "Download JDK from ${jdkUrl} "
     validate_jdk_url ${jdkUrl} ${jdkVersion}
     curl --retry 3 --silent --location ${jdkUrl} --output ${jdkTarball}
     tar pxzf ${jdkTarball} -C "${jdkDir}"

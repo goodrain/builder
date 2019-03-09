@@ -64,13 +64,12 @@ fi
 
 
 if [ ! "$SKIP_INSTALL" ]; then
-    puts-step "Installing $PYTHON_VERSION"
+    [ -z "DEBUG_INFO" ] && puts-step "Installing $PYTHON_VERSION" || puts-step "Installing $PYTHON_VERSION from $VENDORED_PYTHON"
 
     # Prepare destination directory.
     mkdir -p .heroku/python
 
     mcount "version.python.$PYTHON_VERSION"
-
     if ! curl "${VENDORED_PYTHON}" -s | tar zxv -C .heroku/python &> /dev/null; then
       puts-warn "Requested runtime ($PYTHON_VERSION) is not available for this stack ($STACK)."
       exit 1

@@ -45,7 +45,7 @@ There are three config variables that can be used to customize the Maven executi
 ### 环境变量
 
 ```
-BUILD_DEBUG_URL: 显示下载runtime url
+BUILD_DEBUG_INFO: 显示下载runtime url
 BUILD_MAVEN_MIRROR_OF: Maven mirrorof
 BUILD_MAVEN_MIRROR_URL: Maven mirror url
 BUILD_MAVEN_MIRROR_DISABLE: 禁用Maven mirror

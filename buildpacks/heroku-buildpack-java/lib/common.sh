@@ -15,7 +15,7 @@ install_maven() {
 
   if is_supported_maven_version ${mavenVersion}; then
     mavenUrl="http://lang.goodrain.me/java/maven/maven-${mavenVersion}.tar.gz"
-    [ -z "$DEBUG_URL" ] && status_pending "Installing Maven ${mavenVersion}" || status_pending "Installing Maven ${mavenVersion} from $mavenUrl"
+    [ -z "$DEBUG_INFO" ] && status_pending "Installing Maven ${mavenVersion}" || status_pending "Installing Maven ${mavenVersion} from $mavenUrl"
     download_maven ${mavenUrl} ${installDir} ${mavenHome}
     status_done
     if [ -z "$MAVEN_MIRROR_DISABLE" ]; then
@@ -46,6 +46,10 @@ download_maven() {
 is_supported_maven_version() {
   local mavenVersion=${1}
   if [ "$mavenVersion" = "$DEFAULT_MAVEN_VERSION" ]; then
+    return 0
+  elif [ "$mavenVersion" = "3.3.9" ]; then
+    return 0
+  elif [ "$mavenVersion" = "3.3.1" ]; then
     return 0
   elif [ "$mavenVersion" = "3.2.5" ]; then
     return 0
@@ -108,7 +112,7 @@ install_jdk() {
     status_done
   ) || (
     mkdir -p /tmp/jvm-common
-    [ -z "$DEBUG_URL" ] && status_pending "Download Jvm common" || status_pending "Download Jvm common from $JVM_COMMON_BUILDPACK"
+    [ -z "$DEBUG_INFO" ] && status_pending "Download Jvm common" || status_pending "Download Jvm common from $JVM_COMMON_BUILDPACK"
     curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common
     status_done
   )
