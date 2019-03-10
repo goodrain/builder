@@ -25,6 +25,7 @@ JAVARuntimefile="system.properties"
 NodejsRuntimefile="package.json"
 RubyRuntimefile="Gemfile"
 GolangRuntimefile="runtime.txt"
+StaticRuntimefile="runtime.txt"
 
 ### default runtimes 
 PHPDefault="5.6.11"

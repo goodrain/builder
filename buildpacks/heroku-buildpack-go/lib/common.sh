@@ -96,7 +96,7 @@ downloadFile() {
     mkdir -p "${targetDir}"
     pushd "${targetDir}" &> /dev/null
         start "Fetching ${localName}"
-            info "Download: ${BucketURL}/${fileName}"
+            [ -z "$DEBUG_INFO" ] && info "Download ${fileName}" || info "Download: ${fileName} from ${BucketURL}/${fileName}"
             ${CURL} -O "${BucketURL}/${fileName}"
             if [ "${fileName}" != "${localName}" ]; then
                 mv "${fileName}" "${localName}"

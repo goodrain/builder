@@ -16,6 +16,8 @@ shopt -s dotglob
 
 cd $BUILD_DIR
 
+WEBSERVER=$(cat $StaticRuntimefile)
+
 # move app things to www
 mkdir -p /tmp/www
 mv * /tmp/www
@@ -97,12 +99,13 @@ EOF
 }
 
 # Get web server, default apache
+
 if [ ! -z "$USE_NGINX" ]; then
     fetch_nginx_tarball
 elif [ ! -z "$USE_APACHE" ]; then
     fetch_apache_tarball
 else
-    echo $PROC_ENV | grep -i nginx >/dev/null  && fetch_nginx_tarball || fetch_apache_tarball
+    echo $WEBSERVER | grep -i nginx >/dev/null  && fetch_nginx_tarball || fetch_apache_tarball
 fi
 
 chmod +x boot.sh

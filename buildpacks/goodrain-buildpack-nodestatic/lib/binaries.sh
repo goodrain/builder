@@ -14,7 +14,7 @@ install_yarn() {
   fi
   yarn_url="http://lang.goodrain.me/nodejs/yarn/release/yarn-v$number.tar.gz"
 
-  echo "Downloading and installing yarn ($number)..."
+  [ -z "$DEBUG_INFO" ] && echo "Downloading and installing yarn ($number)..." || echo "Downloading and installing yarn ($number) from $yarn_url "
   local code=$(curl "$yarn_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/yarn.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
     echo "$yarn_url"
@@ -43,8 +43,11 @@ install_nodejs() {
   if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "http://lang.goodrain.me/nodejs/v1/node/linux-x64/latest-$version.txt"); then
     fail_bin_install node $version;
   fi
+  if [ -f "${BUILD_DIR}/runtime.txt" ]; then
+    number=$(cat ${BUILD_DIR}/runtime.txt)
+  fi
   node_url="http://lang.goodrain.me/nodejs/node/release/linux-x64/node-v$number-linux-x64.tar.gz"
-  echo "Downloading and installing node $number..."
+  [ -z "$DEBUG_INFO" ] && echo "Downloading and installing node $number..." || echo "Downloading and installing node $number from $node_url"
   local code=$(curl "$node_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/node.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
     echo "$node_url"
@@ -69,7 +72,7 @@ install_iojs() {
   fi
 
   iojs_url="http://lang.goodrain.me/nodejs/iojs/release/v$version/iojs-v$version-linux-x64.tar.gz"
-  echo "Downloading and installing iojs $number..."
+  [ -z "$DEBUG_INFO" ] &&  echo "Downloading and installing iojs $number..." || echo "Downloading and installing iojs $number from $iojs_url"
   local code=$(curl "$iojs_url" --silent --fail --retry 5 --retry-max-time 15 -o /tmp/iojs.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
     echo "Unable to download iojs: $code" && false

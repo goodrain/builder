@@ -84,7 +84,7 @@ else
 fi
 
 # Precompile commands are executed to pre-compile the user code
-debug_info "start pre-compile..."
+# debug_info "start pre-compile..."
 /bin/bash /tmp/pre-compile/pre-compile $app_dir
 
 # In heroku, there are two separate directories, and some

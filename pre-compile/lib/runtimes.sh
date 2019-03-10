@@ -52,37 +52,58 @@ function Save_Runtimes(){
   esac
 }
 
-runtimes::python(){
-  # 指定Python版本
-  local runtime=$1
-  if [ -z "$runtime" ]; then
-      # Todo check python-$runtime
-      echo ""
-  else
-      echo_title "Rewrite python runtime: python-${runtime}"
-      echo "python-$runtime" > ${BUILD_DIR}/$PythonRuntimefile
-  fi
-}
+
 
 runtimes::jar(){
   # 指定JDK版本
-  local runtime=${1:-1.8}
-  echo_title "Detection Java-jar runtime ${runtime}"
-  echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+  local runtime=${1}
+  if [ -z "$runtime" ]; then
+      if [ ! -f "${BUILD_DIR}/$JAVARuntimefile" ];then
+          echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
+      fi
+  else
+    echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+  fi
+  echo_title "Detection Java-jar runtime $(cat ${BUILD_DIR}/$JAVARuntimefile)"
 }
 
 runtimes::war(){
   # 指定JDK版本
-  local runtime=${1:-1.8}
-  echo_title "Detection Java-war runtime ${runtime}"
-  echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+  local runtime=${1}
+  if [ -z "$runtime" ]; then
+      if [ ! -f "${BUILD_DIR}/$JAVARuntimefile" ];then
+          echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
+      fi
+  else
+    echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+  fi
+  echo_title "Detection Java-War runtime $(cat ${BUILD_DIR}/$JAVARuntimefile)"
+}
+
+runtimes::gradle(){
+  # 指定JDK版本
+  local runtime=${1}
+  if [ -z "$runtime" ]; then
+      if [ ! -f "${BUILD_DIR}/$JAVARuntimefile" ];then
+          echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
+      fi
+  else
+    echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+  fi
+  echo_title "Detection Java-Gradle runtime $(cat ${BUILD_DIR}/$JAVARuntimefile)"
 }
 
 runtimes::maven(){
-  local runtime=${1:-1.8}
+  local runtime=${1}
   local maven=${RUNTIMES_MAVEN:-3.3.9}
-  echo_title "Detection Java-Maven runtime ${runtime}"
-  echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+  if [ -z "$runtime" ]; then
+      if [ ! -f "${BUILD_DIR}/$JAVARuntimefile" ];then
+          echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
+      fi
+  else
+    echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+  fi
+  echo_title "Detection Java-Maven runtime $(cat ${BUILD_DIR}/$JAVARuntimefile)"
   if [ "$runtime" == "1.6" ] || [ "$runtime" == "1.5" ]; then
     echo_title "Detection old Java($runtime), Java-Maven runtime ${runtime}"
     echo "maven.version=3.2.5" >> ${BUILD_DIR}/$JAVARuntimefile
@@ -117,6 +138,56 @@ runtimes::php(){
   fi
 }
 
+runtimes::python(){
+  local runtime=${1:-python-3.6.6}
+  if [ ! -z "$runtime" ]; then
+    echo_title "Detection Python runtime ${runtime}"
+    echo "$runtime" > ${BUILD_DIR}/$PythonRuntimefile
+  else
+    if [ ! -f "${BUILD_DIR}/$PythonRuntimefile" ]; then
+      echo "$runtime" > ${BUILD_DIR}/$PythonRuntimefile
+    fi
+    echo_title "Detection Python default runtime ${runtime}"
+  fi
+}
+
+runtimes::nodejs(){
+  local runtime=${1}
+  if [ ! -z "$runtime" ]; then
+    echo_title "Detection NodeJS runtime ${runtime}"
+    old_runtime_version=$(cat ${BUILD_DIR}/$NodejsRuntimefile | grep "\"node\"" | awk '{print $2}')
+    sed -i "s#${old_runtime_version}#\"${runtime}\"#g" ${BUILD_DIR}/$NodejsRuntimefile
+    echo "$runtime" > ${BUILD_DIR}/runtime.txt
+  fi
+}
+
+runtimes::golang(){
+  local runtime=${1}
+  if [ ! -z "$runtime" ]; then
+    echo_title "Detection Golang runtime ${runtime}"
+    echo "go$runtime" > ${BUILD_DIR}/$GolangRuntimefile
+  else
+    if [ ! -f "${BUILD_DIR}/$GolangRuntimefile" ]; then
+      echo "go1.11.2" > ${BUILD_DIR}/$GolangRuntimefile
+    fi
+    echo_title "Detection Golang default runtime $(cat ${BUILD_DIR}/$GolangRuntimefile)"
+  fi
+}
+
+runtimes::static(){
+  local runtime=${1}
+  local RUNTIMES_SERVER=${RUNTIMES_SERVER:-nginx}
+  echo_title "Detection Static runtime server ${RUNTIMES_SERVER}"
+  case $RUNTIMES_SERVER in
+    apache)
+      echo "apache" > ${BUILD_DIR}/$StaticRuntimefile
+    ;;
+    *)
+      echo "nginx" > ${BUILD_DIR}/$StaticRuntimefile
+    ;;
+  esac
+}
+
 R6D_Runtimes(){
   local lang=`echo $1| tr A-Z a-z`
   local runtime=$2
@@ -133,22 +204,23 @@ R6D_Runtimes(){
     php)
       runtimes::php $runtime
     ;;
-  python)
-    runtimes::python $runtime
-  ;;
-  go|golang)
-    if [[ ! -f ${BUILD_DIR}/$GolangRuntimefile && $runtime != "" ]];then
-      echo "go$runtime" > ${BUILD_DIR}/$GolangRuntimefile
-    fi
-  ;;
-  node.js)
-    : # 目前不做处理
-  ;;
-  static)
-    : # 目前不做处理
-  ;;
-  *)
-    :
-  ;;
+    python)
+      runtimes::python $runtime #目前不由预编译处理，由buildpack处理
+    ;;
+    node.js|nodejsstatic)
+      runtimes::nodejs $runtime
+    ;;
+    go|golang)
+      runtimes::golang $runtime
+    ;;
+    static)
+      runtimes::static $runtime
+    ;;
+    gradle)
+      runtimes::gradle $runtime
+    ;;
+    *)
+      :
+    ;;
   esac
 }

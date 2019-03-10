@@ -256,27 +256,12 @@ procfile::php(){
   fi
 }
 
-R6D_Procfile(){
-  local lang=`echo $1| tr A-Z a-z`
-  local procfile="$2"
-  case $lang in
-    java-jar)
-      procfile::jar "$procfile"
-    ;;
-    java-war)
-      procfile::war "$procfile"
-    ;;
-    java-maven)
-      procfile::maven "$procfile"
-    ;;
-    php)
-      procfile::php "$procfile"
-    ;;
-  python)
-    if [ ! -f $BUILD_DIR/Procfile  ];then
+procfile::python(){
+  local procfile="$1"
+  if [ -z "$procfile" ]; then
+    if [ ! -f "$BUILD_DIR/Procfile" ]; then
       # 查找django配置文件
       managefile=`find $BUILD_DIR -maxdepth 3 -type f -name 'manage.py' -printf '%d\t%P\n' | sort -nk1 | cut -f2 | head -1`
-      
       if [ -f $BUILD_DIR/$managefile ];then
         modulename=`grep -o -E "\w+.settings" $BUILD_DIR/$managefile  | sed 's/.settings/.wsgi/'`
       else
@@ -303,20 +288,64 @@ R6D_Procfile(){
         echo "web: gunicorn $modulename --max-requests=5000 --workers=4 --log-file - --access-logfile - --error-logfile -" > $BUILD_DIR/Procfile
       fi
     fi
-  ;;
-  node.js)
-    if [ ! -f $BUILD_DIR/Procfile ];then
-      if [ "$procfile" == "" ];then
-        procfile=`$JQBIN --raw-output ".scripts.start // \"\"" $BUILD_DIR/package.json`
-      fi
-      echo "web: $procfile" >$BUILD_DIR/Procfile
+  else
+      echo_title "Use custom Python Procfile"
+      echo "$procfile" > $BUILD_DIR/Procfile
+  fi
+}
+
+procfile::nodejs(){
+  local procfile="$1"
+  if [ -z "$procfile" ]; then
+    if [ ! -f "$BUILD_DIR/Procfile" ]; then
+      echo_title "Use Rainbond Default NodeJS Procfile"
+      default_procfile=`$JQBIN --raw-output ".scripts.start // \"\"" $BUILD_DIR/package.json`
+      echo "web: $default_procfile" >$BUILD_DIR/Procfile
     fi
-  ;;
-  static)
-   : # 目前不做处理
-  ;;
-  *)
-    :
-  ;;
+  else
+      echo_title "Use custom NodeJS Procfile"
+      echo "$procfile" > $BUILD_DIR/Procfile
+  fi
+}
+
+procfile::golang(){
+  local procfile="$1"
+  if [ ! -z "$procfile" ]; then
+      echo_title "Use custom Golang Procfile"
+      echo "$procfile" > $BUILD_DIR/Procfile
+  fi
+}
+
+R6D_Procfile(){
+  local lang=`echo $1| tr A-Z a-z`
+  local procfile="$2"
+  case $lang in
+    java-jar)
+      procfile::jar "$procfile"
+    ;;
+    java-war)
+      procfile::war "$procfile"
+    ;;
+    java-maven)
+      procfile::maven "$procfile"
+    ;;
+    php)
+      procfile::php "$procfile"
+    ;;
+    python)
+      procfile::python "$procfile"
+    ;;
+    node.js)
+      procfile::nodejs "$procfile"
+    ;;
+    go|golang)
+      procfile::golang "$procfile"
+    ;;
+    static|nodejsstatic)
+    : 
+    ;;
+    *)
+      :
+    ;;
   esac
 }
