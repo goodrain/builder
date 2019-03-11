@@ -21,7 +21,9 @@ build::local(){
 
 build::public(){
     docker tag goodrain.me/builder rainbond/rbd-builder:${release_ver}
+    docker tag goodrain.me/builder rainbond/builder:${release_ver}
     if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then 
+        docker push rainbond/builder:${release_ver}
         docker push rainbond/rbd-builder:${release_ver}
     else
         # TODO
