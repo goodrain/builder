@@ -97,7 +97,7 @@ install_jdk() {
     status_done
   ) || (
     mkdir -p /tmp/jvm-common
-    [ -z "$DEBUG_URL" ] && status_pending "Download Jvm common" || status_pending "Download Jvm common from $JVM_COMMON_BUILDPACK"
+    [ -z "$DEBUG_INFO" ] && status_pending "Download Jvm common" || status_pending "Download Jvm common from $JVM_COMMON_BUILDPACK"
     curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
     status_done
   )

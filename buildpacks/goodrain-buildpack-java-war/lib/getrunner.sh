@@ -3,7 +3,7 @@
 dl_webapp_runner(){
     local version=${1:-webapp-runner-8.5.38.0.jar}
 
-    if [ -z "$OFFLINE" ]; then
+    if [ ! -z "$ONLINE" ]; then
         # 在线构建默认使用OFFLINE
         WEBSERVER_BASE_URL="http://maven.goodrain.me/com/github/jsimone/webapp-runner"
     fi
@@ -18,7 +18,7 @@ dl_webapp_runner(){
         # 使用自定义地址
         DOWNLOAD_URL="$WEBSERVER_URL"
     else
-        if [ -z "$OFFLINE" ];then
+        if [ ! -z "$ONLINE" ];then
             # 使用在线安装
             DOWNLOAD_URL="${WEBSERVER_BASE_URL}/${get_dl_version}/webapp-runner-${get_dl_version}.jar"
         else
@@ -35,14 +35,14 @@ dl_webapp_runner(){
             fi   
         fi
     fi
-    [ ! -z "$DEBUG_URL" ] && status_pending "Download webapp-runner from $DOWNLOAD_URL" ||  status_pending "Download webapp-runner ${version}"
+    [ ! -z "$DEBUG_INFO" ] && status_pending "Download webapp-runner from $DOWNLOAD_URL" ||  status_pending "Download webapp-runner ${version}"
     wget -q $DOWNLOAD_URL -O ${BUILD_DIR}/webapp-runner.jar && status_done || error "Download webapp-runner from $DOWNLOAD_URL failed"
 }
 
 dl_jetty_runner(){
     local version=${1:-jetty-runner-9.4.0.v20161208.jar}
     
-    if [ -z "$OFFLINE" ]; then
+    if [ ! -z "$ONLINE" ]; then
         # 在线构建默认使用OFFLINE
         WEBSERVER_BASE_URL="http://maven.goodrain.me/org/eclipse/jetty/jetty-runner"
     fi
@@ -55,7 +55,7 @@ dl_jetty_runner(){
         # 使用自定义地址
         DOWNLOAD_URL="$WEBSERVER_URL"
     else
-        if [ -z "$OFFLINE" ];then
+        if [ ! -z "$ONLINE" ];then
             # 使用在线安装
             DOWNLOAD_URL="${WEBSERVER_BASE_URL}/${get_dl_version}/jetty-runner-${get_dl_version}.jar"
         else
@@ -68,6 +68,6 @@ dl_jetty_runner(){
             fi   
         fi
     fi
-    [ ! -z "$DEBUG_URL" ] && status_pending "Download jetty-runner from $DOWNLOAD_URL" ||  status_pending "Download jetty-runner ${version}"
+    [ ! -z "$DEBUG_INFO" ] && status_pending "Download jetty-runner from $DOWNLOAD_URL" ||  status_pending "Download jetty-runner ${version}"
     wget -q $DOWNLOAD_URL -O ${BUILD_DIR}/jetty-runner.jar && status_done || error "Download jetty-runner from $DOWNLOAD_URL failed"
 }

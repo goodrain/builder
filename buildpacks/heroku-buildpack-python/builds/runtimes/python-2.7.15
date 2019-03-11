@@ -9,10 +9,10 @@ export BIN_DIR
 source "$BIN_DIR/steps/sqlite3"
 
 sqlite3_version
-echo "Setting up SQLite3 Headers for $SQLITE3_VERSION"
+puts-step "Setting up SQLite3 Headers for $SQLITE3_VERSION"
 sqlite3_install "$OUT_PREFIX" "$SQLITE3_VERSION" 1
 
-echo "Building Python…"
+puts-step "Building Python…"
 SOURCE_TARBALL='https://python.org/ftp/python/2.7.15/Python-2.7.15.tgz'
 curl -L $SOURCE_TARBALL | tar xz
 mv Python-2.7.15 src

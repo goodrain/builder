@@ -49,6 +49,25 @@ unset GIT_DIR
 
 cd $build_dir
 
+#update php version
+if [ -f "runtime.txt" ]; then
+	php_version=$(cat runtime.txt | grep php | awk -F- '{print $2}')
+	old_php_version=$(cat composer.json | grep php | awk -F\" '{print $4}')
+	if [ ! -z "$old_php_version" ]; then
+		sed -i -r  "s/$old_php_version/$php_version/g" composer.json
+		sed -i -r  "s/$old_php_version/$php_version/g" composer.lock
+		status "Rewrite PHP version ${old_php_version} to ${php_version}"
+	fi
+	#TODO hhvm
+	#hhvm_version=$(cat runtime.txt | grep hhvm | awk -F- '{print $2}')
+	#old_hhvm_version=$(cat composer.json | grep hhvm | awk -F\" '{print $4}')
+	#if [ ! -z "$old_hhvm_version" ]; then
+	#	sed -i -r  "s/$old_hhvm_version/$hhvm_version/g" composer.json
+	#	sed -i -r  "s/$old_hhvm_version/$hhvm_version/g" composer.lock
+	#	status "Rewrite hhvm version ${old_hhvm_version} to ${hhvm_version}"
+	#fi
+fi
+
 export_env_dir "$env_dir" '^COMPOSER$'
 if [[ -n ${COMPOSER:-} ]]; then
 	status "Using '$COMPOSER' (from "'$COMPOSER env var) for installation.'
@@ -128,7 +147,7 @@ s3_url="http://lang.goodrain.me/php/dist-${STACK}-stable/"
 # list of repositories to use is in ascening order of precedence
 export_env_dir "$env_dir" '^HEROKU_PHP_PLATFORM_REPOSITORIES$'
 HEROKU_PHP_PLATFORM_REPOSITORIES="${s3_url} ${HEROKU_PHP_PLATFORM_REPOSITORIES:-}"
-notice "Defalut repo:$HEROKU_PHP_PLATFORM_REPOSITORIES"
+[ ! -z "$DEBUG_INFO" ] && notice "Defalut repo:$HEROKU_PHP_PLATFORM_REPOSITORIES"
 
 if [[ "${HEROKU_PHP_PLATFORM_REPOSITORIES}" == *" - "* ]]; then
 	# a single "-" in the user supplied string removes everything to the left of it; can be used to delete the default repo
@@ -144,7 +163,7 @@ mkdir -p $build_dir/.heroku/php-min
 ln -s $build_dir/.heroku/php-min /app/.heroku/php-min
 
 curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/php-min.tar.gz "${s3_url}php-min-7.0.32.tar.gz" && (
-	notice "Download ${s3_url}php-min-7.0.31.tar.gz sucessful..."
+	[ ! -z "DEBUG_INFO" ] && notice "Download ${s3_url}php-min-7.0.32.tar.gz sucessful..." || notice "Download php-min-7.0.32.tar.gz sucessful..."
 ) || {
 	mcount "failures.bootstrap.download.php-min"
 	error <<-EOF
@@ -159,7 +178,7 @@ tar xzf $build_dir/.heroku/php-min.tar.gz -C $build_dir/.heroku/php-min
 rm $build_dir/.heroku/php-min.tar.gz
 
 curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/composer.tar.gz "${s3_url}composer-1.7.2.tar.gz" && (
-	notice "Download: ${s3_url}composer-1.7.2.tar.gz sucessful..."
+	[ ! -z "DEBUG_INFO" ] && notice "Download: ${s3_url}composer-1.7.2.tar.gz sucessful..." || notice "Download: composer-1.7.2.tar.gz sucessful..."
 ) || {
 	mcount "failures.bootstrap.download.composer"
 	error <<-EOF
@@ -283,8 +302,6 @@ export HEROKU_PHP_DEFAULT_RUNTIME_VERSION
 			3) stage changes using 'git add $COMPOSER $COMPOSER_LOCK'
 			4) commit changes using 'git commit'
 			
-			For more information on selecting PHP runtimes, please refer to
-			https://devcenter.heroku.com/articles/php-support
 		EOF
 	else
 		mcount "failures.platform.composer_lock.parse"
@@ -379,8 +396,6 @@ else
 				$(echo -e "\033[1;31m")
 			EOF2
 		)
-		For a list of supported runtimes & extensions on Heroku, please
-		refer to: https://devcenter.heroku.com/articles/php-support
 	EOF
 fi
 
@@ -427,8 +442,6 @@ else
 			You may check the list of versions supported by the PHP Group
 			and their EOL dates here: http://php.net/supported-versions.php
 			
-			For a list of supported runtimes & extensions on Heroku, please
-			refer to: https://devcenter.heroku.com/articles/php-support
 		EOF
 	)
 	if (( $code == 2 )); then
@@ -562,8 +575,6 @@ if cat "$COMPOSER" | python -c 'import sys,json; sys.exit(not json.load(sys.stdi
 			the problem, ensure the code you're pushing is functioning
 			properly, and that all local changes are committed correctly.
 			
-			For more information on builds for PHP on Heroku, refer to
-			https://devcenter.heroku.com/articles/php-support
 		EOF
 	}
 fi
@@ -608,9 +619,6 @@ if cat "$COMPOSER" | python -c 'import sys,json; sys.exit("compile" not in json.
 			Check that the 'compile' command(s) in the 'scripts' section of
 			your '$COMPOSER' are working properly and not running into
 			timeouts or memory limits.
-			
-			For more information on the 'composer compile' step, refer to
-			https://devcenter.heroku.com/articles/php-support
 		EOF
 	}
 fi
