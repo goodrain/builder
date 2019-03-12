@@ -18,7 +18,7 @@ install_maven() {
     [ -z "$DEBUG_INFO" ] && status_pending "Installing Maven ${mavenVersion}" || status_pending "Installing Maven ${mavenVersion} from $mavenUrl"
     download_maven ${mavenUrl} ${installDir} ${mavenHome}
     status_done
-    if [ -z "$MAVEN_MIRROR_DISABLE" ]; then
+    if [ "$MAVEN_MIRROR_DISABLE" != "true" ]; then
       # Append mirror into maven configuration file
       echo  "Append mirror into maven configuration file"
       MAVEN_MIRROR_OF=${MAVEN_MIRROR_OF:-*}
