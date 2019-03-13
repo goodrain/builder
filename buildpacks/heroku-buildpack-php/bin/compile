@@ -147,7 +147,7 @@ s3_url="http://lang.goodrain.me/php/dist-${STACK}-stable/"
 # list of repositories to use is in ascening order of precedence
 export_env_dir "$env_dir" '^HEROKU_PHP_PLATFORM_REPOSITORIES$'
 HEROKU_PHP_PLATFORM_REPOSITORIES="${s3_url} ${HEROKU_PHP_PLATFORM_REPOSITORIES:-}"
-[ ! -z "$DEBUG_INFO" ] && notice "Defalut repo:$HEROKU_PHP_PLATFORM_REPOSITORIES"
+notice "Defalut repo:$HEROKU_PHP_PLATFORM_REPOSITORIES"
 
 if [[ "${HEROKU_PHP_PLATFORM_REPOSITORIES}" == *" - "* ]]; then
 	# a single "-" in the user supplied string removes everything to the left of it; can be used to delete the default repo

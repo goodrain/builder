@@ -113,7 +113,7 @@ runtimes::maven(){
 }
 
 runtimes::php(){
-  local runtime=${1:-5.6.35}
+  local runtime=${1}
   local hhvm=${RUNTIMES_HHVM}
   if [ ! -z "$runtime" ]; then
     echo_title "Detection PHP runtime php-${runtime}"
@@ -127,8 +127,14 @@ runtimes::php(){
       7.1|7.1.16)
         echo "php-7.1.16" > ${BUILD_DIR}/$PHPRuntimefile
       ;;
-      *)
+      5.6|5.6.35)
         echo "php-5.6.35" > ${BUILD_DIR}/$PHPRuntimefile
+      ;;
+      *)
+        #TODO
+        # 暂时不处理
+        #echo "php-5.6.35" > ${BUILD_DIR}/$PHPRuntimefile
+        :
       ;;
     esac
   fi
@@ -139,15 +145,15 @@ runtimes::php(){
 }
 
 runtimes::python(){
-  local runtime=${1:-python-3.6.6}
+  local runtime=${1}
   if [ ! -z "$runtime" ]; then
     echo_title "Detection Python runtime ${runtime}"
     echo "$runtime" > ${BUILD_DIR}/$PythonRuntimefile
   else
     if [ ! -f "${BUILD_DIR}/$PythonRuntimefile" ]; then
-      echo "$runtime" > ${BUILD_DIR}/$PythonRuntimefile
+      echo "python-3.6.6" > ${BUILD_DIR}/$PythonRuntimefile
     fi
-    echo_title "Detection Python default runtime ${runtime}"
+    echo_title "Detection Python default runtime $(cat ${BUILD_DIR}/$PythonRuntimefile)"
   fi
 }
 
