@@ -51,20 +51,28 @@ cd $build_dir
 
 #update php version
 if [ -f "runtime.txt" ]; then
-	php_version=$(cat runtime.txt | grep php | awk -F- '{print $2}')
-	old_php_version=$(cat composer.json | grep php | awk -F\" '{print $4}')
-	if [ ! -z "$old_php_version" ]; then
-		sed -i -r  "s/$old_php_version/$php_version/g" composer.json
-		sed -i -r  "s/$old_php_version/$php_version/g" composer.lock
-		status "Rewrite PHP version ${old_php_version} to ${php_version}"
+	php_num=$(cat runtime.txt | grep php | wc -l)
+	ophp_num=$(cat composer.json | grep php | wc -l)
+	if [ "$php_num" -eq 1 -a "$ophp_num" -ne 0 ]; then
+		php_version=$(cat runtime.txt | grep php | awk -F- '{print $2}')
+		old_php_version=$(cat composer.json | grep php | awk -F\" '{print $4}')
+		if [ ! -z "$old_php_version" ]; then
+			sed -i -r  "s/$old_php_version/$php_version/g" composer.json
+			sed -i -r  "s/$old_php_version/$php_version/g" composer.lock
+			status "Rewrite PHP version ${old_php_version} to ${php_version}"
+		fi
 	fi
 	#TODO hhvm
-	#hhvm_version=$(cat runtime.txt | grep hhvm | awk -F- '{print $2}')
-	#old_hhvm_version=$(cat composer.json | grep hhvm | awk -F\" '{print $4}')
-	#if [ ! -z "$old_hhvm_version" ]; then
-	#	sed -i -r  "s/$old_hhvm_version/$hhvm_version/g" composer.json
-	#	sed -i -r  "s/$old_hhvm_version/$hhvm_version/g" composer.lock
-	#	status "Rewrite hhvm version ${old_hhvm_version} to ${hhvm_version}"
+	#hhvm_num=$(cat runtime.txt | grep hhvm | wc -l)
+	#ohhvm_num=$(cat composer.json | grep hhvm | wc -l)
+	#if [ "$hhvm_num" -eq 1 -a "$ohhvm_num" -ne 0 ]; then
+	#	hhvm_version=$(cat runtime.txt | grep hhvm | awk -F- '{print $2}')
+	#	old_hhvm_version=$(cat composer.json | grep hhvm | awk -F\" '{print $4}')
+	#	if [ ! -z "$old_hhvm_version" ]; then
+	#		sed -i -r  "s/$old_hhvm_version/$hhvm_version/g" composer.json
+	#		sed -i -r  "s/$old_hhvm_version/$hhvm_version/g" composer.lock
+	#		status "Rewrite hhvm version ${old_hhvm_version} to ${hhvm_version}"
+	#	fi
 	#fi
 fi
 
