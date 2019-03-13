@@ -62,7 +62,26 @@ runtimes::jar(){
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
       fi
   else
-    echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+    case $runtime in
+        1.6)
+          echo "java.runtime.version=1.6" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        1.7)
+          echo "java.runtime.version=1.7" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        1.9)
+          echo "java.runtime.version=1.9" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        10)
+          echo "java.runtime.version=10" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        11)
+          echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        *)
+          echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+    esac
   fi
   echo_title "Detection Java-jar runtime $(cat ${BUILD_DIR}/$JAVARuntimefile)"
 }
@@ -75,7 +94,26 @@ runtimes::war(){
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
       fi
   else
-    echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+    case $runtime in
+        1.6)
+          echo "java.runtime.version=1.6" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        1.7)
+          echo "java.runtime.version=1.7" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        1.9)
+          echo "java.runtime.version=1.9" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        10)
+          echo "java.runtime.version=10" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        11)
+          echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        *)
+          echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+    esac
   fi
   echo_title "Detection Java-War runtime $(cat ${BUILD_DIR}/$JAVARuntimefile)"
 }
@@ -88,7 +126,26 @@ runtimes::gradle(){
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
       fi
   else
-    echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+    case $runtime in
+        1.6)
+          echo "java.runtime.version=1.6" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        1.7)
+          echo "java.runtime.version=1.7" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        1.9)
+          echo "java.runtime.version=1.9" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        10)
+          echo "java.runtime.version=10" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        11)
+          echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        *)
+          echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+    esac
   fi
   echo_title "Detection Java-Gradle runtime $(cat ${BUILD_DIR}/$JAVARuntimefile)"
 }
@@ -101,7 +158,26 @@ runtimes::maven(){
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
       fi
   else
-    echo "java.runtime.version=$runtime" > ${BUILD_DIR}/$JAVARuntimefile
+    case $runtime in
+        1.6)
+          echo "java.runtime.version=1.6" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        1.7)
+          echo "java.runtime.version=1.7" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        1.9)
+          echo "java.runtime.version=1.9" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        10)
+          echo "java.runtime.version=10" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        11)
+          echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        *)
+          echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+    esac
   fi
   echo_title "Detection Java-Maven runtime $(cat ${BUILD_DIR}/$JAVARuntimefile)"
   if [ "$runtime" == "1.6" ] || [ "$runtime" == "1.5" ]; then

@@ -94,9 +94,8 @@ if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_UPDATE* ]]; then
   # Remove old installations.
   rm -fr /app/.heroku/python/lib/python*/site-packages/pip-*
   rm -fr /app/.heroku/python/lib/python*/site-packages/setuptools-*
-  [ -z "$DEBUG_INFO" ] && PIP_DEBUG="&> /dev/null" || PIP_DEBUG=""
-  /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i https://pypi.tuna.tsinghua.edu.cn/simple ${PIP_DEBUG}
-  /app/.heroku/python/bin/pip install "$ROOT_DIR/vendor/setuptools-39.0.1-py2.py3-none-any.whl" ${PIP_DEBUG}
+  /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i https://pypi.tuna.tsinghua.edu.cn/simple &> /dev/null
+  /app/.heroku/python/bin/pip install "$ROOT_DIR/vendor/setuptools-39.0.1-py2.py3-none-any.whl" &> /dev/null
   puts-done
 fi
 
