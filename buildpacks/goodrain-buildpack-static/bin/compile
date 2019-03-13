@@ -105,7 +105,7 @@ if [ ! -z "$USE_NGINX" ]; then
 elif [ ! -z "$USE_APACHE" ]; then
     fetch_apache_tarball
 else
-    echo $WEBSERVER | grep -i nginx >/dev/null  && fetch_nginx_tarball || fetch_apache_tarball
+    echo ${RUNTIMES_SERVER:-nginx} | grep -i nginx >/dev/null  && fetch_nginx_tarball || fetch_apache_tarball
 fi
 
 chmod +x boot.sh
