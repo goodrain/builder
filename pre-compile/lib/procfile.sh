@@ -239,17 +239,15 @@ procfile::maven(){
 procfile::php(){
   local procfile="$1"
   if [ -z "$procfile" ]; then
-    if [ ! -f "$BUILD_DIR/Procfile" ]; then
       echo_title "Use Rainbond Default PHP Procfile($RUNTIMES_SERVER)"
       case $RUNTIMES_SERVER in
         nginx)
           echo "web: vendor/bin/heroku-php-nginx" > $BUILD_DIR/Procfile
         ;;
-        apache)
+        *)
           echo "web: vendor/bin/heroku-php-apache2" > $BUILD_DIR/Procfile
         ;;
-        esac
-    fi
+      esac
   else
       echo_title "Use custom PHP Procfile"
       echo "$procfile" > $BUILD_DIR/Procfile
