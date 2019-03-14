@@ -15,6 +15,7 @@ source /tmp/buildpacks/functions/common.sh
 source $BP_DIR/lib/common.sh
 source $BP_DIR/lib/maven.sh
 source $BP_DIR/lib/stdlib.sh
+source $BP_DIR/lib/getrunner.sh
 #source <(curl -s --retry 3 -L $BUILDPACK_STDLIB_URL)
 
 export_env $ENV_DIR "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
@@ -30,3 +31,15 @@ run_mvn "compile" $BUILD_DIR $CACHE_DIR
 #  cache_copy ".m2/wrapper" $BUILD_DIR $CACHE_DIR
 #  rm -rf $BUILD_DIR/.m2
 #fi
+
+if [ -f "$BUILD_DIR/.iswar" ];then
+    WEBSERVER=`cat $BUILD_DIR/webserver`
+    WEBSERVER=${WEBSERVER:=webapp-runner-8.5.38.0.jar}
+    WEBTYPE=`echo $WEBSERVER| awk -F '-' '{print $1}'`
+    WEBTYPE=${WEBTYPE:=webapp}
+    if [ "$WEBTYPE" == "webapp" ]; then
+        dl_webapp_runner $WEBSERVER $OFFLINE
+    else
+        dl_jetty_runner $WEBSERVER $OFFLINE
+    fi
+fi
