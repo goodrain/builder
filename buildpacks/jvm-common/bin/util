@@ -88,3 +88,20 @@ copy_directories() {
     fi
   done
 }
+
+try_dl_res(){
+  local url=${1}
+  if [ -z "$url" ]; then
+    echo "Download $url is Null"
+    exit 1
+  fi
+  for((i=1;i<=3;i++));do
+    code=$(curl "$url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/xxx.tar.gz --write-out "%{http_code}")
+    if [ "$code" != "200" ]; then
+      echo "Unable to download from $url: $code,try $i"
+    else
+      echo "time $i"
+      break
+    fi
+  done
+}
