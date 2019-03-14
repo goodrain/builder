@@ -1,5 +1,21 @@
 #!/usr/bin/env bash
 
+try_dl_res(){
+  local url=${1}
+  if [ -z "$url" ]; then
+    echo "Download $url is Null"
+    exit 1
+  fi
+  for((i=1;i<=3;i++));do
+    code=$(curl "$url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/xxx.tar.gz --write-out "%{http_code}")
+    if [ "$code" != "200" ]; then
+      echo "Unable to download from $url: $code,try $i"
+    else
+      break
+    fi
+  done
+}
+
 dl_webapp_runner(){
     local version=${1:-webapp-runner-8.5.38.0.jar}
 
@@ -36,8 +52,11 @@ dl_webapp_runner(){
         fi
     fi
     [ ! -z "$DEBUG_INFO" ] && status_pending "Download webapp-runner from $DOWNLOAD_URL" ||  status_pending "Download webapp-runner ${version}"
+    try_dl_res $DOWNLOAD_URL
     wget -q $DOWNLOAD_URL -O ${BUILD_DIR}/webapp-runner.jar && status_done || error "Download webapp-runner from $DOWNLOAD_URL failed"
+
 }
+
 
 dl_jetty_runner(){
     local version=${1:-jetty-runner-9.4.0.v20161208.jar}
@@ -69,5 +88,6 @@ dl_jetty_runner(){
         fi
     fi
     [ ! -z "$DEBUG_INFO" ] && status_pending "Download jetty-runner from $DOWNLOAD_URL" ||  status_pending "Download jetty-runner ${version}"
+    try_dl_res $DOWNLOAD_URL
     wget -q $DOWNLOAD_URL -O ${BUILD_DIR}/jetty-runner.jar && status_done || error "Download jetty-runner from $DOWNLOAD_URL failed"
 }
