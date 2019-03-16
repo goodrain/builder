@@ -55,7 +55,7 @@ if [ -f "runtime.txt" ]; then
 	ophp_num=$(cat composer.json | grep php | wc -l)
 	if [ "$php_num" -eq 1 -a "$ophp_num" -ne 0 ]; then
 		php_version=$(cat runtime.txt | grep php | awk -F- '{print $2}')
-		old_php_version=$(cat composer.json | grep php | awk -F\" '{print $4}')
+		old_php_version=$(cat composer.json| grep "\"php\"" | awk -F\" '{print $4}')
 		if [ ! -z "$old_php_version" ]; then
 			sed -i -r  "s/$old_php_version/$php_version/g" composer.json
 			sed -i -r  "s/$old_php_version/$php_version/g" composer.lock
