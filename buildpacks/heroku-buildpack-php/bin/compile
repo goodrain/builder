@@ -150,12 +150,12 @@ mkdir -p $COMPOSER_HOME
 
 status "Bootstrapping..."
 
-s3_url="http://lang.goodrain.me/php/dist-${STACK}-stable/"
+s3_url="http://lang.goodrain.me/php-new/dist-${STACK}-stable/"
 # prepend the default repo to the list configured by the user
 # list of repositories to use is in ascening order of precedence
 export_env_dir "$env_dir" '^HEROKU_PHP_PLATFORM_REPOSITORIES$'
 HEROKU_PHP_PLATFORM_REPOSITORIES="${s3_url} ${HEROKU_PHP_PLATFORM_REPOSITORIES:-}"
-notice "Defalut repo:$HEROKU_PHP_PLATFORM_REPOSITORIES"
+#notice "Defalut repo:$HEROKU_PHP_PLATFORM_REPOSITORIES"
 
 if [[ "${HEROKU_PHP_PLATFORM_REPOSITORIES}" == *" - "* ]]; then
 	# a single "-" in the user supplied string removes everything to the left of it; can be used to delete the default repo
@@ -170,31 +170,25 @@ fi
 mkdir -p $build_dir/.heroku/php-min
 ln -s $build_dir/.heroku/php-min /app/.heroku/php-min
 
-curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/php-min.tar.gz "${s3_url}php-min-7.0.32.tar.gz" && (
-	[ ! -z "DEBUG_INFO" ] && notice "Download ${s3_url}php-min-7.0.32.tar.gz sucessful..." || notice "Download php-min-7.0.32.tar.gz sucessful..."
+curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/php-min.tar.gz "${s3_url}php-min-7.3.3.tar.gz" && (
+	notice "download php-min-7.3.3.tar.gz sucessful"
 ) || {
 	mcount "failures.bootstrap.download.php-min"
 	error <<-EOF
-		Failed to download minimal PHP for bootstrapping!
-		
-		This is most likely a temporary internal error. If the problem
-		persists, make sure that you are not running a custom or forked
-		version of the Heroku PHP buildpack which may need updating.
+		Failed to download minimal PHP from ${s3_url}php-min-7.3.3.tar.gz
+		Please Check lang.goodrain.me(rbd-repo)
 	EOF
 }
 tar xzf $build_dir/.heroku/php-min.tar.gz -C $build_dir/.heroku/php-min
 rm $build_dir/.heroku/php-min.tar.gz
 
-curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/composer.tar.gz "${s3_url}composer-1.7.2.tar.gz" && (
-	[ ! -z "DEBUG_INFO" ] && notice "Download: ${s3_url}composer-1.7.2.tar.gz sucessful..." || notice "Download: composer-1.7.2.tar.gz sucessful..."
+curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/composer.tar.gz "${s3_url}composer-1.8.4.tar.gz" && (
+	notice "download composer-1.8.4.tar.gz sucessful"
 ) || {
 	mcount "failures.bootstrap.download.composer"
 	error <<-EOF
-		Failed to download Composer for bootstrapping!
-		
-		This is most likely a temporary internal error. If this problem
-		persists, make sure that you are not running a custom or forked
-		version of the Heroku PHP buildpack which may need updating.
+		Failed to download Composer from ${s3_url}composer-1.8.4.tar.gz !
+		Please Check lang.goodrain.me(rbd-repo)
 	EOF
 }
 tar xzf $build_dir/.heroku/composer.tar.gz -C $build_dir/.heroku/php
@@ -212,7 +206,7 @@ composer config --global secure-http false
 # we use --no-plugins just in case the vendor dir is there, see e.g. https://github.com/Ocramius/PackageVersions/issues/64
 composer_vendordir=$(composer config --no-plugins vendor-dir)
 composer_bindir=$(composer config --no-plugins bin-dir)
-
+notice "composer_bindir $composer_bindir"
 # packages that get installed will add to this file, it's both for us and for buildpacks that follow
 # composer bin-dir goes last to avoid any conflicts
 echo "export PATH=/app/.heroku/php/bin:\$PATH:/app/$composer_bindir" > $bp_dir/export
@@ -310,6 +304,8 @@ export HEROKU_PHP_DEFAULT_RUNTIME_VERSION
 			3) stage changes using 'git add $COMPOSER $COMPOSER_LOCK'
 			4) commit changes using 'git commit'
 			
+			For more information on selecting PHP runtimes, please refer to
+			https://devcenter.heroku.com/articles/php-support
 		EOF
 	else
 		mcount "failures.platform.composer_lock.parse"
@@ -357,7 +353,7 @@ else
 		
 		This usually means that you (or packages you are using) depend
 		on a combination of PHP versions and/or extensions that are
-		currently not available on Heroku.
+		currently not available on Goodrain.
 		
 		The following is the full output from the installation attempt:
 		
@@ -404,6 +400,8 @@ else
 				$(echo -e "\033[1;31m")
 			EOF2
 		)
+		For a list of supported runtimes & extensions on Heroku, please
+		refer to: https://devcenter.heroku.com/articles/php-support
 	EOF
 fi
 
@@ -450,6 +448,8 @@ else
 			You may check the list of versions supported by the PHP Group
 			and their EOL dates here: http://php.net/supported-versions.php
 			
+			For a list of supported runtimes & extensions on Heroku, please
+			refer to: https://devcenter.heroku.com/articles/php-support
 		EOF
 	)
 	if (( $code == 2 )); then
@@ -528,6 +528,7 @@ if [[ -f "$composer_vendordir/autoload.php" && -d "$composer_vendordir/composer"
 		)
 		For more info, refer to the Composer FAQ: http://bit.ly/1rlCSZU
 	EOF
+	notice ""
 fi
 
 # handle custom oauth keys
@@ -583,6 +584,8 @@ if cat "$COMPOSER" | python -c 'import sys,json; sys.exit(not json.load(sys.stdi
 			the problem, ensure the code you're pushing is functioning
 			properly, and that all local changes are committed correctly.
 			
+			For more information on builds for PHP on Heroku, refer to
+			https://devcenter.heroku.com/articles/php-support
 		EOF
 	}
 fi
@@ -627,6 +630,9 @@ if cat "$COMPOSER" | python -c 'import sys,json; sys.exit("compile" not in json.
 			Check that the 'compile' command(s) in the 'scripts' section of
 			your '$COMPOSER' are working properly and not running into
 			timeouts or memory limits.
+			
+			For more information on the 'composer compile' step, refer to
+			https://devcenter.heroku.com/articles/php-support
 		EOF
 	}
 fi
@@ -652,9 +658,18 @@ cd $build_dir/$composer_bindir
 ln -fs $relbins .
 cd $build_dir
 
-if [[ ! -f "Procfile" ]]; then
+if [ ! -f "Procfile" ]; then
 	echo "web: heroku-$engine-apache2" > Procfile
 	notice_inline "No Procfile, using 'web: heroku-$engine-apache2'."
+else
+	webserver=$(cat Procfile | awk '{print $2}')
+	if [ ! -f "$webserver" ]; then
+		notice_inline "This is not a generic PHP directory. The verndor directory is defined by default"
+		[ -f "$webserver" ] || (
+			mkdir -pv vendor/bin
+			ln -fs ../../$composer_bindir/$(cat Procfile  | awk -F/ '{print $NF}')  $webserver
+		)
+	fi
 fi
 
 # write empty WEB_CONCURRENCY.sh to overwrite the defaults logic from a prior buildpack, e.g. Node (all buildpacks use the same filename to allow this)

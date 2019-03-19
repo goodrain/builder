@@ -1,3 +1,6 @@
+## 1903181
+- php buildpack 更新至heroku v152版本
+
 ## 1902101
 - static buildpack 支持nginx选择
 
