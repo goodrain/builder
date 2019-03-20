@@ -18,7 +18,7 @@ install_maven() {
     [ -z "$DEBUG_INFO" ] && status_pending "Installing Maven ${mavenVersion}" || status_pending "Installing Maven ${mavenVersion} from $mavenUrl"
     download_maven ${mavenUrl} ${installDir} ${mavenHome}
     status_done
-    if [ "$MAVEN_MIRROR_DISABLE" != "true" ]; then
+    if [ "$(echo $MAVEN_MIRROR_DISABLE | tr '[A-Z]' '[a-z]')" != "true" ]; then
       # Append mirror into maven configuration file
       echo  "Append mirror into maven configuration file"
       MAVEN_MIRROR_OF=${MAVEN_MIRROR_OF:-*}
@@ -66,7 +66,7 @@ is_supported_maven_version() {
 
 detect_maven_version() {
   local baseDir=${1}
-  if [ -f ${baseDir}/system.properties ]; then
+  if [ -f "${baseDir}/system.properties" ]; then
     mavenVersion=$(get_app_system_value ${baseDir}/system.properties "maven.version")
     if [ -n "$mavenVersion" ]; then
       echo $mavenVersion
@@ -103,7 +103,7 @@ cache_copy() {
 
 install_jdk() {
   local install_dir=${1}
-
+  local cache_dir=${2}
   let start=$(nowms)
   JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-http://lang.goodrain.me/jvm/jvm-common.tgz}
   [ -d "/tmp/buildpacks/jvm-common" ] && (
@@ -113,7 +113,7 @@ install_jdk() {
   ) || (
     mkdir -p /tmp/jvm-common
     [ -z "$DEBUG_INFO" ] && status_pending "Download Jvm common" || status_pending "Download Jvm common from $JVM_COMMON_BUILDPACK"
-    curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common
+    curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
     status_done
   )
   #source /tmp/jvm-common/bin/util
@@ -122,6 +122,6 @@ install_jdk() {
   mtime "jvm-common.install.time" "${start}"
 
   let start=$(nowms)
-  install_java_with_overlay ${install_dir}
+  install_java_with_overlay ${install_dir} ${cache_dir}
   mtime "jvm.install.time" "${start}"
 }
