@@ -14,7 +14,7 @@ install_maven() {
   mcount "mvn.version.${mavenVersion}"
 
   if is_supported_maven_version ${mavenVersion}; then
-    mavenUrl="http://lang.goodrain.me/java/maven/maven-${mavenVersion}.tar.gz"
+    mavenUrl="http://lang.goodrain.me/jvm/maven/maven-${mavenVersion}.tar.gz"
     [ -z "$DEBUG_INFO" ] && status_pending "Installing Maven ${mavenVersion}" || status_pending "Installing Maven ${mavenVersion} from $mavenUrl"
     download_maven ${mavenUrl} ${installDir} ${mavenHome}
     status_done
@@ -29,7 +29,7 @@ install_maven() {
     fi
   else
     error_return "Error, you have defined an unsupported Maven version in the system.properties file.
-The default supported version is ${DEFAULT_MAVEN_VERSION}"
+The default supported version is ${DEFAULT_MAVEN_VERSION}, Use ${mavenVersion} "
     return 1
   fi
 }

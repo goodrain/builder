@@ -27,7 +27,7 @@ install_maven() {
 
     status_pending "Installing Maven ${mavenVersion}"
     if is_supported_maven_version ${mavenVersion}; then
-      mavenUrl="http://lang.goodrain.me/java/maven-${mavenVersion}.tar.gz"
+      mavenUrl="http://lang.goodrain.me/jvm/maven-${mavenVersion}.tar.gz"
       download_maven ${mavenUrl} ${installDir} ${mavenHome}
       status_done
     else
