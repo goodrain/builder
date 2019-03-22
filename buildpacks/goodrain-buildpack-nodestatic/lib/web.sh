@@ -12,9 +12,11 @@ fetch_nginx_tarball() {
 
     # update config files
     cp -a $BP_DIR/conf/nginx.conf $NGINX_PATH/conf/nginx.conf
-    
-    if [ -f "www/web.conf" ]; then
+    if [ -f "web.conf" ]; then
         echo "-----> Detected custom configuration: web.conf"
+        mv web.conf $NGINX_PATH/conf.d/
+    elif [ -f "www/web.conf" ]; then
+        echo "-----> Detected custom configuration: www/web.conf"
         mv www/web.conf $NGINX_PATH/conf.d/
     else
         echo "-----> Use the default configuration: web.conf"
