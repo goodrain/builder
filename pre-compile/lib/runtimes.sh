@@ -128,13 +128,14 @@ runtimes::maven(){
         ;;
     esac
   fi
-  echo_title "Detection Java-Maven runtime $(cat ${BUILD_DIR}/$JAVARuntimefile)"
+  echo_title "Detection Java-Maven runtime $(cat ${BUILD_DIR}/$JAVARuntimefile | grep runtime)"
   if [ "$runtime" == "1.6" ] || [ "$runtime" == "1.5" ]; then
     echo_title "Detection old Java($runtime), Java-Maven runtime ${runtime}"
     echo "maven.version=3.2.5" >> ${BUILD_DIR}/$JAVARuntimefile
   else
     echo "maven.version=${maven}" >> ${BUILD_DIR}/$JAVARuntimefile
   fi
+  echo_title "Detection Maven $(cat ${BUILD_DIR}/$JAVARuntimefile | grep maven)"
 }
 
 runtimes::php(){
