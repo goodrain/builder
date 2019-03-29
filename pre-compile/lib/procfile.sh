@@ -38,7 +38,7 @@ procfile::war_web(){
   case $RUNTIMES_SERVER in
       tomcat7)
             echo_title "Use custom Java-war Webserver Webapp-Runner 7.0"
-            echo "webapp-runner-7.0.57.2.jar" > $BUILD_DIR/webserver
+            echo "webapp-runner-7.0.91.0.jar" > $BUILD_DIR/webserver
       ;;
       tomcat8)
             echo_title "Use custom Java-war Webserver Webapp-Runner 8.0"
@@ -124,7 +124,7 @@ procfile::maven(){
               tomcat7)
                 echo_title "Use custom Java-Maven Webserver Webapp-Runner 7.0"
                 echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-                echo "webapp-runner-7.0.57.2.jar" > $BUILD_DIR/webserver
+                echo "webapp-runner-7.0.91.0.jar" > $BUILD_DIR/webserver
               ;;
               tomcat8)
                 echo_title "Use custom Java-Maven Webserver Webapp-Runner 8.0"
