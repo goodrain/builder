@@ -37,34 +37,34 @@ procfile::jar(){
 procfile::war_web(){
   case $RUNTIMES_SERVER in
       tomcat7)
-            echo_title "Use custom Java-war Webserver Webapp-Runner 7.0"
+            echo_title "Use custom Webserver Webapp-Runner 7.0"
             echo "webapp-runner-7.0.91.0.jar" > $BUILD_DIR/webserver
       ;;
       tomcat8)
-            echo_title "Use custom Java-war Webserver Webapp-Runner 8.0"
+            echo_title "Use custom Webserver Webapp-Runner 8.0"
             echo "webapp-runner-8.0.18.0-M1.jar" > $BUILD_DIR/webserver
       ;;
       tomcat85)
-            echo_title "Use custom Java-war Webserver Webapp-Runner 8.5"
+            echo_title "Use custom Webserver Webapp-Runner 8.5"
             echo "webapp-runner-8.5.38.0.jar" > $BUILD_DIR/webserver
       ;;
       tomcat9)
-            echo_title "Use custom Java-war Webserver Webapp-Runner 9.0"
+            echo_title "Use custom Webserver Webapp-Runner 9.0"
             echo "webapp-runner-9.0.16.0.jar" > $BUILD_DIR/webserver
       ;;
       jetty7)
-            echo_title "Use custom Java-war Webserver Jetty7"
+            echo_title "Use custom Webserver Jetty7"
             echo "jetty-runner-7.5.4.v20111024.jar" > $BUILD_DIR/webserver
       ;;
       jetty9)
-            echo_title "Use custom Java-war Webserver Jetty9"
+            echo_title "Use custom Webserver Jetty9"
             echo "jetty-runner-9.4.0.v20161208.jar" > $BUILD_DIR/webserver
       ;;
       *)
         if [ ! -f "$BUILD_DIR/webserver" ]; then
             echo "webapp-runner-8.5.38.0.jar" > $BUILD_DIR/webserver
         fi
-            echo_title "Use Default Java-war Webserver"
+            echo_title "Use Default Webserver"
       ;;
       esac
 }
@@ -75,32 +75,25 @@ procfile::war(){
     if [ ! -f "$BUILD_DIR/Procfile" ]; then
       case $RUNTIMES_SERVER in
         tomcat7)
-          echo_title "Use Default Java-War Webserver Webapp-Runner 7.0"
           echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT ./*.war" > $BUILD_DIR/Procfile
         ;;
         tomcat8)
-          echo_title "Use Default Java-War Webserver Webapp-Runner 8.0"
           echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT ./*.war" > $BUILD_DIR/Procfile
         ;;
         tomcat85)
-          echo_title "Use Default Java-War Webserver Webapp-Runner 8.5"
           echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT ./*.war" > $BUILD_DIR/Procfile
         ;;
         tomcat9)
-          echo_title "Use Default Java-War Webserver Webapp-Runner 9.0"
           echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT ./*.war" > $BUILD_DIR/Procfile
         ;;
         jetty7)
-          echo_title "Use Default Java-War Webserver Jetty7"
           echo "web: java \$JAVA_OPTS -jar ./jetty-runner.jar  --port \$PORT ./*.war" > $BUILD_DIR/Procfile
         ;;
         jetty9)
-          echo_title "Use Default Java-War Webserver Jetty9"
           echo "web: java \$JAVA_OPTS -jar ./jetty-runner.jar  --port \$PORT ./*.war" > $BUILD_DIR/Procfile
         ;;
         *)
           echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT ./*.war" > $BUILD_DIR/Procfile
-          echo_title "Use Default Java-War Webserver"
         ;;
         esac
     fi
@@ -119,55 +112,47 @@ procfile::maven(){
     if [ ! -f "$BUILD_DIR/Procfile" ]; then
       echo_title "Use Rainbond Default Java-Maven Procfile"
       if iswar $BUILD_DIR;then
-          echo "war" > $BUILD_DIR/.iswar
-          case $RUNTIMES_SERVER in
-              tomcat7)
-                echo_title "Use custom Java-Maven Webserver Webapp-Runner 7.0"
-                echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-                echo "webapp-runner-7.0.91.0.jar" > $BUILD_DIR/webserver
-              ;;
-              tomcat8)
-                echo_title "Use custom Java-Maven Webserver Webapp-Runner 8.0"
-                echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-                echo "webapp-runner-8.0.18.0-M1.jar" > $BUILD_DIR/webserver
-              ;;
-              tomcat85)
-                echo_title "Use custom Java-Maven Webserver Webapp-Runner 8.5"
-                echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-                echo "webapp-runner-8.5.38.0.jar" > $BUILD_DIR/webserver
-              ;;
-              tomcat9)
-                echo_title "Use custom Java-Maven Webserver Webapp-Runner 9.0"
-                echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-                echo "webapp-runner-9.0.16.0.jar" > $BUILD_DIR/webserver
-              ;;
-              jetty7)
-                echo_title "Use custom Java-Maven Webserver Jetty7"
-                echo "web: java \$JAVA_OPTS -jar ./jetty-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-                echo "jetty-runner-7.5.4.v20111024.jar" > $BUILD_DIR/webserver
-              ;;
-              jetty9)
-                echo_title "Use custom Java-Maven Webserver Jetty9"
-                echo "web: java \$JAVA_OPTS -jar ./jetty-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-                echo "jetty-runner-9.4.0.v20161208.jar" > $BUILD_DIR/webserver
-              ;;
-              *)
-                if [ ! -f "$BUILD_DIR/webserver" ]; then
-                  echo "webapp-runner-8.5.38.0.jar" > $BUILD_DIR/webserver
-                fi
-                echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
-                echo_title "Use Default Java-Maven Webserver"
-              ;;
-            esac
+        echo "Detection Maven style: war"
+        case $RUNTIMES_SERVER in
+          tomcat7)
+            echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+          ;;
+          tomcat8)
+            echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+          ;;
+          tomcat85)
+            echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+          ;;
+          tomcat9)
+            echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+          ;;
+          jetty7)
+            echo "web: java \$JAVA_OPTS -jar ./jetty-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+          ;;
+          jetty9)
+            echo "web: java \$JAVA_OPTS -jar ./jetty-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+          ;;
+          *)
+            echo "web: java \$JAVA_OPTS -jar ./webapp-runner.jar  --port \$PORT target/*.war" > $BUILD_DIR/Procfile
+          ;;
+          esac
       elif is_spring_boot $BUILD_DIR; then
-          echo "web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar target/*.jar" > $BUILD_DIR/Procfile
+        echo "Detection Maven style: spring boot"
+        echo "web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar target/*.jar" > $BUILD_DIR/Procfile
       elif is_wildfly_swarm $BUILD_DIR; then
-          echo "web: java -Dswarm.http.port=\$PORT \$JAVA_OPTS -jar target/*.jar" > $BUILD_DIR/Procfile  
+        echo "Detection Maven style: wildfly swarm"
+        echo "web: java -Dswarm.http.port=\$PORT \$JAVA_OPTS -jar target/*.jar" > $BUILD_DIR/Procfile  
       fi
+    else
+      echo_title "Use local Java-Maven Procfile"
     fi
   else
       echo_title "Use custom Java-Maven Procfile"
       echo "$procfile" > $BUILD_DIR/Procfile
+  fi
+  if iswar $BUILD_DIR;then
+    echo "war" > $BUILD_DIR/.iswar
+    procfile::war_web $RUNTIMES_SERVER
   fi
 }
 
