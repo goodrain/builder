@@ -187,8 +187,8 @@ runtimes::nodejs(){
   local runtime=${1}
   if [ ! -z "$runtime" ]; then
     echo_title "Detection NodeJS runtime ${runtime}"
-    old_runtime_version=$(cat ${BUILD_DIR}/$NodejsRuntimefile | grep "\"node\"" | awk '{print $2}')
-    sed -i "s#${old_runtime_version}#\"${runtime}\"#g" ${BUILD_DIR}/$NodejsRuntimefile
+    old_runtime_version=$(cat ${BUILD_DIR}/$NodejsRuntimefile | grep "\"node\"" | awk -F: '{print $2}')
+    sed -i "s#${old_runtime_version}#\"${runtime}\",#g" ${BUILD_DIR}/$NodejsRuntimefile
     echo "$runtime" > ${BUILD_DIR}/runtime.txt
   fi
 }
