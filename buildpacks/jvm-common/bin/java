@@ -102,13 +102,15 @@ validate_jdk_url() {
     echo ""
     error_return "Unsupported Java version: $javaVersion
 
-Please check your system.properties file to ensure the java.runtime.version
+1. Please check your system.properties file to ensure the java.runtime.version
 is among the list of supported version on the Document Center:
 https://www.rainbond.com/docs/user-manual/app-creation/language-support/java_more/java-maven/#openjdk支持
 You can also remove the system.properties from your repo to install
 the default ${DEFAULT_JDK_VERSION} version.
 If you continue to have trouble, you can open a support ticket here:
 http://www.rainbond.com/docs
+2. Please check your network to ensure network resources can be download.Similar to the reference:
+https://t.goodrain.com/t/5-1-2/839/2
 
 Thanks,
 Goodrain"
