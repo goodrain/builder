@@ -27,7 +27,7 @@ install_java_with_overlay() {
   if [ "$javaVersion" = "stack" ]; then
     status "Using stack JDK"
   else
-      [ -z "${ENABLE_ORACLEJDK}" ] && status_pending "Installing OpenJDK ${javaVersion}" || status_pending "Installing OracleJDK"
+      [ -z "${ENABLE_ORACLEJDK}" ] && status_pending "Installing OpenJDK ${javaVersion}" || status_pending "Installing Custom JDK"
       install_java ${buildDir} ${javaVersion}
       jdk_overlay ${buildDir}
       _cache_version "${jdkVersion}" "${cacheDir}"
@@ -64,7 +64,7 @@ install_java() {
     if [ ! -z "${ENABLE_ORACLEJDK}" ]; then
       if [ ! -f "${javaExe}" ]; then
         oracle_jdk_name=$(ls ${jdkDir} | grep -v version)
-        status "Synchronize Oracle JDK files ${oracle_jdk_name}"
+        status "Synchronize Custom JDK files ${oracle_jdk_name}"
         cp -a ${jdkDir}/${oracle_jdk_name}/* ${jdkDir}/
         rm -rf ${jdkDir}/${oracle_jdk_name}
       fi
