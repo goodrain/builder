@@ -236,7 +236,11 @@ cache_build() {
 cache_build | output "$LOG_FILE"
 
 static_build() {
-  npm run build
+  if $YARN; then
+    yarn build
+  else
+    npm run build
+  fi
 }
 
 header "Build static"
