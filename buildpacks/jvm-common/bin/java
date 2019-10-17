@@ -16,7 +16,7 @@ else
   JDK_URL_1_9=${JDK_URL_1_9:-"$JDK_BASE_URL/openjdk9.0.4.tar.gz"}
   JDK_URL_1_8=${JDK_URL_1_8:-"$JDK_BASE_URL/openjdk1.8.0_201.tar.gz"}
   JDK_URL_1_7=${JDK_URL_1_7:-"$JDK_BASE_URL/openjdk1.7.0_201.tar.gz"}
-  JDK_URL_1_6=${JDK_URL_1_6:-"http://lang.goodrain.me/jdk/openjdk1.6.0_27.tar.gz"}
+  JDK_URL_1_6=${JDK_URL_1_6:-"$JDK_BASE_URL/openjdk1.6.0_27.tar.gz"}
 fi
 
 ORACLEJDK_URL_11="http://lang.goodrain.me/jdk/jdk-11.0.1_linux-x64_bin.tar.gz"
