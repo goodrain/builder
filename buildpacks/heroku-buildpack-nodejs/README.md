@@ -50,8 +50,24 @@ iojs  2.x (支持到2.5.0)
 NODE_ENV 环境变量默认是 production。
 
 ```bash
-# 默认 NODE_ENV 是 production
-NODE_ENV=${NODE_ENV:-production}
+#NO_CACHE: true
+#默认 NODE_ENV 是 production
+#NODE_ENV=${NODE_ENV:-production}
+#NODE版本
+#BUILD_RUNTIMES: “custom”
+#默认NODE_URL
+#node_url=${NODE_URL:-http://lang.goodrain.me/nodejs/node/release/linux-x64/node-v$number-linux-x64.tar.gz}
+#默认YARN_URL
+#yarn_url=${YARN_URL:-http://lang.goodrain.me/nodejs/yarn/release/yarn-v$number.tar.gz}
+#默认NPM_REGISTRY
+#npm install --registry=${NPM_REGISTRY:-https://registry.npm.taobao.org}
+#默认YARN_REGISTRY
+#yarn install --registry=${YARN_REGISTRY:-https://registry.npm.taobao.org}
+
+BUILD_NPM_BUILD_CMD: "nodeziding"
+BUILD_YARN_BUILD_CMD: "nodeziding"
+BUILD_RUNTIMES_SERVER: "custom"
+BUILD_PROCFILE: "web: npm start"
 ```
 
 ## 授权
