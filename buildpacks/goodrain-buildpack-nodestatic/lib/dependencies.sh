@@ -108,7 +108,7 @@ yarn_prune_devdependencies() {
     return 0
   else 
     cd "$build_dir" 
-    monitor "yarn-prune" yarn install --frozen-lockfile --ignore-engines --ignore-scripts --prefer-offline 2>&1
+    monitor "yarn-prune" yarn install --registry=${YARN_REGISTRY:-https://registry.npm.taobao.org}--frozen-lockfile --ignore-engines --ignore-scripts --prefer-offline 2>&1
   fi
 }
 

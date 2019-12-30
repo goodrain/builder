@@ -12,7 +12,7 @@ install_yarn() {
   if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "http://lang.goodrain.me/nodejs/v1/yarn/linux-x64/latest-$version.txt"); then
     fail_bin_install yarn $version;
   fi
-  yarn_url="http://lang.goodrain.me/nodejs/yarn/release/yarn-v$number.tar.gz"
+  yarn_url=${YARN_URL:-http://lang.goodrain.me/nodejs/yarn/release/yarn-v$number.tar.gz}
 
   [ -z "$DEBUG_INFO" ] && echo "Downloading and installing yarn ($number)..." || echo "Downloading and installing yarn ($number) from $yarn_url "
   local code=$(curl "$yarn_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/yarn.tar.gz --write-out "%{http_code}")
@@ -46,7 +46,7 @@ install_nodejs() {
   if [ -f "${BUILD_DIR}/runtime.txt" ]; then
     number=$(cat ${BUILD_DIR}/runtime.txt)
   fi
-  node_url="http://lang.goodrain.me/nodejs/node/release/linux-x64/node-v$number-linux-x64.tar.gz"
+  node_url=${NODE_URL:-http://lang.goodrain.me/nodejs/node/release/linux-x64/node-v$number-linux-x64.tar.gz}
   [ -z "$DEBUG_INFO" ] && echo "Downloading and installing node $number..." || echo "Downloading and installing node $number from $node_url"
   local code=$(curl "$node_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/node.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
