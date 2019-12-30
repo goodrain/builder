@@ -1,6 +1,6 @@
 fetch_nginx_tarball() {
     local version="1.14.2"
-    local nginx_tarball_url="http://lang.goodrain.me/static/r6d/nginx/nginx-${version}.tar.gz"
+    local nginx_tarball_url=${NGINX_TARBALL_URL:-http://lang.goodrain.me/static/r6d/nginx/nginx-${version}.tar.gz}
     local NGINX_PATH="nginx"
     local BP_DIR=$1
     # install nginx if needed
@@ -60,7 +60,7 @@ nodestatic_prepare(){
     mv /tmp/www/* /tmp/build
     if [ ! -f "/tmp/build/Procfile" ]; then
         cat > /tmp/build/Procfile <<EOF
-web: sh boot.sh
+${PROCFILE:-web: sh boot.sh}
 EOF
     fi
 }
