@@ -10,23 +10,28 @@ if [ ${STACK:-""} = "cedar" ]; then
 else
   DEFAULT_JDK_VERSION="1.8"
   JDK_BASE_URL=${JDK_BASE_URL:-"http://lang.goodrain.me/jdk/cedar-14"}
-  JDK_URL_1_9=${JDK_URL_1_9:-"$JDK_BASE_URL/openjdk1.9-latest.tar.gz"}
-  JDK_URL_1_8=${JDK_URL_1_8:-"$JDK_BASE_URL/openjdk1.8.0_74.tar.gz"}
-  JDK_URL_1_7=${JDK_URL_1_7:-"$JDK_BASE_URL/openjdk1.7.0_95.tar.gz"}
-  JDK_URL_1_6=${JDK_URL_1_6:-"http://lang.goodrain.me/jdk/openjdk1.6.0_27.tar.gz"}
+  # JDK_URL_12=${JDK_URL_12:-"$JDK_BASE_URL/openjdk12.0.0.tar.gz"}
+  JDK_URL_11=${JDK_URL_11:-"$JDK_BASE_URL/openjdk11.0.2.tar.gz"}
+  JDK_URL_10=${JDK_URL_10:-"$JDK_BASE_URL/openjdk10.0.2.tar.gz"}
+  JDK_URL_1_9=${JDK_URL_1_9:-"$JDK_BASE_URL/openjdk9.0.4.tar.gz"}
+  JDK_URL_1_8=${JDK_URL_1_8:-"$JDK_BASE_URL/openjdk1.8.0_201.tar.gz"}
+  JDK_URL_1_7=${JDK_URL_1_7:-"$JDK_BASE_URL/openjdk1.7.0_201.tar.gz"}
+  JDK_URL_1_6=${JDK_URL_1_6:-"$JDK_BASE_URL/openjdk1.6.0_27.tar.gz"}
 fi
+
+ORACLEJDK_URL_11="http://lang.goodrain.me/jdk/jdk-11.0.1_linux-x64_bin.tar.gz"
 
 install_java_with_overlay() {
   local buildDir=${1}
   local javaVersion=$(detect_java_version ${buildDir})
-
   if [ "$javaVersion" = "stack" ]; then
     status "Using stack JDK"
   else
-    status_pending "Installing OpenJDK ${javaVersion}"
-    install_java ${buildDir} ${javaVersion}
-    jdk_overlay ${buildDir}
-    status_done
+      [ -z "${ENABLE_ORACLEJDK}" ] && status_pending "Installing OpenJDK ${javaVersion}" || status_pending "Installing Custom JDK"
+      install_java ${buildDir} ${javaVersion}
+      jdk_overlay ${buildDir}
+      _cache_version "${jdkVersion}" "${cacheDir}"
+      status_done
   fi
 }
 
@@ -46,11 +51,24 @@ install_java() {
   if [ ! -f "${jdkTarball}" ] && [ ! -f "${javaExe}" ] || is_java_version_change "${jdkDir}" "${javaVersion}"; then
     rm -rf "${jdkDir}"
     mkdir -p "${jdkDir}"
+    if [ ! -z "${ENABLE_ORACLEJDK}" ]; then
+      jdkUrl=${ORACLEJDK_URL:-$ORACLEJDK_URL_11}
+    fi
+    [ -z "$DEBUG_INFO" ] && echo "" || echo "Download JDK from ${jdkUrl} "
     validate_jdk_url ${jdkUrl} ${jdkVersion}
-    curl --retry 3 --silent --location ${jdkUrl} --output ${jdkTarball}
+    curl --retry 3 --silent --show-error --location ${jdkUrl} --output ${jdkTarball}
     tar pxzf ${jdkTarball} -C "${jdkDir}"
     rm ${jdkTarball}
+    install_cacerts ${jdkDir}
     echo "${javaVersion}" > "${jdkDir}/version"
+    if [ ! -z "${ENABLE_ORACLEJDK}" ]; then
+      if [ ! -f "${javaExe}" ]; then
+        oracle_jdk_name=$(ls ${jdkDir} | grep -v version)
+        status "Synchronize Custom JDK files ${oracle_jdk_name}"
+        cp -a ${jdkDir}/${oracle_jdk_name}/* ${jdkDir}/
+        rm -rf ${jdkDir}/${oracle_jdk_name}
+      fi
+    fi
     if [ ! -f "${javaExe}" ]; then
       error_return "Unable to retrieve the JDK."
       return 1
@@ -65,6 +83,17 @@ install_java() {
   _install_pgconfig ${JAVA_HOME}
 }
 
+install_cacerts() {
+  local jdkDir=$1
+  if [ -f ${jdkDir}/jre/lib/security/cacerts ] && [ -f /etc/ssl/certs/java/cacerts ]; then
+    mv ${jdkDir}/jre/lib/security/cacerts ${jdkDir}/jre/lib/security/cacerts.old
+    ln -s /etc/ssl/certs/java/cacerts ${jdkDir}/jre/lib/security/cacerts
+  elif [ -f ${jdkDir}/lib/security/cacerts ] && [ -f /etc/ssl/certs/java/cacerts ]; then
+    mv ${jdkDir}/lib/security/cacerts ${jdkDir}/lib/security/cacerts.old
+    ln -s /etc/ssl/certs/java/cacerts ${jdkDir}/lib/security/cacerts
+  fi
+}
+
 validate_jdk_url() {
   local jdkUrl=${1}
   local jdkVersion={2}
@@ -73,13 +102,15 @@ validate_jdk_url() {
     echo ""
     error_return "Unsupported Java version: $javaVersion
 
-Please check your system.properties file to ensure the java.runtime.version
+1. Please check your system.properties file to ensure the java.runtime.version
 is among the list of supported version on the Document Center:
-https://www.rainbond.com/docs/stable/user-manual/app-creation/language-support/java.html
+https://www.rainbond.com/docs/user-manual/app-creation/language-support/java_more/java-maven/#openjdk支持
 You can also remove the system.properties from your repo to install
 the default ${DEFAULT_JDK_VERSION} version.
 If you continue to have trouble, you can open a support ticket here:
 http://www.rainbond.com/docs
+2. Please check your network to ensure network resources can be download.Similar to the reference:
+https://t.goodrain.com/t/5-1-2/839/2
 
 Thanks,
 Goodrain"
@@ -109,14 +140,27 @@ is_java_version_change() {
 _get_jdk_download_url() {
   local jdkVersion=${1:-${DEFAULT_JDK_VERSION}}
 
-  if [ "$(expr "${jdkVersion}" : '1.[6-9]$')" != 0 ]; then
-    # hacky way of parsing the variable name.
-    # bash 4 would solve this with associative arrays, but shunit
-    # tests don't seem to respect the correct bash version.
-    local minorJdkVersion=\$JDK_URL_1_$(expr "${jdkVersion}" : '1.\([6-9]\)')
-    local jdkUrl=$(eval echo \$JDK_URL_1_${minorJdkVersion})
-  elif [ "$(expr "${jdkVersion}" : '1.[6-9]')" != 0 ]; then
+    if [ "${jdkVersion}" = "10" ]; then
+    local jdkUrl="${JDK_URL_10}"
+  elif [ "${jdkVersion}" = "11" ]; then
+    local jdkUrl="${JDK_URL_11}"
+  elif [ "$(expr "${jdkVersion}" : '^1[0-2]')" != 0 ]; then
     local jdkUrl="${JDK_BASE_URL}/openjdk${jdkVersion}.tar.gz"
+  elif [ "$(expr "${jdkVersion}" : '^1.[6-9]$')" != 0 ]; then
+    local minorJdkVersion=$(expr "${jdkVersion}" : '1.\([6-9]\)')
+    local jdkUrl=$(eval echo \$JDK_URL_1_${minorJdkVersion})
+  elif [ "$(expr "${jdkVersion}" : '^[6-9]$')" != 0 ]; then
+    local jdkUrl=$(eval echo \$JDK_URL_1_${jdkVersion})
+  elif [ "$(expr "${jdkVersion}" : '^1.[6-9]')" != 0 ]; then
+    local jdkUrl="${JDK_BASE_URL}/openjdk${jdkVersion}.tar.gz"
+  elif [ "${jdkVersion}" = "9+181" ] || [ "${jdkVersion}" = "9.0.0" ]; then
+    local jdkUrl="${JDK_BASE_URL}/openjdk9-181.tar.gz"
+  elif [ "$(expr "${jdkVersion}" : '^9')" != 0 ]; then
+    local jdkUrl="${JDK_BASE_URL}/openjdk${jdkVersion}.tar.gz"
+  elif [ "$(expr "${jdkVersion}" : '^zulu-')" != 0 ]; then
+    local jdkUrl="${JDK_BASE_URL}/${jdkVersion}.tar.gz"
+  elif [ "$(expr "${jdkVersion}" : '^openjdk-')" != 0 ]; then
+    local jdkUrl="${JDK_BASE_URL}/$(echo "$jdkVersion" | sed -e 's/k-/k/g').tar.gz"
   fi
 
   # check that it exists with a head request
@@ -138,7 +182,12 @@ detect_java_version() {
     return 1
   fi
   if [ -f ${baseDir}/system.properties ]; then
-    echo "$(get_app_system_value ${baseDir}/system.properties "java.runtime.version")"
+    detectedVersion="$(get_app_system_value ${baseDir}/system.properties "java.runtime.version")"
+    if [ -n "$detectedVersion" ]; then
+      echo "$detectedVersion"
+    else
+      echo "$(get_default_java_version)"
+    fi
   else
     echo "$(get_default_java_version)"
   fi
@@ -199,6 +248,7 @@ _create_export_script() {
     cat << EOF > ${ctxDir}/export
 export JAVA_HOME=$javaHome
 export PATH=\$JAVA_HOME/bin:\$PATH
+export LD_LIBRARY_PATH="\$JAVA_HOME/jre/lib/amd64/server:\$LD_LIBRARY_PATH"
 EOF
   fi
 }
@@ -209,5 +259,14 @@ _install_pgconfig() {
 
   if [ -d "${extDir}" ] && [ -z "${SKIP_PGCONFIG_INSTALL:-}"  ]; then
     curl --retry 3 -s -L "http://lang.goodrain.me/jvm/pgconfig.jar" -o ${extDir}/pgconfig.jar
+  fi
+}
+
+_cache_version() {
+  local jdkVersion="${1}"
+  local cacheDir="${2}"
+
+  if [ -d "${cacheDir}" ]; then
+    echo "java.runtime.version=${jdkVersion}" > "${cacheDir}/system.properties"
   fi
 }

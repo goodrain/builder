@@ -1,5 +1,103 @@
 # heroku-buildpack-php CHANGELOG
 
+## v152 (2019-03-13)
+
+### ADD
+
+- Nginx/1.14.2 (#241, #285) [David Zuelke]
+- Update Nginx MIME types for woff and woff2 formats (#286) [David Zuelke]
+
+### CHG
+
+- Restructure Nginx configs and add compatibility with Nginx/1.9.3+ (#198) [David Zuelke]
+- Build Nginx with `ngx_http_ssl_module` (#182) [David Zuelke]
+
+## v151 (2019-03-08)
+
+### ADD
+
+- PHP/7.1.27 [David Zuelke]
+- PHP/7.2.16 [David Zuelke]
+- PHP/7.3.3 [David Zuelke]
+- ext-phalcon/3.4.3 [David Zuelke]
+- ext-apcu/5.1.17 [David Zuelke]
+
+### CHG
+
+- Composer/1.8.4 [David Zuelke]
+
+## v150 (2019-02-07)
+
+### ADD
+
+- ext-blackfire/1.24.4 [David Zuelke]
+- Apache/2.4.38 [David Zuelke]
+- PHP/7.2.15 [David Zuelke]
+- PHP/7.3.2 [David Zuelke]
+
+### CHG
+
+- Composer/1.8.3 [David Zuelke]
+
+### FIX
+
+- ext-oauth doesn't find libcurl headers on heroku-18 (#322) [David Zuelke]
+
+## v149 (2019-01-14)
+
+### ADD
+
+- ext-memcached/3.1.3 [David Zuelke]
+- ext-amqp/1.9.4 [David Zuelke]
+- PHP/5.6.40 [David Zuelke]
+- PHP/7.1.26 [David Zuelke]
+- PHP/7.2.14 [David Zuelke]
+- PHP/7.3.1 [David Zuelke]
+- ext-pq/2.1.5 [David Zuelke]
+
+### CHG
+
+- Use PHP 7.3 for bootstrapping [David Zuelke]
+
+### FIX
+
+- Boot scripts fail without GNU realpath or GNU readlink (#317) [David Zuelke]
+
+## v148 (2018-12-20)
+
+### ADD
+
+- ext-apcu/5.1.16 [David Zuelke]
+- ext-blackfire/1.24.2 [David Zuelke]
+- ext-event/2.4.3 [David Zuelke]
+- ext-newrelic/8.5.0.235 [David Zuelke]
+
+### FIX
+
+- BSD grep doesn't support Perl expression mode (#311) [David Zuelke]
+
+## v147 (2018-12-13)
+
+### ADD
+
+- PHP/7.3.0 [David Zuelke]
+- PHP/7.2.13 [David Zuelke]
+- PHP/7.1.25 [David Zuelke]
+- PHP/7.0.33 [David Zuelke]
+- PHP/5.6.39 [David Zuelke]
+- ext-phalcon/3.4.2 [David Zuelke]
+- ext-newrelic/8.4.0.231 [David Zuelke]
+- ext-redis/4.2.0 [David Zuelke]
+- ext-apcu/5.1.14 [David Zuelke]
+- ext-event/2.4.2 [David Zuelke]
+
+### CHG
+
+- Look for configs relative to buildpack dir, and not to $CWD/vendor/heroku/…, in boot scripts [David Zuelke]
+- Look for default configs using version specific paths first in boot scripts [David Zuelke]
+- Apply non-default opcache INI settings only to the PHP 5 builds that need them [David Zuelke]
+- Composer/1.8.0 [David Zuelke]
+
 ## v146 (2018-11-08)
 
 ### ADD
@@ -11,7 +109,7 @@
 ### CHG
 
 - Translate `NEW_RELIC_LOG_LEVEL` values "verbose" and "verbosedebug" to "debug" for `newrelic-daemon` [David Zuelke]
-- librdkafka/0.11.6
+- librdkafka/0.11.6 [David Zuelke]
 
 ## v145 (2019-10-16)
 

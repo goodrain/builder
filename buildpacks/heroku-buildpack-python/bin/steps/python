@@ -64,17 +64,18 @@ fi
 
 
 if [ ! "$SKIP_INSTALL" ]; then
-    puts-step "Installing $PYTHON_VERSION"
+    [ -z "$DEBUG_INFO" ] && puts-step "Installing $PYTHON_VERSION" || puts-step "Installing $PYTHON_VERSION from $VENDORED_PYTHON"
 
     # Prepare destination directory.
     mkdir -p .heroku/python
 
     mcount "version.python.$PYTHON_VERSION"
-
     if ! curl "${VENDORED_PYTHON}" -s | tar zxv -C .heroku/python &> /dev/null; then
       puts-warn "Requested runtime ($PYTHON_VERSION) is not available for this stack ($STACK)."
       exit 1
     fi
+
+    puts-done
 
   # Record for future reference.
   echo "$PYTHON_VERSION" > .heroku/python-version
@@ -93,10 +94,9 @@ if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_UPDATE* ]]; then
   # Remove old installations.
   rm -fr /app/.heroku/python/lib/python*/site-packages/pip-*
   rm -fr /app/.heroku/python/lib/python*/site-packages/setuptools-*
-
-  /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i https://mirrors.ustc.edu.cn/pypi/web/simple &> /dev/null
+  /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i https://pypi.tuna.tsinghua.edu.cn/simple &> /dev/null
   /app/.heroku/python/bin/pip install "$ROOT_DIR/vendor/setuptools-39.0.1-py2.py3-none-any.whl" &> /dev/null
-
+  puts-done
 fi
 
 set -e

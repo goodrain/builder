@@ -1,6 +1,0 @@
-.idea/
-*.swp
-spec/fixtures/repos/*
-target
-*.iml
-.DS_Store

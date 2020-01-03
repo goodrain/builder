@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir> <env-dir>
 
-
 # fail fast
 set -e
+
+# common functions
+source /tmp/buildpacks/functions/common.sh
 
 BP_DIR=$(cd $(dirname $0)/..; pwd) # absolute path
 . $BP_DIR/lib/common.sh
@@ -17,11 +19,19 @@ export_env_dir $ENV_DIR
 
 JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-http://lang.goodrain.me/jvm/jvm-common.tgz}
 
+[ -d "/tmp/buildpacks/jvm-common" ] && (
+  status_pending "Use local Jvm common"
+  cp -a /tmp/buildpacks/jvm-common /tmp/jvm-common
+  status_done
+) || (
+  mkdir -p /tmp/jvm-common
+  [ -z "$DEBUG_INFO" ] && status_pending "Download Jvm common" || status_pending "Download Jvm common from $JVM_COMMON_BUILDPACK"
+  curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common
+  status_done
+)
 
-mkdir -p /tmp/jvm-common
-curl --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common
-. /tmp/jvm-common/bin/util
-. /tmp/jvm-common/bin/java
+#source /tmp/jvm-common/bin/util
+source /tmp/jvm-common/bin/java
 
 # install JDK
 javaVersion=$(detect_java_version ${BUILD_DIR})
@@ -33,5 +43,5 @@ status_done
 if [ "${PIPESTATUS[*]}" != "0" ]; then
   error "Failed to build java web app with webapp-runner
 We're sorry this build is failing! If you can't find the issue in application code,
-please submit a ticket so we can help: http://doc.goodrain.com/usage/190386"
+please submit a ticket so we can help: https://t.goodrain.com"
 fi

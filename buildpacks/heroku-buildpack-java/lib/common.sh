@@ -13,17 +13,23 @@ install_maven() {
   mavenVersion=${definedMavenVersion:-$DEFAULT_MAVEN_VERSION}
   mcount "mvn.version.${mavenVersion}"
 
-  status_pending "Installing Maven ${mavenVersion}"
   if is_supported_maven_version ${mavenVersion}; then
-    mavenUrl="http://lang.goodrain.me/java/maven/maven-${mavenVersion}.tar.gz"
+    mavenUrl="http://lang.goodrain.me/jvm/maven/maven-${mavenVersion}.tar.gz"
+    [ -z "$DEBUG_INFO" ] && status_pending "Installing Maven ${mavenVersion}" || status_pending "Installing Maven ${mavenVersion} from $mavenUrl"
     download_maven ${mavenUrl} ${installDir} ${mavenHome}
-    # Append mirror into maven configuration file
-    echo "Append mirror into maven configuration file"
-    sed -i '/<mirrors>/a\ <mirror>\n<id>goodrain-repo</id>\n<name>goodrain repo</name>\n<url>http://maven.goodrain.me</url>\n<mirrorOf>central</mirrorOf>\n</mirror>' $mavenHome/conf/settings.xml
     status_done
+    if [ "$(echo $MAVEN_MIRROR_DISABLE | tr '[A-Z]' '[a-z]')" != "true" ]; then
+      # Append mirror into maven configuration file
+      echo  "Append mirror into maven configuration file"
+      MAVEN_MIRROR_OF=${MAVEN_MIRROR_OF:-*}
+      MAVEN_MIRROR_URL=${MAVEN_MIRROR_URL:-http://maven.goodrain.me}
+      sed -i "/<mirrors>/a\ <mirror>\n<id>goodrain-repo</id>\n<name>goodrain repo</name>\n<url>$MAVEN_MIRROR_URL</url>\n<mirrorOf>$MAVEN_MIRROR_OF</mirrorOf>\n</mirror>" $mavenHome/conf/settings.xml
+    else
+      echo "Not Use maven configuration file default"
+    fi
   else
     error_return "Error, you have defined an unsupported Maven version in the system.properties file.
-The default supported version is ${DEFAULT_MAVEN_VERSION}"
+The default supported version is ${DEFAULT_MAVEN_VERSION}, Use ${mavenVersion} "
     return 1
   fi
 }
@@ -41,6 +47,10 @@ is_supported_maven_version() {
   local mavenVersion=${1}
   if [ "$mavenVersion" = "$DEFAULT_MAVEN_VERSION" ]; then
     return 0
+  elif [ "$mavenVersion" = "3.3.9" ]; then
+    return 0
+  elif [ "$mavenVersion" = "3.3.1" ]; then
+    return 0
   elif [ "$mavenVersion" = "3.2.5" ]; then
     return 0
   elif [ "$mavenVersion" = "3.2.3" ]; then
@@ -56,7 +66,7 @@ is_supported_maven_version() {
 
 detect_maven_version() {
   local baseDir=${1}
-  if [ -f ${baseDir}/system.properties ]; then
+  if [ -f "${baseDir}/system.properties" ]; then
     mavenVersion=$(get_app_system_value ${baseDir}/system.properties "maven.version")
     if [ -n "$mavenVersion" ]; then
       echo $mavenVersion
@@ -93,17 +103,25 @@ cache_copy() {
 
 install_jdk() {
   local install_dir=${1}
-
+  local cache_dir=${2}
   let start=$(nowms)
-  JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-http://lang.goodrain.me/java/jvm.tgz}
-  mkdir -p /tmp/jvm-common
-  curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common
-  source /tmp/jvm-common/bin/util
+  JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-http://lang.goodrain.me/jvm/jvm-common.tgz}
+  [ -d "/tmp/buildpacks/jvm-common" ] && (
+    status_pending "Use local Jvm common"
+    cp -a /tmp/buildpacks/jvm-common /tmp/jvm-common
+    status_done
+  ) || (
+    mkdir -p /tmp/jvm-common
+    [ -z "$DEBUG_INFO" ] && status_pending "Download Jvm common" || status_pending "Download Jvm common from $JVM_COMMON_BUILDPACK"
+    curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
+    status_done
+  )
+  #source /tmp/jvm-common/bin/util
   source /tmp/jvm-common/bin/java
   source /tmp/jvm-common/opt/jdbc.sh
   mtime "jvm-common.install.time" "${start}"
 
   let start=$(nowms)
-  install_java_with_overlay ${install_dir}
+  install_java_with_overlay ${install_dir} ${cache_dir}
   mtime "jvm.install.time" "${start}"
 }

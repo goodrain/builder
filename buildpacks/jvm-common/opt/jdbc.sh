@@ -30,20 +30,40 @@ set_jdbc_url() {
         else
           local db_args="?user=${db_user}&password=${db_pass}"
         fi
-
+        
+        if [ -n "$db_host_port" ] &&
+             [ -n "$db_suffix" ] &&
+             [ -n "$db_user" ] &&
+             [ -n "$db_pass" ]; then
         eval "export ${env_prefix}_URL=\"${jdbc_protocol}://${db_host_port}/${db_suffix}${db_args}${db_default_args}\""
         eval "export ${env_prefix}_USERNAME=\"${db_user}\""
         eval "export ${env_prefix}_PASSWORD=\"${db_pass}\""
+        fi
       fi
   fi
 }
 
-if [ -n "$DATABASE_URL" ]; then
+if [ -n "${DATABASE_URL:-}" ]; then
   set_jdbc_url "$DATABASE_URL"
-elif [ -n "$JAWSDB_URL" ]; then
+  if [ -n "${DATABASE_CONNECTION_POOL_URL:-}" ]; then
+    set_jdbc_url "$DATABASE_CONNECTION_POOL_URL"
+  fi
+elif [ -n "${JAWSDB_URL:-}" ]; then
   set_jdbc_url "$JAWSDB_URL"
-elif [ -n "$CLEARDB_DATABASE_URL" ]; then
+elif [ -n "${JAWSDB_MARIA_URL:-}" ]; then
+  set_jdbc_url "$JAWSDB_MARIA_URL"
+elif [ -n "${CLEARDB_DATABASE_URL:-}" ]; then
   set_jdbc_url "$CLEARDB_DATABASE_URL"
+fi
+
+if [ "${DISABLE_SPRING_DATASOURCE_URL:-}" != "true" ] &&
+   [ -n "${JDBC_DATABASE_URL:-}" ] &&
+   [ -z "${SPRING_DATASOURCE_URL:-}" ] &&
+   [ -z "${SPRING_DATASOURCE_USERNAME:-}" ] &&
+   [ -z "${SPRING_DATASOURCE_PASSWORD:-}" ]; then
+  export SPRING_DATASOURCE_URL="$JDBC_DATABASE_URL"
+  export SPRING_DATASOURCE_USERNAME="${JDBC_DATABASE_USERNAME:-}"
+  export SPRING_DATASOURCE_PASSWORD="${JDBC_DATABASE_PASSWORD:-}"
 fi
 
 for dbUrlVar in $(env | awk -F "=" '{print $1}' | grep "HEROKU_POSTGRESQL_.*_URL"); do

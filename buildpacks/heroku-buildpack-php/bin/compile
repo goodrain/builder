@@ -28,12 +28,12 @@ trap 'err_trap' ERR
 
 # stdlib
 # download to a file first, as the function restarts the entire download on code 18 connection reset (not all servers support -C)
-curl_retry_on_18 --fail --silent --location -o $bp_dir/bin/util/stdlib.sh http://lang.goodrain.me/common/buildpack-stdlib/v8/stdlib.sh || {
-	error <<-EOF
-		Failed to download standard library for bootstrapping!
-		Check Download http://lang.goodrain.me/common/buildpack-stdlib/v8/stdlib.sh
-	EOF
-}
+#curl_retry_on_18 --fail --silent --location -o $bp_dir/bin/util/stdlib.sh http://lang.goodrain.me/common/buildpack-stdlib/v8/stdlib.sh || {
+#	error <<-EOF
+#		Failed to download standard library for bootstrapping!
+#		Check Download http://lang.goodrain.me/common/buildpack-stdlib/v8/stdlib.sh
+#	EOF
+#}
 source $bp_dir/bin/util/stdlib.sh
 rm $bp_dir/bin/util/stdlib.sh
 
@@ -48,6 +48,33 @@ source $bp_dir/bin/util/blackfire.sh
 unset GIT_DIR
 
 cd $build_dir
+
+#update php version
+if [ -f "runtime.txt" ]; then
+	php_num=$(cat runtime.txt | grep php | wc -l)
+	ophp_num=$(cat composer.json | grep php | wc -l)
+	if [ "$php_num" -eq 1 -a "$ophp_num" -ne 0 ]; then
+		php_version=$(cat runtime.txt | grep php | awk -F- '{print $2}')
+		old_php_version=$(cat composer.json| grep "\"php\"" | awk -F\" '{print $4}')
+		if [ ! -z "$old_php_version" ]; then
+			sed -i -r  "s/$old_php_version/$php_version/g" composer.json
+			sed -i -r  "s/$old_php_version/$php_version/g" composer.lock
+			status "Rewrite PHP version ${old_php_version} to ${php_version}"
+		fi
+	fi
+	#TODO hhvm
+	#hhvm_num=$(cat runtime.txt | grep hhvm | wc -l)
+	#ohhvm_num=$(cat composer.json | grep hhvm | wc -l)
+	#if [ "$hhvm_num" -eq 1 -a "$ohhvm_num" -ne 0 ]; then
+	#	hhvm_version=$(cat runtime.txt | grep hhvm | awk -F- '{print $2}')
+	#	old_hhvm_version=$(cat composer.json | grep hhvm | awk -F\" '{print $4}')
+	#	if [ ! -z "$old_hhvm_version" ]; then
+	#		sed -i -r  "s/$old_hhvm_version/$hhvm_version/g" composer.json
+	#		sed -i -r  "s/$old_hhvm_version/$hhvm_version/g" composer.lock
+	#		status "Rewrite hhvm version ${old_hhvm_version} to ${hhvm_version}"
+	#	fi
+	#fi
+fi
 
 export_env_dir "$env_dir" '^COMPOSER$'
 if [[ -n ${COMPOSER:-} ]]; then
@@ -123,12 +150,12 @@ mkdir -p $COMPOSER_HOME
 
 status "Bootstrapping..."
 
-s3_url="http://lang.goodrain.me/php/dist-${STACK}-stable/"
+s3_url="http://lang.goodrain.me/php-new/dist-${STACK}-stable/"
 # prepend the default repo to the list configured by the user
 # list of repositories to use is in ascening order of precedence
 export_env_dir "$env_dir" '^HEROKU_PHP_PLATFORM_REPOSITORIES$'
 HEROKU_PHP_PLATFORM_REPOSITORIES="${s3_url} ${HEROKU_PHP_PLATFORM_REPOSITORIES:-}"
-notice "Defalut repo:$HEROKU_PHP_PLATFORM_REPOSITORIES"
+#notice "Defalut repo:$HEROKU_PHP_PLATFORM_REPOSITORIES"
 
 if [[ "${HEROKU_PHP_PLATFORM_REPOSITORIES}" == *" - "* ]]; then
 	# a single "-" in the user supplied string removes everything to the left of it; can be used to delete the default repo
@@ -143,31 +170,25 @@ fi
 mkdir -p $build_dir/.heroku/php-min
 ln -s $build_dir/.heroku/php-min /app/.heroku/php-min
 
-curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/php-min.tar.gz "${s3_url}php-min-7.0.32.tar.gz" && (
-	notice "Download ${s3_url}php-min-7.0.31.tar.gz sucessful..."
+curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/php-min.tar.gz "${s3_url}php-min-7.3.3.tar.gz" && (
+	notice "download php-min-7.3.3.tar.gz sucessful"
 ) || {
 	mcount "failures.bootstrap.download.php-min"
 	error <<-EOF
-		Failed to download minimal PHP for bootstrapping!
-		
-		This is most likely a temporary internal error. If the problem
-		persists, make sure that you are not running a custom or forked
-		version of the Heroku PHP buildpack which may need updating.
+		Failed to download minimal PHP from ${s3_url}php-min-7.3.3.tar.gz
+		Please Check lang.goodrain.me(rbd-repo)
 	EOF
 }
 tar xzf $build_dir/.heroku/php-min.tar.gz -C $build_dir/.heroku/php-min
 rm $build_dir/.heroku/php-min.tar.gz
 
-curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/composer.tar.gz "${s3_url}composer-1.7.2.tar.gz" && (
-	notice "Download: ${s3_url}composer-1.7.2.tar.gz sucessful..."
+curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/composer.tar.gz "${s3_url}composer-1.8.4.tar.gz" && (
+	notice "download composer-1.8.4.tar.gz sucessful"
 ) || {
 	mcount "failures.bootstrap.download.composer"
 	error <<-EOF
-		Failed to download Composer for bootstrapping!
-		
-		This is most likely a temporary internal error. If this problem
-		persists, make sure that you are not running a custom or forked
-		version of the Heroku PHP buildpack which may need updating.
+		Failed to download Composer from ${s3_url}composer-1.8.4.tar.gz !
+		Please Check lang.goodrain.me(rbd-repo)
 	EOF
 }
 tar xzf $build_dir/.heroku/composer.tar.gz -C $build_dir/.heroku/php
@@ -185,7 +206,7 @@ composer config --global secure-http false
 # we use --no-plugins just in case the vendor dir is there, see e.g. https://github.com/Ocramius/PackageVersions/issues/64
 composer_vendordir=$(composer config --no-plugins vendor-dir)
 composer_bindir=$(composer config --no-plugins bin-dir)
-
+notice "composer_bindir $composer_bindir"
 # packages that get installed will add to this file, it's both for us and for buildpacks that follow
 # composer bin-dir goes last to avoid any conflicts
 echo "export PATH=/app/.heroku/php/bin:\$PATH:/app/$composer_bindir" > $bp_dir/export
@@ -332,7 +353,7 @@ else
 		
 		This usually means that you (or packages you are using) depend
 		on a combination of PHP versions and/or extensions that are
-		currently not available on Heroku.
+		currently not available on Goodrain.
 		
 		The following is the full output from the installation attempt:
 		
@@ -507,6 +528,7 @@ if [[ -f "$composer_vendordir/autoload.php" && -d "$composer_vendordir/composer"
 		)
 		For more info, refer to the Composer FAQ: http://bit.ly/1rlCSZU
 	EOF
+	notice ""
 fi
 
 # handle custom oauth keys
@@ -636,9 +658,18 @@ cd $build_dir/$composer_bindir
 ln -fs $relbins .
 cd $build_dir
 
-if [[ ! -f "Procfile" ]]; then
+if [ ! -f "Procfile" ]; then
 	echo "web: heroku-$engine-apache2" > Procfile
 	notice_inline "No Procfile, using 'web: heroku-$engine-apache2'."
+else
+	webserver=$(cat Procfile | awk '{print $2}')
+	if [ ! -f "$webserver" ]; then
+		notice_inline "This is not a generic PHP directory. The verndor directory is defined by default"
+		[ -f "$webserver" ] || (
+			mkdir -pv vendor/bin
+			ln -fs ../../$composer_bindir/$(cat Procfile  | awk -F/ '{print $NF}')  $webserver
+		)
+	fi
 fi
 
 # write empty WEB_CONCURRENCY.sh to overwrite the defaults logic from a prior buildpack, e.g. Node (all buildpacks use the same filename to allow this)

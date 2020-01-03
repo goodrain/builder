@@ -88,8 +88,10 @@ unset GIT_DIR PYTHONHOME PYTHONPATH
 unset RECEIVE_DATA RUN_KEY BUILD_INFO DEPLOY LOG_TOKEN
 unset CYTOKINE_LOG_FILE GEM_PATH
 
+
 # Import the utils script, which contains helper functions used throughout the buildpack.
 # shellcheck source=bin/utils
+source "$BIN_DIR/stdlib"
 source "$BIN_DIR/utils"
 
 # Import the warnings script, which contains the `pip install` user warning mechanisms

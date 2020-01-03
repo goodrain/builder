@@ -37,8 +37,9 @@ mkdir -p $BUILDPACK_INSTALL_PATH
 #download_buildpack https://github.com/goodrain/heroku-buildpack-php.git                rainbond
 #download_buildpack https://github.com/goodrain/heroku-buildpack-go.git                 rainbond
 #download_buildpack https://github.com/goodrain/heroku-buildpack-static.git             rainbond
-#download_buildpack https://github.com/goodrain/heroku-buildpack-static-backports.git   master
+#download_buildpack https://github.com/goodrain/goodrain-buildpack-static.git           master
 #download_buildpack https://github.com/goodrain/heroku-buildpack-java.git               master
 #download_buildpack https://github.com/goodrain/heroku-buildpack-gradle.git             master
+#download_buildpack https://github.com/goodrain/goodrain-buildpack-nodestatic.git       master
 # 修改权限
 chown rain.rain /tmp/buildpacks -R

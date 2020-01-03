@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-export JAVA_HOME="$HOME/.jdk"
-export PATH="$HOME/.heroku/bin:$JAVA_HOME/bin:$PATH"
-limit=$(ulimit -u)
-
 # set default_java_mem_opts
 case ${MEMORY_SIZE:-small} in
     "micro")
@@ -43,6 +39,11 @@ case ${MEMORY_SIZE:-small} in
        echo "Optimizing java process for 256M Memory...." >&2
        ;;
 esac
+
+export JAVA_HOME="$HOME/.jdk"
+export LD_LIBRARY_PATH="$JAVA_HOME/jre/lib/amd64/server:$LD_LIBRARY_PATH"
+export PATH="$HOME/.heroku/bin:$JAVA_HOME/bin:$PATH"
+limit=$(ulimit -u)
 
 if [[ "${JAVA_OPTS}" == *-Xmx* ]]; then
   export JAVA_TOOL_OPTIONS=${JAVA_TOOL_OPTIONS:-"-Dfile.encoding=UTF-8"}

@@ -16,9 +16,14 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 
+# common functions
+source /tmp/buildpacks/functions/common.sh
+
+
 source $LIB_DIR/common.sh
 source $LIB_DIR/failures.sh
-source <(curl --retry 3 -fsSL $BUILDPACK_STDLIB_URL)
+source $LIB_DIR/stdlib.sh
+#source <(curl --retry 3 -fsSL $BUILDPACK_STDLIB_URL)
 
 export_env $ENV_DIR "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
 
@@ -27,15 +32,15 @@ if has_stage_task $BUILD_DIR; then
   DEFAULT_GRADLE_TASK="stage"
 elif is_spring_boot $BUILD_DIR; then
   if is_webapp_runner $BUILD_DIR; then
-    echo "-----> Spring Boot and Webapp Runner detected"
+    status "Spring Boot and Webapp Runner detected"
     mcount "task.webapprunner"
   else
-    echo "-----> Spring Boot detected"
+    status "Spring Boot detected"
     mcount "task.spring"
   fi
   DEFAULT_GRADLE_TASK="build -x test"
 elif is_ratpack $BUILD_DIR; then
-  echo "-----> Ratpack detected"
+  status "Ratpack detected"
   mcount "task.ratpack"
   DEFAULT_GRADLE_TASK="installDist -x test"
 else
@@ -57,7 +62,7 @@ create_project_cache_symlink "$CACHE_DIR" "$BUILD_DIR"
 
 if [ ! -f $BUILD_DIR/gradlew ] ; then
   mcount "wrapperless"
-  echo "-----> Installing Gradle Wrapper..."
+  status "Installing Gradle Wrapper..."
   echo "       WARNING: Your application does not have it's own gradlew file."
   echo "       We'll install one for you, but this is a deprecated feature and"
   echo "       in the future may not be supported."
@@ -74,8 +79,8 @@ cd $BUILD_DIR
 [ -n "$(find . -type f -name "*.groovy")" ] && mcount "groovy.source"
 
 # build app
-echo "-----> Building Gradle app..."
-echo "-----> executing $BUILDCMD"
+status "Building Gradle app..."
+status "executing $BUILDCMD"
 
 buildLogFile=$(create_build_log_file)
 

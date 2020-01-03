@@ -29,7 +29,7 @@ if [ ! "$SKIP_PIP_INSTALL" ]; then
     fi
 
     # Set RUN_PIP_INDEX_URL
-    RUN_PIP_INDEX_URL="${PIP_INDEX_URL:-https://mirrors.ustc.edu.cn/pypi/web/simple}"
+    RUN_PIP_INDEX_URL="${PIP_INDEX_URL:-https://pypi.tuna.tsinghua.edu.cn/simple}"
     puts-step "Default Mirrors: $RUN_PIP_INDEX_URL"
 
     set +e
@@ -41,7 +41,6 @@ if [ ! "$SKIP_PIP_INSTALL" ]; then
     if grep -q '==0.0.0' requirements.txt; then
         mcount "failure.none-version"
     fi
-
 
     /app/.heroku/python/bin/pip install -i "$RUN_PIP_INDEX_URL" -r "$BUILD_DIR/requirements.txt" --exists-action=w --src=/app/.heroku/src --disable-pip-version-check --no-cache-dir 2>&1 | tee "$WARNINGS_LOG" | cleanup | indent
     PIP_STATUS="${PIPESTATUS[0]}"

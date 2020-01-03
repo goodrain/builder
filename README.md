@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/goodrain/builder.svg?branch=v5.0)](https://travis-ci.org/goodrain/builder)
+[![Build Status](https://travis-ci.org/goodrain/builder.svg?branch=v5.1)](https://travis-ci.org/goodrain/builder)
 
 # Builder
-
+该项目为[Rainbond](https://github.com/goodrain/rainbond)项目的子项目。
 借助于 [Docker](http://docker.io) 和 [Buildpacks](https://devcenter.heroku.com/articles/buildpacks) 来生成 Heroku 风格的 [slug](https://devcenter.heroku.com/articles/slug-compiler) 为app提供运行环境。
 
 ## 组件做了哪那些事呢？

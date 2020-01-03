@@ -38,7 +38,9 @@ _mvn_settings_opt() {
   elif [ -n "$MAVEN_SETTINGS_URL" ]; then
     local settingsXml="${mavenInstallDir}/.m2/settings.xml"
     mkdir -p $(dirname ${settingsXml})
+    [ -z "$DEBUG_INFO" ] && status_pending "Download Maven settings" || status_pending "Download Maven settings from $MAVEN_SETTINGS_URL"
     curl --retry 3 --silent --max-time 10 --location $MAVEN_SETTINGS_URL --output ${settingsXml}
+    status_done
     mcount "mvn.settings.url"
     if [ -f ${settingsXml} ]; then
       echo -n "-s ${settingsXml}"
@@ -112,8 +114,7 @@ run_mvn() {
 
   if [ "${PIPESTATUS[*]}" != "0 0" ]; then
     error "Failed to build app with Maven
-We're sorry this build is failing! If you can't find the issue in application code,
-please submit a ticket so we can help: https://help.heroku.com/"
+please submit a ticket so we can help: https://t.goodrain.com"
   fi
 
   mtime "mvn.${scope}.time" "${start}"
