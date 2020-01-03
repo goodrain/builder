@@ -3,11 +3,6 @@
 # -----------------------------------------
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
-
-if [ -z "${buildpack}" ]; then
-    buildpack=$(cd "$(dirname $0)/.." && pwd)
-fi
-
 DataJSON="${buildpack}/data.json"
 FilesJSON="${buildpack}/files.json"
 depTOML="${build}/Gopkg.toml"
@@ -17,9 +12,10 @@ glideYAML="${build}/glide.yaml"
 goMOD="${build}/go.mod"
 
 steptxt="----->"
-YELLOW=''
-RED=''
-NC='' # No Color
+GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+RED='\033[1;31m'
+NC='\033[0m' # No Color
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
 if [ -z "${GO_BUCKET_URL}" ]; then
@@ -32,16 +28,59 @@ TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 GO_LINKER_VALUE=${SOURCE_VERSION}
 
+snapshotBinBefore() {
+  if [ ! -d "${build}/bin" ]; then
+    return 0
+  fi
+  _oifs=$IFS
+  IFS=$'\n'
+  _binBefore=()
+  for f in ${build}/bin/*; do
+    if [ -f $f ]; then
+      _binBefore+=($(shasum $f))
+    fi
+  done
+  IFS=$_oifs
+}
+
+binDiff() {
+  _oifs=$IFS
+  IFS=$'\n'
+  local binAfter=()
+  for f in ${build}/bin/*; do
+    if [ -f $f ]; then
+      binAfter+=($(shasum $f))
+    fi
+  done
+
+  local new=()
+  for a in "${binAfter[@]}"; do
+    local let found=0
+
+    for b in "${_binBefore[@]}"; do
+        if [ "${a}" = "${b}" ]; then
+        let found+=1
+        fi
+    done
+
+    if [ $found -eq 0 ]; then
+        new+=( "./bin/$(basename $(echo $a | awk '{print $2}' ) )" )
+    fi
+  done
+  IFS=$_oifs
+  echo ${new[@]}
+}
+
 info() {
-    echo -e "info: $@"
+    echo -e "${GREEN}       $@${NC}"
 }
 
 warn() {
-    echo -e "warn: $@"
+    echo -e "${YELLOW} !!    $@${NC}"
 }
 
 err() {
-    echo -e >&2 "err: $@"
+    echo -e >&2 "${RED} !!    $@${NC}"
 }
 
 step() {
@@ -67,7 +106,7 @@ determinLocalFileName() {
 
 knownFile() {
     local fileName="${1}"
-    if [ "${fileName}" == "jq-linux64" ]; then #jq is special cased here because we can't jq until we have jq
+    if [ "${fileName}" = "jq-linux64" ]; then #jq is special cased here because we can't jq until we have jq
         true
     else
         <${FilesJSON} jq -e 'to_entries | map(select(.key == "'${fileName}'")) | any' &> /dev/null
@@ -85,6 +124,9 @@ downloadFile() {
         err "it uses. Because the buildpack doesn't know about the file"
         err "it likely won't be able to obtain a copy and validate the SHA."
         err ""
+        err "To find out more info about this error please visit:"
+        err "    https://devcenter.heroku.com/articles/unknown-go-buildack-files"
+        err ""
         exit 1
     fi
 
@@ -96,7 +138,6 @@ downloadFile() {
     mkdir -p "${targetDir}"
     pushd "${targetDir}" &> /dev/null
         start "Fetching ${localName}"
-            [ -z "$DEBUG_INFO" ] && info "Download ${fileName}" || info "Download: ${fileName} from ${BucketURL}/${fileName}"
             ${CURL} -O "${BucketURL}/${fileName}"
             if [ "${fileName}" != "${localName}" ]; then
                 mv "${fileName}" "${localName}"
@@ -175,6 +216,7 @@ loadEnvDir() {
     envFlags+=("GO_INSTALL_PACKAGE_SPEC")
     envFlags+=("GO_INSTALL_TOOLS_IN_IMAGE")
     envFlags+=("GO_SETUP_GOPATH_IN_IMAGE")
+    envFlags+=("GO_SETUP_GOPATH_FOR_MODULE_CACHE")
     envFlags+=("GO_TEST_SKIP_BENCHMARK")
     envFlags+=("GLIDE_SKIP_INSTALL")
     local env_dir="${1}"
@@ -239,13 +281,17 @@ setGitCredHelper() {
             if [ -f "${f}" ]; then
                 echo "Using credentials from GO_GIT_CRED__${protocol}__${host}" >&2
                 t=$(cat ${f})
-                if [ "${t}" =~ ":" ]; then
+                #echo "t=${t}" >&2  #debug
+                case "${t}" in
+                  *:*)
                     username="$(echo $t | cut -d : -f 1)"
                     password="$(echo $t | cut -d : -f 2)"
-                else
+                  ;;
+                  *)
                     username="${t}"
-                    password="x-oauth-basic"
-                fi
+                    password="${t}"
+                  ;;
+                esac
                 echo username=${username}
                 #echo username=${username} >&2  #debug
                 echo password=${password}
@@ -268,19 +314,22 @@ setGoVersionFromEnvironment() {
     ver=${GOVERSION:-$DefaultGoVersion}
 }
 
+supportsGoModules() {
+    local version="${1}"
+    # Ex:      "go1.10.4" | ["go1","10", "4"] | ["1","10","4"]     | [1,10,4]      |  [1]           [10]      == exit 1 (fail)
+    echo "\"${version}\"" | jq -e 'split(".") | map(gsub("go";"")) | map(tonumber) | .[0] >= 1 and .[1] < 11' &> /dev/null
+}
+
 determineTool() {
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
-        warn ""
-        warn "Go modules are an experimental feature of go1.11"
-        warn "Any issues building code that uses Go modules should be"
-        warn "reported via: https://github.com/heroku/heroku-buildpack-go/issues"
-        warn ""
-        warn "Additional documentation for using Go modules with this buildpack"
-        warn "can be found here: https://github.com/heroku/heroku-buildpack-go#go-module-specifics"
-        warn ""
+        step ""
+        info "Detected go modules via go.mod"
+        step ""
         ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
-        name=$(awk '{ if ($1 == "module" ) { print $2; exit } }' ${goMOD} | cut -d/ -f3)
+        name=$(awk '{ if ($1 == "module" ) { gsub(/"/, "", $2); print $2; exit } }' < ${goMOD})
+        info "Detected Module Name: ${name}"
+        step ""
         warnGoVersionOverride
         if [ -z "${ver}" ]; then
             ver=${DefaultGoVersion}
@@ -291,14 +340,17 @@ determineTool() {
             warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
             warn ""
         fi
-        if ! <"${DataJSON}" jq  -e '.Go.SupportsModuleExperiment | any(. == "'${ver}'")' &> /dev/null; then
-            err "You are using ${ver}, which does not support the Go modules experiment"
+
+        if supportsGoModules "${ver}"; then
+            err "You are using ${ver}, which does not support Go modules"
             err ""
-            err "Please add the following comment to your go.mod file to specify go1.11:"
-            err "// +heroku goVersion go1.11"
+            err "Go modules are supported by go1.11 and above."
+            err ""
+            err "Please add/update the comment in your go.mod file to specify a Go version >= go1.11 like so:"
+            err "// +heroku goVersion ${DefaultGoVersion}"
             err ""
             err "Then commit and push again."
-           exit 1
+            exit 1
         fi
     elif [ -f "${depTOML}" ]; then
         TOOL="dep"
@@ -308,6 +360,7 @@ determineTool() {
             err "The 'metadata.heroku[\"root-package\"]' field is not specified in 'Gopkg.toml'."
             err "root-package must be set to the root package name used by your repository."
             err ""
+            err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
             exit 1
         fi
         ver=${GOVERSION:-$(<${depTOML} tq '$.metadata.heroku["go-version"]')}
@@ -317,6 +370,8 @@ determineTool() {
             warn "The 'metadata.heroku[\"go-version\"]' field is not specified in 'Gopkg.toml'."
             warn ""
             warn "Defaulting to ${ver}"
+            warn ""
+            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
             warn ""
         fi
     elif [ -f "${godepsJSON}" ]; then
@@ -343,6 +398,7 @@ determineTool() {
             err "Recent versions of govendor add this field automatically, please upgrade"
             err "and re-run 'govendor init'."
             err ""
+            err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
             exit 1
         fi
         ver=${GOVERSION:-$(<${vendorJSON} jq -r .heroku.goVersion)}
@@ -353,6 +409,8 @@ determineTool() {
             warn ""
             warn "Defaulting to ${ver}"
             warn ""
+            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
+            warn ""
         fi
     elif [ -f "${glideYAML}" ]; then
         TOOL="glide"
@@ -361,7 +419,8 @@ determineTool() {
         TOOL="gb"
         setGoVersionFromEnvironment
     else
-        err "Go modules, dep, Godep, GB or govendor are required."
+        err "Go modules, dep, Godep, GB or govendor are required. For instructions:"
+        err "https://devcenter.heroku.com/articles/go-support"
         exit 1
     fi
 }
