@@ -19,12 +19,10 @@ build::local(){
 }
 
 build::public(){
-    docker tag goodrain.me/builder rainbond/builder
     docker tag goodrain.me/builder rainbond/builder:${release_ver}
     if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then 
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         docker push rainbond/builder:${release_ver}
-        docker push rainbond/builder
     else
         # TODO
         echo ''
