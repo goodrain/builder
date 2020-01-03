@@ -506,7 +506,7 @@ case "${TOOL}" in
         if [[ "${pkgs}" =~ "..." ]]; then
             mcount "package_spec.contains.dot_dot_dot"
         fi
-
+        setGOPROXY
         warnPackageSpecOverride
         handleDefaultPkgSpec
         massagePkgSpecForVendor
@@ -528,7 +528,7 @@ case "${TOOL}" in
             chmod a+x bin/go-pre-compile
             bin/go-pre-compile
         fi
-        setGOPROXY
+        
         installPkgs
 
         if [[ -f bin/go-post-compile ]]; then
