@@ -461,8 +461,8 @@ setupProcfile() {
 }
 
 setGOPROXY() {
-    if [ -n "${DISABLE_GOPROXY}" ]; then
-        if [ -n "${GOPROXY}" ]; then
+    if [ -z "${DISABLE_GOPROXY}" ]; then
+        if [ -z "${GOPROXY}" ]; then
             info "set default GOPROXY=https://goproxy.io"
             export GOPROXY="https://goproxy.io"
         else
