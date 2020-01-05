@@ -306,10 +306,6 @@ setGoVersionFromEnvironment() {
     if [ -z "${GOVERSION}" ]; then
         warn ""
         warn "'GOVERSION' isn't set, defaulting to '${DefaultGoVersion}'"
-        warn ""
-        warn "Run 'heroku config:set GOVERSION=goX.Y' to set the Go version to use"
-        warn "for future builds"
-        warn ""
     fi
     ver=${GOVERSION:-$DefaultGoVersion}
 }

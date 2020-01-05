@@ -39,7 +39,6 @@ handleDefaultPkgSpec() {
         case "${TOOL}" in
             gomodules)
                 warn "To install a different package spec add a comment in the following form to your \`go.mod\` file:"
-                warn "// +heroku install ./cmd/..."
                 warn ""
             ;;
             dep)
@@ -321,10 +320,6 @@ setGoVersionFromEnvironment() {
     if [ -z "${GOVERSION}" ]; then
         warn ""
         warn "'GOVERSION' isn't set, defaulting to '${DefaultGoVersion}'"
-        warn ""
-        warn "Run 'heroku config:set GOVERSION=goX.Y' to set the Go version to use"
-        warn "for future builds"
-        warn ""
     fi
     ver=${GOVERSION:-$DefaultGoVersion}
 }
@@ -333,10 +328,6 @@ warnGoVersionOverride() {
     if [ ! -z "${GOVERSION}" ]; then
         warn "Using \$GOVERSION override."
         warn "     \$GOVERSION = ${GOVERSION}"
-        warn ""
-        warn "If this isn't what you want please run:'"
-        warn "  heroku config:unset GOVERSION -a <app>"
-        warn ""
     fi
 }
 
@@ -344,10 +335,6 @@ warnPackageSpecOverride() {
     if [ ! -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
         warn "Using \$GO_INSTALL_PACKAGE_SPEC override."
         warn "     \$GO_INSTALL_PACKAGE_SPEC = ${GO_INSTALL_PACKAGE_SPEC}"
-        warn ""
-        warn "If this isn't what you want please run:'"
-        warn "  heroku config:unset GO_INSTALL_PACKAGE_SPEC -a <app>"
-        warn ""
     fi
 }
 
@@ -456,7 +443,6 @@ setupProcfile() {
     fi
     info ""
     info "If these entries look incomplete or incorrect please create a Procfile with the required entries."
-    info "See https://devcenter.heroku.com/articles/procfile for more details about Procfiles"
     info ""
 }
 
@@ -583,7 +569,6 @@ case "${TOOL}" in
             if [ -n "${GO15VENDOREXPERIMENT}" ]; then
                 warn ""
                 warn "GO15VENDOREXPERIMENT is set, but is not supported by ${ver}"
-                warn "run \`heroku config:unset GO15VENDOREXPERIMENT\` to unset."
                 warn ""
             fi
         fi
