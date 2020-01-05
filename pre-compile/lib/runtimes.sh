@@ -201,7 +201,7 @@ runtimes::python(){
     echo "$runtime" > ${BUILD_DIR}/$PythonRuntimefile
   else
     if [ ! -f "${BUILD_DIR}/$PythonRuntimefile" ]; then
-      echo "python-3.6.6" > ${BUILD_DIR}/$PythonRuntimefile
+      echo "python-3.6.10" > ${BUILD_DIR}/$PythonRuntimefile
     fi
     echo_title "Detection Python default runtime $(cat ${BUILD_DIR}/$PythonRuntimefile)"
   fi

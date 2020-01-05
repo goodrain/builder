@@ -9,11 +9,12 @@ VENDORED_PYTHON="${VENDOR_URL}/runtimes/$PYTHON_VERSION.tar.gz"
 
 # check if runtime exists
 if curl --output /dev/null --silent --head --fail "$VENDORED_PYTHON"; then
-    echo "Using supported version $PYTHON_VERSION"
+    puts-step "Using supported version $PYTHON_VERSION"
 else
-    puts-warn "Rainbond supports runtime versions $LATEST_37, $LATEST_36 and $LATEST_2." 
+    puts-warn "Rainbond supports runtime versions $LATEST_35, $LATEST_36, $LATEST_37, $LATEST_38 and $LATEST_2." 
     puts-warn "You are using $PYTHON_VERSION, which is unsupported."
     puts-warn "We recommend upgrading by specifying the default supported version ($LATEST_36)."
+    exit 1
 fi
 
 if [[ "$STACK" != "$CACHED_PYTHON_STACK" ]]; then
