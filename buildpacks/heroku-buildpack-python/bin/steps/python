@@ -71,7 +71,7 @@ if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_UPDATE* ]]; then
   # Remove old installations.
   rm -fr /app/.heroku/python/lib/python*/site-packages/pip-*
   rm -fr /app/.heroku/python/lib/python*/site-packages/setuptools-*
-  if ! /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i https://pypi.tuna.tsinghua.edu.cn/simple &> /dev/null;then
+  if ! /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i https://pypi.tuna.tsinghua.edu.cn/simple;then
       puts-warn "Install pip $PIP_UPDATE failure"
       exit 1
   fi
