@@ -27,6 +27,12 @@ runtimes::jar(){
         11)
           echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
+        12)
+          echo "java.runtime.version=12" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        13)
+          echo "java.runtime.version=13" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
         *)
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
@@ -58,6 +64,12 @@ runtimes::war(){
         ;;
         11)
           echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        12)
+          echo "java.runtime.version=12" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        13)
+          echo "java.runtime.version=13" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
         *)
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
@@ -91,6 +103,12 @@ runtimes::gradle(){
         11)
           echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
+        12)
+          echo "java.runtime.version=12" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        13)
+          echo "java.runtime.version=13" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
         *)
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
@@ -122,6 +140,12 @@ runtimes::maven(){
         ;;
         11)
           echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        12)
+          echo "java.runtime.version=12" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        13)
+          echo "java.runtime.version=13" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
         *)
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
