@@ -60,7 +60,7 @@ nodestatic_prepare(){
     mv /tmp/www/* /tmp/build
     if [ ! -f "/tmp/build/Procfile" ]; then
         cat > /tmp/build/Procfile <<EOF
-${PROCFILE:-web: sh boot.sh}
+web: sh boot.sh
 EOF
     fi
 }
