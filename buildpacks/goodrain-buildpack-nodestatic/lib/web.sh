@@ -32,7 +32,7 @@ server {
 EOF
     fi
 
-    cat >>boot.sh <<EOF
+    [[ ! -z $PROCFILE ]] && echo $PROCFILE >>boot.sh || cat >>boot.sh <<EOF
 sed -i -r  "s/(listen ).*/\1\$PORT;/" /app/nginx/conf.d/web.conf
 touch /app/nginx/logs/access.log
 touch /app/nginx/logs/error.log
@@ -60,7 +60,7 @@ nodestatic_prepare(){
     mv /tmp/www/* /tmp/build
     if [ ! -f "/tmp/build/Procfile" ]; then
         cat > /tmp/build/Procfile <<EOF
-${PROCFILE:-web: sh boot.sh}
+web: sh boot.sh
 EOF
     fi
 }
