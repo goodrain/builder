@@ -3,8 +3,7 @@
 set -xe
 
 commitid=$(git log -n 1 --pretty --format=%h)
-#release_ver=$(git branch | grep '^*' | cut -d ' ' -f 2)
-release_ver=5.1.5
+release_ver=5.2.0
 
 build::local(){
     release_desc=${release_ver}-${commitid}
@@ -25,7 +24,12 @@ build::public(){
     if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then 
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         docker push rainbond/builder:${release_ver}
-        docker push rainbond/builder
+        if [ ${DOMESTIC_BASE_NAME} ];
+		then
+            docker tag "rainbond/builder:${release_ver}" "${DOMESTIC_BASE_NAME}/${DOMESTIC_NAMESPACE}/builder:${release_ver}"
+            docker login -u "$DOMESTIC_DOCKER_USERNAME" -p "$DOMESTIC_DOCKER_PASSWORD" ${DOMESTIC_BASE_NAME}
+            docker push "${DOMESTIC_BASE_NAME}/${DOMESTIC_NAMESPACE}/builder:${VERSION}"
+		fi
     else
         # TODO
         echo ''
