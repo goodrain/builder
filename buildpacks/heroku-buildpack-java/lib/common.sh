@@ -45,19 +45,10 @@ download_maven() {
 
 is_supported_maven_version() {
   local mavenVersion=${1}
+  local mavenUrl="http://lang.goodrain.me/jvm/maven/maven-${mavenVersion}.tar.gz"
   if [ "$mavenVersion" = "$DEFAULT_MAVEN_VERSION" ]; then
     return 0
-  elif [ "$mavenVersion" = "3.3.9" ]; then
-    return 0
-  elif [ "$mavenVersion" = "3.3.1" ]; then
-    return 0
-  elif [ "$mavenVersion" = "3.2.5" ]; then
-    return 0
-  elif [ "$mavenVersion" = "3.2.3" ]; then
-    return 0
-  elif [ "$mavenVersion" = "3.1.1" ]; then
-    return 0
-  elif [ "$mavenVersion" = "3.0.5" ]; then
+  elif curl -I --retry 3 --fail --silent --max-time 5 --location "${mavenUrl}" > /dev/null; then
     return 0
   else
     return 1

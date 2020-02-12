@@ -7,37 +7,14 @@ PYTHON_VERSION=$(cat runtime.txt)
 # The location of the pre-compiled python binary.
 VENDORED_PYTHON="${VENDOR_URL}/runtimes/$PYTHON_VERSION.tar.gz"
 
-if [[ $PYTHON_VERSION =~ ^python-2 ]]; then
-  if [[ "$PYTHON_VERSION" != "$LATEST_2" ]]; then
-    puts-warn "The latest version of Python 2 is $LATEST_2 (you are using $PYTHON_VERSION, which is unsupported)."
-    puts-warn "We recommend upgrading by specifying the latest version ($LATEST_2)."
-  else
-    echo "       Using supported version of Python 2 ($PYTHON_VERSION)"
-  fi
+# check if runtime exists
+if curl --output /dev/null --silent --head --fail "$VENDORED_PYTHON"; then
+    puts-step "Using supported version $PYTHON_VERSION"
 else
-  if [[ $PYTHON_VERSION =~ ^python-3 ]]; then
-    if [[ $PYTHON_VERSION =~ ^python-3.7 ]]; then
-      if [[ "$PYTHON_VERSION" != "$LATEST_37" ]]; then
-      puts-warn "The latest version of Python 3.7 is $LATEST_37 (you are using $PYTHON_VERSION, which is unsupported)."
-      puts-warn "We recommend upgrading by specifying the latest version ($LATEST_37)."
-      else
-        echo "       Using supported version of Python 3.7 ($PYTHON_VERSION)"
-      fi
-    else
-      if [[ $PYTHON_VERSION =~ ^python-3.6 ]]; then
-        if [[ "$PYTHON_VERSION" != "$LATEST_36" ]]; then
-          puts-warn "The latest version of Python 3.6 is $LATEST_36 (you are using $PYTHON_VERSION, which is unsupported)."
-          puts-warn "We recommend upgrading by specifying the latest version ($LATEST_36)."
-        else
-          echo "       Using supported version of Python 3.6 ($PYTHON_VERSION)"
-        fi
-      else
-        puts-warn "Rainbond supports runtime versions $LATEST_37, $LATEST_36 and $LATEST_2." 
-        puts-warn "You are using $PYTHON_VERSION, which is unsupported."
-        puts-warn "We recommend upgrading by specifying the default supported version ($LATEST_36)."
-      fi
-    fi
-  fi
+    puts-warn "Rainbond supports runtime versions $LATEST_35, $LATEST_36, $LATEST_37, $LATEST_38 and $LATEST_2." 
+    puts-warn "You are using $PYTHON_VERSION, which is unsupported."
+    puts-warn "We recommend upgrading by specifying the default supported version ($LATEST_36)."
+    exit 1
 fi
 
 if [[ "$STACK" != "$CACHED_PYTHON_STACK" ]]; then
@@ -89,12 +66,15 @@ fi
 # If Pip isn't up to date:
 if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_UPDATE* ]]; then
 
-  puts-step "Installing pip"
+  puts-step "Installing pip $PIP_UPDATE"
 
   # Remove old installations.
   rm -fr /app/.heroku/python/lib/python*/site-packages/pip-*
   rm -fr /app/.heroku/python/lib/python*/site-packages/setuptools-*
-  /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i https://pypi.tuna.tsinghua.edu.cn/simple &> /dev/null
+  if ! /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i https://pypi.tuna.tsinghua.edu.cn/simple;then
+      puts-warn "Install pip $PIP_UPDATE failure"
+      exit 1
+  fi
   /app/.heroku/python/bin/pip install "$ROOT_DIR/vendor/setuptools-39.0.1-py2.py3-none-any.whl" &> /dev/null
   puts-done
 fi

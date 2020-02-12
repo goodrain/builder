@@ -2,16 +2,18 @@
 # usage: bin/compile <build-dir> <cache-dir> <env-dir>
 
 set -eo pipefail
+[ "$DEBUG" ] && set -x
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 env_dir="${3}"
-BUILD_DIR=$1
-GolangRuntimefile=$1"/runtime.txt"
-
 buildpack=$(cd "$(dirname $0)/.." && pwd)
+
 source "${buildpack}/lib/common.sh"
-ensureInPath "jq-linux64" "${cache}/.jq/bin"
+source "${buildpack}/lib/common_tools.sh"
+source_stdlib
+
+snapshotBinBefore
 
 DefaultGoVersion="$(<${DataJSON} jq -r '.Go.DefaultVersion')"
 DepVersion="$(<${DataJSON} jq -r '.Dep.DefaultVersion')"
@@ -20,10 +22,10 @@ GovendorVersion="$(<${DataJSON} jq -r '.Govendor.DefaultVersion')"
 GBVersion="$(<${DataJSON} jq -r '.GB.DefaultVersion')"
 PkgErrorsVersion="$(<${DataJSON} jq -r '.PkgErrors.DefaultVersion')"
 MercurialVersion="$(<${DataJSON} jq -r '.HG.DefaultVersion')"
+BazaarVersion="$(<${DataJSON} jq -r '.BZR.DefaultVersion')"
 MattesMigrateVersion="$(<${DataJSON} jq -r '.MattesMigrate.DefaultVersion')"
 GolangMigrateVersion="$(<${DataJSON} jq -r '.GolangMigrate.DefaultVersion')"
 TQVersion="$(<${DataJSON} jq -r '.tq.DefaultVersion')"
-# BazaarVersion="2.7.0"
 
 # For specified versions of Go we need to keep concurrency.sh
 needConcurrency() {
@@ -37,21 +39,26 @@ handleDefaultPkgSpec() {
         case "${TOOL}" in
             gomodules)
                 warn "To install a different package spec add a comment in the following form to your \`go.mod\` file:"
-                warn "// +heroku install ./cmd/..."
                 warn ""
             ;;
             dep)
-                warn "To install a different package spec set 'metadata.heroku.pkg-spec' in 'Gopkg.toml'"
+                warn "To install a different package spec set 'metadata.heroku.install' in 'Gopkg.toml'"
+                warn ""
+                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
                 warn ""
             ;;
             govendor)
                 warn "To install a different package spec set 'heroku.install' in 'vendor/vendor.json'"
+                warn ""
+                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
                 warn ""
             ;;
             glide)
                 warn "To install a different package spec for the next build run:"
                 warn ""
                 warn "'heroku config:set GO_INSTALL_PACKAGE_SPEC=\"<pkg spec>\"'"
+                warn ""
+                warn "For more details see: https://devcenter.heroku.com/articles/go-dependencies-via-glide"
                 warn ""
             ;;
         esac
@@ -99,13 +106,11 @@ expandVer() {
     echo $(<${DataJSON} jq -r 'if .Go.VersionExpansion."'${v}'" then .Go.VersionExpansion."'${v}'" else "'${v}'" end')
 }
 
-# Report deprecated versions to user
+# Report development versions to user
 # Use after expandVer
 reportVer() {
     local ver="${1}"
-    if <"${DataJSON}" jq  -e '.Go.Supported | any(. == "'${ver}'")' &> /dev/null; then
-        return
-    fi
+    mcount "version.go.$ver"
 
     case $ver in
         devel*)
@@ -117,31 +122,7 @@ reportVer() {
             warn "Build tests are NOT RUN!!"
             warn ""
         ;;
-        *)
-            warn ""
-            warn "Deprecated or unsupported version of go ($ver)"
-            warn ""
-        ;;
     esac
-}
-
-ensureHG() {
-    local hgVersion="${1}"
-    local tmp="$(mktemp -d)"
-    local hgPath="${cache}/hg/${hgVersion}"
-    if [ -x "${hgPath}/bin/hg" ]; then
-        step "Using hg v${hgVersion}"
-    else
-        rm -rf "${cache}/hg"
-        mkdir -p "${hgPath}"
-        step "Installing hg ${hgVersion}"
-        ensureFile "mercurial-${hgVersion}.tar.gz" "${tmp}" "tar -C ${tmp} --strip-components=1 -zxf"
-        pushd "${tmp}" &> /dev/null
-            python setup.py install --force --home="${hgPath}" &> /dev/null
-        popd &> /dev/null
-    fi
-
-    addToPATH "${hgPath}/bin"
 }
 
 ensureGlide() {
@@ -274,7 +255,12 @@ ensureGo() {
     if [ -d "${goPath}" ]; then
         step "Using ${goVersion}"
     else
-        rm -rf ${cache}/* #For a go version change, we delete everything
+        #For a go version change, we delete everything
+        step "New Go Version, clearing old cache"
+        if [ -d "${cache}/go-path" ]; then
+            find "${cache}/go-path" ! -perm -u=w -print0 | xargs -r -0 chmod u+w 2>&1
+        fi
+        rm -rf ${cache}/*
         case "${goVersion}" in
             devel*)
                 local bGoVersion="$(expandVer ${DefaultGoVersion})"
@@ -334,27 +320,14 @@ setGoVersionFromEnvironment() {
     if [ -z "${GOVERSION}" ]; then
         warn ""
         warn "'GOVERSION' isn't set, defaulting to '${DefaultGoVersion}'"
-        warn ""
-        warn "Run 'heroku config:set GOVERSION=goX.Y' to set the Go version to use"
-        warn "for future builds"
-        warn ""
     fi
     ver=${GOVERSION:-$DefaultGoVersion}
-    if [ -f "$GolangRuntimefile" ];then
-      ver=`cat $GolangRuntimefile`
-    else
-      echo "LANGUAGE_VERSION not found"
-    fi
 }
 
 warnGoVersionOverride() {
     if [ ! -z "${GOVERSION}" ]; then
         warn "Using \$GOVERSION override."
         warn "     \$GOVERSION = ${GOVERSION}"
-        warn ""
-        warn "If this isn't what you want please run:'"
-        warn "  heroku config:unset GOVERSION -a <app>"
-        warn ""
     fi
 }
 
@@ -362,10 +335,6 @@ warnPackageSpecOverride() {
     if [ ! -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
         warn "Using \$GO_INSTALL_PACKAGE_SPEC override."
         warn "     \$GO_INSTALL_PACKAGE_SPEC = ${GO_INSTALL_PACKAGE_SPEC}"
-        warn ""
-        warn "If this isn't what you want please run:'"
-        warn "  heroku config:unset GO_INSTALL_PACKAGE_SPEC -a <app>"
-        warn ""
     fi
 }
 
@@ -393,6 +362,11 @@ setupGOPATH() {
     echo "src=${src}"
 }
 
+installPkgs() {
+    step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+    go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+}
+
 loadEnvDir "${env_dir}"
 
 setGitCredHelper "${env_dir}"
@@ -401,11 +375,6 @@ trap clearGitCredHelper INT TERM EXIT
 determineTool
 
 ver=$(expandVer $ver)
-if [ -f $GolangRuntimefile ];then
-  ver=`cat $GolangRuntimefile`
-else
-  echo "LANGUAGE_VERSION不存在"
-fi
 
 if [ -e "${build}/bin" -a ! -d "${build}/bin" ]; then
     err ""
@@ -431,31 +400,128 @@ if [ -n "${GO_LINKER_SYMBOL}" -a -n "${GO_LINKER_VALUE}" ]; then
             xval="${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}"
         ;;
     esac
-    FLAGS=(${FLAGS[@]} -ldflags "-X ${xval}")
+    FLAGS+=(-ldflags "-X ${xval}")
 fi
 
 export GOPATH
 
 # GB installation
+mcount "pkgmanagement.$TOOL"
+
+mainPackagesInModule() {
+  # For an explanation of what this is doing, see https://dave.cheney.net/2014/09/14/go-list-your-swiss-army-knife
+  go list -find -mod=vendor -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./...
+}
+
+setupProcfile() {
+    if [ -f "${build}/Procfile" ]; then
+        return
+    fi
+    local pkgs=$(mainPackagesInModule)
+    if [ -z "${pkgs}" ]; then
+        return
+    fi
+    local pf=()
+    for pkg in ${pkgs}; do
+        local bn=$(basename ${pkg})
+        pf+=("${bn}: bin/${bn}")
+    done
+    if [ ${#pf} -eq 0 ]; then
+        return
+    fi
+    info ""
+    info "Created a Procfile with the following entries:"
+    if [ ${#pf[@]} -eq 1 ]; then
+        local line="web: bin/$(echo ${pf[0]} | cut -d / -f 2)"
+        echo "${line}" > ${build}/Procfile
+        info "\t\t${line}"
+    elif [ ${#pf[@]} -gt 1 ]; then
+        for pfl in "${pf[@]}"; do
+            echo "${pfl}" >> ${build}/Procfile
+            info "\t\t${pfl}"
+        done
+    fi
+    info ""
+    info "If these entries look incomplete or incorrect please create a Procfile with the required entries."
+    info ""
+}
+
+setGOPROXY() {
+    if [ -z "${DISABLE_GOPROXY}" ]; then
+        if [ -z "${GOPROXY}" ]; then
+            info "set default GOPROXY=https://goproxy.io"
+            export GOPROXY="https://goproxy.io"
+        else
+            info "GOPROXY=${GOPROXY}"
+        fi
+    fi
+}
+
 case "${TOOL}" in
     gomodules)
+        cd ${build}
+        step "Determining packages to install"
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
         if [ -z "${pkgs}" ]; then
-            pkgs="default"
+            pkgs=$(mainPackagesInModule)
+            if [ -z "${pkgs}" ]; then
+                warn ""
+                warn "No main packages found in module ${name}"
+                warn ""
+                warn "Unsure what package(s) to install, defaulting to '.'"
+                warn ""
+                pkgs="default"
+                mcount "pkginstall.detect-failed"
+            else
+                info ""
+                info "Detected the following main packages to install:"
+                for pkg in ${pkgs}; do
+                    info "\t\t${pkg}"
+                done
+                info ""
+                mcount "pkginstall.auto"
+            fi
+        else
+            if [ -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
+                mcount "pkginstall.go_install_package_spec"
+            else
+                mcount "pkginstall.heroku_install"
+            fi
         fi
+
+        if [[ "${pkgs}" =~ "..." ]]; then
+            mcount "package_spec.contains.dot_dot_dot"
+        fi
+        setGOPROXY
         warnPackageSpecOverride
         handleDefaultPkgSpec
         massagePkgSpecForVendor
 
         if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
-            FLAGS=(${FLAGS[@]} -mod=vendor)
+            FLAGS+=(-mod=vendor)
         fi
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
-        cd ${build}
         export GOBIN="${build}/bin"
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+        if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
+            export GOPATH="${build}/.heroku/go-path"
+            mkdir -p $GOPATH # ensure that it's created
+        else
+            export GOPATH="${cache}/go-path"
+        fi
+        if [[ -f bin/go-pre-compile ]]; then
+            step "Running bin/go-pre-compile hook"
+            chmod a+x bin/go-pre-compile
+            bin/go-pre-compile
+        fi
+        
+        installPkgs
+
+        if [[ -f bin/go-post-compile ]]; then
+            step "Running bin/go-post-compile hook"
+            chmod a+x bin/go-post-compile
+            bin/go-post-compile
+        fi
     ;;
     dep)
         eval "$(setupGOPATH ${name})"
@@ -478,8 +544,7 @@ case "${TOOL}" in
         fi
         massagePkgSpecForVendor
 
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+        installPkgs
     ;;
     godep)
         eval "$(setupGOPATH ${name})"
@@ -504,7 +569,6 @@ case "${TOOL}" in
             if [ -n "${GO15VENDOREXPERIMENT}" ]; then
                 warn ""
                 warn "GO15VENDOREXPERIMENT is set, but is not supported by ${ver}"
-                warn "run \`heroku config:unset GO15VENDOREXPERIMENT\` to unset."
                 warn ""
             fi
         fi
@@ -518,8 +582,7 @@ case "${TOOL}" in
             godep go install -v "${FLAGS[@]}" ${pkgs} 2>&1
         else
             massagePkgSpecForVendor
-            step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-            go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+            installPkgs
         fi
     ;;
     govendor)
@@ -541,12 +604,10 @@ case "${TOOL}" in
         fi
         massagePkgSpecForVendor
 
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+        installPkgs
     ;;
     glide)
         ensureGlide "${GlideVersion}"
-        ensureHG "${MercurialVersion}"
 
         # Do this before setupGOPATH as we need ${name} set first
         cd "${build}"
@@ -567,8 +628,7 @@ case "${TOOL}" in
 
         massagePkgSpecForVendor
 
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+        installPkgs
     ;;
     gb)
         ensureGB "${GBVersion}"
@@ -588,8 +648,19 @@ esac
 installGolangMigrateIfWanted
 installMattesMigrateIfWanted
 
+_newOrUpdatedBinFiles=$(binDiff)
+info ""
+info "Installed the following binaries:"
+for fyle in ${_newOrUpdatedBinFiles}; do
+  info "\t\t${fyle}"
+done
+
 if [ -n "${src}" -a "${src}" != "${build}" -a -e "${src}/Procfile" ]; then
     mv -t "${build}" "${src}/Procfile"
+fi
+
+if [ "${TOOL}" = "gomodules" ]; then
+    setupProcfile
 fi
 
 if [ ! -e $build/Procfile -a -n "${name}" ]; then
@@ -632,3 +703,4 @@ echo "TOOL=${TOOL}" > "${t}"
 if [ "${TOOL}" != "gb" ]; then
     echo "NAME=${name}" >> "${t}"
 fi
+

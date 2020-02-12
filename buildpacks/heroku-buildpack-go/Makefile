@@ -7,31 +7,34 @@ GO_BUCKET_URL := file:///buildpack/test/assets
 .DEFAULT: test
 .NOTPARALLEL: docker test-assets
 
-# make ACCESS_KEY="..." SECRET_KEY="...." sync
 sync:
-	ACCESS_KEY=$(ACCESS_KEY) SECRET_KEY=$(SECRET_KEY) ./bin/sync-files.sh
+	./sbin/sync-files.sh
 
-test: BASH_COMMAND := test/run
+test: BASH_COMMAND := test/run.sh
 test: docker
 
 shell: docker
 
-quick: BASH_COMMAND := test/quick; bash
+quick: BASH_COMMAND := test/quick.sh; bash
 quick: docker
 
-# make FIXTURE=<fixture name> compile
-compile: BASH_COMMAND := test/quick compile $(FIXTURE); bash
+# make FIXTURE=<fixture name> ENV=<FOO=BAR> compile
+compile: BASH_COMMAND := test/quick.sh compile $(FIXTURE) $(ENV); bash
 compile: docker
 
+testpack: BASH_COMMAND := test/quick.sh dotest $(FIXTURE) $(ENV); bash
+testpack: docker
+
 publish:
-	bin/publish heroku/go
+	@bash sbin/publish.sh
 
 docker: test-assets
-	$(eval TMP := $(shell bin/copy true))
+	$(eval TMP := $(shell sbin/copy true))
 	@echo "Running docker ($(IMAGE)) with /buildpack=$(TMP) ..."
-	@docker run -v $(TMP):/buildpack:ro --rm -it -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "GO_BUCKET_URL=$(GO_BUCKET_URL)" $(IMAGE) bash -c "cd /buildpack; $(BASH_COMMAND)"
+	@docker pull $(IMAGE)
+	@docker run -v $(TMP):/buildpack:ro --rm -it -e "GITLAB_TOKEN=$(GITLAB_TOKEN)" -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "GO_BUCKET_URL=$(GO_BUCKET_URL)" -e "IMAGE=$(IMAGE)" $(IMAGE) bash -c "cd /buildpack; $(BASH_COMMAND)"
 	@rm -rf $(TMP)
 
 test-assets:
 	@echo "Setting up test assets"
-	@bin/fetch-test-assets
+	@sbin/fetch-test-assets

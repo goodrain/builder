@@ -58,8 +58,8 @@ if [ -f "runtime.txt" ]; then
 		old_php_version=$(cat composer.json| grep "\"php\"" | awk -F\" '{print $4}')
 		if [ ! -z "$old_php_version" ]; then
 			sed -i -r  "s/$old_php_version/$php_version/g" composer.json
-			sed -i -r  "s/$old_php_version/$php_version/g" composer.lock
-			status "Rewrite PHP version ${old_php_version} to ${php_version}"
+			export CHANGE_COMPOSE=true
+			status "Rewrite PHP version ${old_php_version} to ${php_version}"	
 		fi
 	fi
 	#TODO hhvm
@@ -202,7 +202,9 @@ export -f composer
 
 # disbale secure-http
 composer config --global secure-http false
-
+if [ "$CHANGE_COMPOSE" == "true" ]; then
+   composer update --ignore-platform-reqs
+fi
 # we use --no-plugins just in case the vendor dir is there, see e.g. https://github.com/Ocramius/PackageVersions/issues/64
 composer_vendordir=$(composer config --no-plugins vendor-dir)
 composer_bindir=$(composer config --no-plugins bin-dir)

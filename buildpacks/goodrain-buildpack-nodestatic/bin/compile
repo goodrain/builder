@@ -239,9 +239,9 @@ cache_build | output "$LOG_FILE"
 
 static_build() {
   if $YARN; then
-    ${YARN_BUILD_CMD:-yarn run build}
+    ${NODE_BUILD_CMD:-yarn run build}
   else
-    ${NPM_BUILD_CMD:-npm run build}
+    ${NODE_BUILD_CMD:-npm run build}
   fi
 }
 

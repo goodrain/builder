@@ -27,6 +27,12 @@ runtimes::jar(){
         11)
           echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
+        12)
+          echo "java.runtime.version=12" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        13)
+          echo "java.runtime.version=13" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
         *)
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
@@ -58,6 +64,12 @@ runtimes::war(){
         ;;
         11)
           echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        12)
+          echo "java.runtime.version=12" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        13)
+          echo "java.runtime.version=13" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
         *)
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
@@ -91,6 +103,12 @@ runtimes::gradle(){
         11)
           echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
+        12)
+          echo "java.runtime.version=12" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        13)
+          echo "java.runtime.version=13" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
         *)
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
@@ -123,6 +141,12 @@ runtimes::maven(){
         11)
           echo "java.runtime.version=11" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
+        12)
+          echo "java.runtime.version=12" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
+        13)
+          echo "java.runtime.version=13" > ${BUILD_DIR}/$JAVARuntimefile
+        ;;
         *)
           echo "java.runtime.version=1.8" > ${BUILD_DIR}/$JAVARuntimefile
         ;;
@@ -150,8 +174,17 @@ runtimes::php(){
       7.0|7.0.29)
         echo "php-7.0.29" > ${BUILD_DIR}/$PHPRuntimefile
       ;;
-      7.1|7.1.16)
+      7.1.16)
         echo "php-7.1.16" > ${BUILD_DIR}/$PHPRuntimefile
+      ;;
+      7.1|7.1.33)
+        echo "php-7.1.33" > ${BUILD_DIR}/$PHPRuntimefile
+      ;;
+      7.2|7.2.26)
+        echo "php-7.2.26" > ${BUILD_DIR}/$PHPRuntimefile
+      ;;
+      7.3|7.3.13)
+        echo "php-7.3.13" > ${BUILD_DIR}/$PHPRuntimefile
       ;;
       5.6|5.6.35)
         echo "php-5.6.35" > ${BUILD_DIR}/$PHPRuntimefile
@@ -177,7 +210,7 @@ runtimes::python(){
     echo "$runtime" > ${BUILD_DIR}/$PythonRuntimefile
   else
     if [ ! -f "${BUILD_DIR}/$PythonRuntimefile" ]; then
-      echo "python-3.6.6" > ${BUILD_DIR}/$PythonRuntimefile
+      echo "python-3.6.10" > ${BUILD_DIR}/$PythonRuntimefile
     fi
     echo_title "Detection Python default runtime $(cat ${BUILD_DIR}/$PythonRuntimefile)"
   fi
