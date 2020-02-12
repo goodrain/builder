@@ -27,7 +27,7 @@ build::public(){
 		then
             docker tag "rainbond/builder:${release_ver}" "${DOMESTIC_BASE_NAME}/${DOMESTIC_NAMESPACE}/builder:${release_ver}"
             docker login -u "$DOMESTIC_DOCKER_USERNAME" -p "$DOMESTIC_DOCKER_PASSWORD" ${DOMESTIC_BASE_NAME}
-            docker push "${DOMESTIC_BASE_NAME}/${DOMESTIC_NAMESPACE}/builder:${VERSION}"
+            docker push "${DOMESTIC_BASE_NAME}/${DOMESTIC_NAMESPACE}/builder:${release_ver}"
 		fi
     else
         # TODO
