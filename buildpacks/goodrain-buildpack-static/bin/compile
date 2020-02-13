@@ -10,6 +10,7 @@ BIN_DIR=$(dirname $0)
 BUILD_DIR=$1
 CACHE_DIR=$2
 LP_DIR=`cd $(dirname $0); cd ..; pwd`
+StaticRuntimefile=$1"/runtime.txt"
 
 # include .files when moving things around
 shopt -s dotglob
