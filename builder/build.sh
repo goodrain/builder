@@ -79,6 +79,8 @@ function ensure_indent() {
 ## Copy application code over
 if [ -d "/tmp/app" ]; then
     cp -rf /tmp/app/. $app_dir
+elif [ -f "/tmp/app-source.tar" ]; then
+    tar -xmC $app_dir < /tmp/app-source.
 else
     cat | tar -xmC $app_dir
 fi
