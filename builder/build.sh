@@ -80,7 +80,7 @@ function ensure_indent() {
 if [ -d "/tmp/app" ]; then
     cp -rf /tmp/app/. $app_dir
 elif [ -f "/tmp/app-source.tar" ]; then
-    tar -xmC $app_dir < /tmp/app-source.
+    tar -xmC $app_dir < /tmp/app-source.tar
 else
     cat | tar -xmC $app_dir
 fi
