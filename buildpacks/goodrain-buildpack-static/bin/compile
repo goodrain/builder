@@ -43,7 +43,10 @@ fetch_nginx_tarball() {
 
     # update config files
     cp -a $LP_DIR/conf/nginx.conf $NGINX_PATH/conf/nginx.conf
-    
+    if [ -f "nginx.conf" ];then
+        echo "-----> Detected custom nginx configuration: nginx.conf"
+        mv nginx.conf $NGINX_PATH/conf.d/
+    fi
     if [ -f "www/web.conf" ]; then
         echo "-----> Detected custom configuration: web.conf"
         mv www/web.conf $NGINX_PATH/conf.d/

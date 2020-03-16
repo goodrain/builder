@@ -1,3 +1,4 @@
+
 fetch_nginx_tarball() {
     local version="1.14.2"
     local nginx_tarball_url="http://lang.goodrain.me/static/r6d/nginx/nginx-${version}.tar.gz"
@@ -12,11 +13,15 @@ fetch_nginx_tarball() {
 
     # update config files
     cp -a $BP_DIR/conf/nginx.conf $NGINX_PATH/conf/nginx.conf
+    if [ -f "nginx.conf" ];then
+        echo "-----> Detected custom nginx configuration: nginx.conf"
+        mv nginx.conf $NGINX_PATH/conf.d/
+    fi
     if [ -f "web.conf" ]; then
-        echo "-----> Detected custom configuration: web.conf"
+        echo "-----> Detected custom web configuration: web.conf"
         mv web.conf $NGINX_PATH/conf.d/
     elif [ -f "www/web.conf" ]; then
-        echo "-----> Detected custom configuration: www/web.conf"
+        echo "-----> Detected custom web configuration: www/web.conf"
         mv www/web.conf $NGINX_PATH/conf.d/
     else
         echo "-----> Use the default configuration: web.conf"
