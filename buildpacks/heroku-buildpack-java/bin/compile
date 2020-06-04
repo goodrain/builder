@@ -26,7 +26,7 @@ install_jdk "${BUILD_DIR}" "${CACHE_DIR}"
 [ -n "$(find ${BUILD_DIR} -type f -name "*.groovy")" ] && mcount "groovy.source"
 
 if [[ -f bin/java-pre-compile ]]; then
-    step "Running bin/java-pre-compile hook"
+    status "Running bin/java-pre-compile hook"
     chmod a+x bin/java-pre-compile
     bin/java-pre-compile
 fi
@@ -34,7 +34,7 @@ fi
 run_mvn "compile" $BUILD_DIR $CACHE_DIR
 
 if [[ -f bin/java-post-compile ]]; then
-    step "Running bin/java-post-compile hook"
+    status "Running bin/java-post-compile hook"
     chmod a+x bin/java-post-compile
     bin/java-post-compile
 fi
