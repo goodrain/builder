@@ -221,11 +221,13 @@ runtimes::nodejs(){
   if [ ! -z "$runtime" ]; then
     echo_title "Detection NodeJS runtime ${runtime}"
     old_runtime_version=$(cat ${BUILD_DIR}/$NodejsRuntimefile | grep "\"node\"" | awk -F: '{print $2}')
-    if [ "${old_runtime_version: -1}" == "," ];then
+    if [ -z "${old_runtime_version}" ];then
+        sed -i "/\"version\":/a\  \"engines\": {\n\    \"node\": \"${runtime}\"\n\  }," ${BUILD_DIR}/$NodejsRuntimefile
+    elif [ "${old_runtime_version}" == "," ];then
         sed -i "s#${old_runtime_version}#\"${runtime}\",#g" ${BUILD_DIR}/$NodejsRuntimefile
     else
         sed -i "s#${old_runtime_version}#\"${runtime}\"#g" ${BUILD_DIR}/$NodejsRuntimefile
-    fi    
+    fi
     echo "$runtime" > ${BUILD_DIR}/runtime.txt
   fi
 }
