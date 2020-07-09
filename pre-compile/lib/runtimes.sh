@@ -226,7 +226,7 @@ runtimes::nodejs(){
     elif [ "${old_runtime_version}" == "," ];then
         sed -i "s#${old_runtime_version}#\"${runtime}\",#g" ${BUILD_DIR}/$NodejsRuntimefile
     else
-        sed -i "s#${old_runtime_version}#\"${runtime}\"#g" ${BUILD_DIR}/$NodejsRuntimefile
+        sed -i "s#${old_runtime_version}#\"${runtime}\",#g" ${BUILD_DIR}/$NodejsRuntimefile
     fi
     echo "$runtime" > ${BUILD_DIR}/runtime.txt
   fi
