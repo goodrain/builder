@@ -2,6 +2,6 @@
 # yarn lockfile v1
 
 
-lodash@4.16.0:
-  version "4.16.0"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.16.0.tgz#834cb785057157032242beaf101bb3d99e55d0d8"
+lodash@4.17.19:
+  version "4.17.19"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
