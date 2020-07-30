@@ -79,6 +79,7 @@ install_java() {
   export PATH="${jdkDir}/bin:${PATH}"
 
   _install_tools ${baseDir}
+  install_pinpoit_agent ${baseDir}
   _create_profile_script ${baseDir}
   _create_export_script ${JAVA_HOME} "$(pwd)"
   _install_pgconfig ${JAVA_HOME}
@@ -213,11 +214,13 @@ get_app_system_value() {
 _create_profile_script() {
   local profileScript="${1}/.profile.d/jvmcommon.sh"
   local jdbcProfileScript="${1}/.profile.d/jdbc.sh"
+  local pinpointProfileScript="${1}/.profile.d/pinpoint.sh"
   local curDir=${JVM_COMMON_DIR:-$(cd $(dirname ${BASH_SOURCE[0]}) && cd .. && pwd )}
 
-  mkdir -p $(dirname $profileScript)
-  cp $curDir/opt/jvmcommon.sh $profileScript
-  cp $curDir/opt/jdbc.sh $jdbcProfileScript
+  mkdir -p "$(dirname $profileScript)"
+  cp "$curDir/opt/jvmcommon.sh" "$profileScript"
+  cp "$curDir/opt/jdbc.sh" "$jdbcProfileScript"
+  cp "$curDir/opt/pinpoint.sh" "$pinpointProfileScript"
 }
 
 _install_tools() {
@@ -274,4 +277,14 @@ _cache_version() {
   if [ -d "${cacheDir}" ]; then
     echo "java.runtime.version=${jdkVersion}" > "${cacheDir}/system.properties"
   fi
+}
+
+install_pinpoit_agent() {
+  local install_dir=${1}
+  PINPOINT_AGENT_VERSION=${PINPOINT_AGENT_VERSION:-1.7.2}
+  DEFAULT_PINPOINT_AGENT="http://lang.goodrain.me/java/pinpoint/pinpoint-agent-${PINPOINT_AGENT_VERSION}-SNAPSHOT.tar.gz"
+  PINPOINT_AGENT=${PINPOINT_AGENT:-"${DEFAULT_PINPOINT_AGENT}"}
+  mkdir "${install_dir}/.pinpoint"
+  curl --retry 3 --silent --location "$PINPOINT_AGENT" | tar xzm -C "${install_dir}/.pinpoint"
+  status "Install pinpoint agent success"
 }
