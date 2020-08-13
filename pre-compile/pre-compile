@@ -116,7 +116,7 @@ function ensure_indent() {
 source $LIBDIR/depds.sh
 source $LIBDIR/procfile.sh
 source $LIBDIR/runtimes.sh
-
+source $LIBDIR/slugignore.sh
 
 #============ main ==========
 
@@ -134,5 +134,7 @@ Save_Deps $LANGUAGE "$DEPDS"
 #Save_Procfile $LANGUAGE "$PROCFILE"
 
 R6D_Procfile $LANGUAGE "$PROCFILE"
+
+initSlugIgnore $LANGUAGE
 
 echo_title "Prepare Handle $RUNTIMES Success"
