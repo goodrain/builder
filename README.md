@@ -23,12 +23,12 @@
 
 当容器运行起来后，它准备通过标准输入设备接收app源码包。所以让我们通过`git archive` 来得到源码包:
 ```
-	$ id=$(git archive master | docker run -i -a stdin goodrain.me/builder)
+	$ id=$(git archive master | docker run -i -a stdin goodrain/builder)
 	$ docker wait $id
 	$ docker cp $id:/tmp/slug.tgz .
 ```
 
-我们运行 builder容器,docker等待其正常退出，然后将只做好的slug包复制到当期目录。如果我们通过 `docker attach` 连接到容器可以看到Heroku的build日志。当然也可以通过下面的方式 *只* 查看build的输出信息：
+我们运行 builder容器,docker等待其正常退出，然后将只做好的slug包复制到当前目录。如果我们通过 `docker attach` 连接到容器可以看到Heroku的build日志。当然也可以通过下面的方式 *只* 查看build的输出信息：
 ```
 	$ git archive master | docker run -i -a stdin -a stdout goodrain.me/builder
 ```
