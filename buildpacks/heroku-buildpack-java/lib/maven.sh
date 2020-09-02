@@ -38,7 +38,6 @@ _mvn_settings_opt() {
   elif [ -n "$MAVEN_SETTINGS_URL" ]; then
     local settingsXml="${mavenInstallDir}/.m2/settings.xml"
     mkdir -p $(dirname ${settingsXml})
-    [ -z "$DEBUG_INFO" ] && status_pending "Download Maven settings" || status_pending "Download Maven settings from $MAVEN_SETTINGS_URL"
     curl --retry 3 --silent --max-time 10 --location $MAVEN_SETTINGS_URL --output ${settingsXml}
     status_done
     mcount "mvn.settings.url"
