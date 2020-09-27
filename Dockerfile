@@ -1,4 +1,4 @@
-FROM rainbond/cedar14:20180416
+FROM rainbond/cedar14
 
 LABEL MAINTAINER ="zhengys <zhengys@goodrain.com>"
 
