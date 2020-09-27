@@ -282,7 +282,7 @@ _cache_version() {
 install_pinpoit_agent() {
   local install_dir=${1}
   PINPOINT_AGENT_VERSION=${PINPOINT_AGENT_VERSION:-2.0.3}
-  DEFAULT_PINPOINT_AGENT="https://goodrain-pkg.oss-cn-shanghai.aliyuncs.com/pkg/pinpoint-agent-${PINPOINT_AGENT_VERSION}.tar.gz"
+  DEFAULT_PINPOINT_AGENT="http://lang.goodrain.me/java/pinpoint/pinpoint-agent-${PINPOINT_AGENT_VERSION}.tar.gz"
   PINPOINT_AGENT=${PINPOINT_AGENT:-"${DEFAULT_PINPOINT_AGENT}"}
   mkdir "${install_dir}/.pinpoint"
   curl --retry 3 --silent --location "$PINPOINT_AGENT" | tar xzm -C "${install_dir}/.pinpoint"
