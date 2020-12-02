@@ -11,7 +11,7 @@ failure_message() {
   local warn="$(cat $warnings)"
   echo ""
   echo "We're sorry this build is failing! You can troubleshoot common issues here:"
-  echo "https://devcenter.heroku.com/articles/troubleshooting-node-deploys"
+  echo "https://github.com/goodrain/rainbond/issues"
   echo ""
   if [ "$warn" != "" ]; then
     echo "Some possible problems:"
@@ -19,11 +19,11 @@ failure_message() {
     echo "$warn"
   else
     echo "If you're stuck, please submit a ticket so we can help:"
-    echo "https://help.heroku.com/"
+    echo "https://www.rainbond.com/docs"
   fi
   echo ""
   echo "Love,"
-  echo "Heroku"
+  echo "Rainbond"
   echo ""
 }
 

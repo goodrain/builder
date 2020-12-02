@@ -220,14 +220,8 @@ runtimes::nodejs(){
   local runtime=${1}
   if [ ! -z "$runtime" ]; then
     echo_title "Detection NodeJS runtime ${runtime}"
-    old_runtime_version=$(cat ${BUILD_DIR}/$NodejsRuntimefile | grep "\"node\"" | awk -F: '{print $2}')
-    if [ -z "${old_runtime_version}" ];then
-        sed -i "/\"version\":/a\  \"engines\": {\n\    \"node\": \"${runtime}\"\n\  }," ${BUILD_DIR}/$NodejsRuntimefile
-    elif [ "${old_runtime_version: -1}" == "," ];then
-        sed -i "s#${old_runtime_version}#\"${runtime}\",#g" ${BUILD_DIR}/$NodejsRuntimefile
-    else
-        sed -i "s#${old_runtime_version}#\"${runtime}\"#g" ${BUILD_DIR}/$NodejsRuntimefile
-    fi
+    # update node version
+    jqe update engins.node=${runtime} -f "${BUILD_DIR}/$NodejsRuntimefile"
     echo "$runtime" > ${BUILD_DIR}/runtime.txt
   fi
 }

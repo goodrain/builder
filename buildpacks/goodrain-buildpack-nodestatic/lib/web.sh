@@ -59,6 +59,11 @@ nodestatic_prepare(){
             mv dists/* /tmp/www/www/
         fi
     fi
+    count=$(ls /tmp/www/www/|wc -w)
+    if [ "$count" == 0 ];then
+        error "No static file was generated. Check that the compilation process is correct."
+        exit 1
+    fi
     mv nginx /tmp/www
     mv boot.sh /tmp/www
     mv /tmp/build/* /tmp/buildxxx
