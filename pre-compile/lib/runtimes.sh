@@ -177,11 +177,11 @@ runtimes::php(){
       7.1.16)
         echo "php-7.1.16" > ${BUILD_DIR}/$PHPRuntimefile
       ;;
-      7.1|7.1.33)
-        echo "php-7.1.33" > ${BUILD_DIR}/$PHPRuntimefile
+      7.1|7.1.33|7.1.27)
+        echo "php-7.1.27" > ${BUILD_DIR}/$PHPRuntimefile
       ;;
-      7.2|7.2.26)
-        echo "php-7.2.26" > ${BUILD_DIR}/$PHPRuntimefile
+      7.2|7.2.26|7.2.16)
+        echo "php-7.2.16" > ${BUILD_DIR}/$PHPRuntimefile
       ;;
       7.3|7.3.13)
         echo "php-7.3.13" > ${BUILD_DIR}/$PHPRuntimefile
