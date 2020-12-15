@@ -22,6 +22,9 @@ RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/id_rsa && \
     chown -R rain:rain /app && \
     wget -q https://buildpack.oss-cn-shanghai.aliyuncs.com/common/utils/jqe -O /usr/bin/jqe && chmod +x /usr/bin/jqe
 
+# Default Support Chinese
+ENV LANG=zh_CN.utf8
+
 USER rain
 
 ENV HOME /app
