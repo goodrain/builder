@@ -16,11 +16,14 @@ mkdir -p "$cache_dir"
 env_dir=${3:-} # Anvil has none
 bp_dir=$(cd $(dirname $0); cd ..; pwd)
 
+export CHANGE_COMPOSE=false
 export BPLOG_PREFIX="buildpack.php"
 export BUILDPACK_LOG_FILE=${BUILDPACK_LOG_FILE:-/dev/null}
+export JQ="/tmp/pre-compile/bin/jq"
 
 # convenience functions
 source $bp_dir/bin/util/common.sh
+source $bp_dir/bin/util/json.sh
 
 # use err_trap from common.sh on error
 # we do not 'set -o errtrace', because that would cause subshell failures to fire the trap twice, e.g. with someval=$(func_that_fails)
@@ -52,10 +55,10 @@ cd $build_dir
 #update php version
 if [ -f "runtime.txt" ]; then
 	php_num=$(cat runtime.txt | grep php | wc -l)
-	ophp_num=$(cat composer.json | grep php | wc -l)
-	if [ "$php_num" -eq 1 -a "$ophp_num" -ne 0 ]; then
+	ophp_num=$(read_json composer.json .require.php)
+	if [ "$php_num" -eq 1 -a "$ophp_num" != "" ]; then
 		php_version=$(cat runtime.txt | grep php | awk -F- '{print $2}')
-		old_php_version=$(cat composer.json| grep "\"php\"" | awk -F\" '{print $4}')
+		old_php_version=$(read_json composer.json .require.php)
 		if [ ! -z "$old_php_version" ]; then
 			sed -i -r  "s/$old_php_version/$php_version/g" composer.json
 			export CHANGE_COMPOSE=true

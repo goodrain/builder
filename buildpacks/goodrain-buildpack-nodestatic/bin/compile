@@ -41,8 +41,6 @@ export PATH="$BUILD_DIR/.heroku/node/bin:$BUILD_DIR/.heroku/yarn/bin":$PATH
 LOG_FILE=$(mktemp -t node-build-log.XXXXX)
 echo "" > "$LOG_FILE"
 
-### Handle errors
-
 handle_failure() {
   header "Build failed"
   fail_yarn_outdated "$LOG_FILE"
@@ -56,7 +54,7 @@ handle_failure() {
   warn_missing_devdeps "$LOG_FILE"
   warn_econnreset "$LOG_FILE"
   failure_message | output "$LOG_FILE"
-  echo_title "You Should Read this"
+  header "You Should Read this"
   cat -n "$LOG_FILE"
 }
 trap 'handle_failure' ERR
@@ -123,8 +121,8 @@ install_bins() {
     mcount "version.iojs.$node_version"
   else
     warn_node_engine "$node_engine"
-    install_nodejs "$node_engine" "$BUILD_DIR/.heroku/node"
-    install_npm "$npm_engine" "$BUILD_DIR/.heroku/node" $NPM_LOCK
+    install_nodejs "$node_engine" "$BUILD_DIR/.heroku/node" || exit 1;
+    install_npm "$npm_engine" "$BUILD_DIR/.heroku/node" $NPM_LOCK  || exit 1;
     local node_version="$(node --version)"
     mcount "version.node.$node_version"
   fi
@@ -133,7 +131,7 @@ install_bins() {
   # has specified a version of yarn under "engines". We'll still
   # only install using yarn if there is a yarn.lock file
   if $YARN || [ -n "$yarn_engine" ]; then
-    install_yarn "$BUILD_DIR/.heroku/yarn" "$yarn_engine"
+    install_yarn "$BUILD_DIR/.heroku/yarn" "$yarn_engine"  || exit 1;
   fi
 
   if $YARN; then
@@ -217,6 +215,17 @@ build_dependencies() {
 header "Building dependencies" | output "$LOG_FILE"
 build_dependencies | output "$LOG_FILE"
 
+static_build() {
+  if $YARN; then
+    ${NODE_BUILD_CMD:-yarn run build} || exit 1;
+  else
+    ${NODE_BUILD_CMD:-npm run build}  || exit 1;
+  fi
+}
+
+header "Build static"
+static_build | output "$LOG_FILE"
+
 cache_build() {
   local cache_directories="$(get_cache_directories)"
 
@@ -236,17 +245,6 @@ cache_build() {
 }
 
 cache_build | output "$LOG_FILE"
-
-static_build() {
-  if $YARN; then
-    ${NODE_BUILD_CMD:-yarn run build}
-  else
-    ${NODE_BUILD_CMD:-npm run build}
-  fi
-}
-
-header "Build static"
-static_build | output "$LOG_FILE"
 
 prune_devdependencies() {
   if $YARN; then

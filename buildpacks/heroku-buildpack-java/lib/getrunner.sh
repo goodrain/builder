@@ -51,10 +51,15 @@ dl_webapp_runner(){
             fi   
         fi
     fi
+    status_pending "Start download webapp-runner ${version}"
     [ ! -z "$DEBUG_INFO" ] && status_pending "Download webapp-runner from $DOWNLOAD_URL" ||  status_pending "Download webapp-runner ${version}"
     try_dl_res $DOWNLOAD_URL
-    wget -q $DOWNLOAD_URL -O ${BUILD_DIR}/webapp-runner.jar && status_done || error "Download webapp-runner from $DOWNLOAD_URL failed"
-
+    wget --tries=3 -q "$DOWNLOAD_URL" -O "${BUILD_DIR}/webapp-runner.jar" 
+    if [ $? -ne 0 ]; then
+        error "Download webapp-runner from $DOWNLOAD_URL failed"
+    else
+        status_done
+    fi
 }
 
 
@@ -87,7 +92,8 @@ dl_jetty_runner(){
             fi   
         fi
     fi
+    status_pending "Start download jetty-runner ${version}"
     [ ! -z "$DEBUG_INFO" ] && status_pending "Download jetty-runner from $DOWNLOAD_URL" ||  status_pending "Download jetty-runner ${version}"
     try_dl_res $DOWNLOAD_URL
-    wget -q $DOWNLOAD_URL -O ${BUILD_DIR}/jetty-runner.jar && status_done || error "Download jetty-runner from $DOWNLOAD_URL failed"
+    wget --tries=3 -q $DOWNLOAD_URL -O ${BUILD_DIR}/jetty-runner.jar && status_done || error "Download jetty-runner from $DOWNLOAD_URL failed"
 }

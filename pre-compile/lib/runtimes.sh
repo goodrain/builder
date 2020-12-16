@@ -177,11 +177,11 @@ runtimes::php(){
       7.1.16)
         echo "php-7.1.16" > ${BUILD_DIR}/$PHPRuntimefile
       ;;
-      7.1|7.1.33)
-        echo "php-7.1.33" > ${BUILD_DIR}/$PHPRuntimefile
+      7.1|7.1.33|7.1.27)
+        echo "php-7.1.27" > ${BUILD_DIR}/$PHPRuntimefile
       ;;
-      7.2|7.2.26)
-        echo "php-7.2.26" > ${BUILD_DIR}/$PHPRuntimefile
+      7.2|7.2.26|7.2.16)
+        echo "php-7.2.16" > ${BUILD_DIR}/$PHPRuntimefile
       ;;
       7.3|7.3.13)
         echo "php-7.3.13" > ${BUILD_DIR}/$PHPRuntimefile
@@ -220,12 +220,8 @@ runtimes::nodejs(){
   local runtime=${1}
   if [ ! -z "$runtime" ]; then
     echo_title "Detection NodeJS runtime ${runtime}"
-    old_runtime_version=$(cat ${BUILD_DIR}/$NodejsRuntimefile | grep "\"node\"" | awk -F: '{print $2}')
-    if [ "${old_runtime_version: -1}" == "," ];then
-        sed -i "s#${old_runtime_version}#\"${runtime}\",#g" ${BUILD_DIR}/$NodejsRuntimefile
-    else
-        sed -i "s#${old_runtime_version}#\"${runtime}\"#g" ${BUILD_DIR}/$NodejsRuntimefile
-    fi    
+    # update node version
+    jqe update engins.node=${runtime} -f "${BUILD_DIR}/$NodejsRuntimefile"
     echo "$runtime" > ${BUILD_DIR}/runtime.txt
   fi
 }

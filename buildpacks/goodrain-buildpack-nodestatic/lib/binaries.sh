@@ -1,3 +1,5 @@
+#!/bin/bash
+
 install_yarn() {
   local dir="$1"
   local yarn_version=${2:-1.x}
@@ -17,8 +19,7 @@ install_yarn() {
   [ -z "$DEBUG_INFO" ] && echo "Downloading and installing yarn ($number)..." || echo "Downloading and installing yarn ($number) from $yarn_url "
   local code=$(curl "$yarn_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/yarn.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
-    echo "$yarn_url"
-    echo "Unable to download yarn: $code" && false
+    fail_bin_install yarn "v$number";
   fi
   rm -rf $dir
   mkdir -p "$dir"
@@ -50,8 +51,7 @@ install_nodejs() {
   [ -z "$DEBUG_INFO" ] && echo "Downloading and installing node $number..." || echo "Downloading and installing node $number from $node_url"
   local code=$(curl "$node_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/node.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
-    echo "$node_url"
-    echo "Unable to download node($number): $code" && false
+    fail_bin_install node "v$number";
   fi
   tar xzf /tmp/node.tar.gz -C /tmp
   rm -rf "$dir"/*

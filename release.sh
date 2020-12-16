@@ -26,13 +26,12 @@ build::public(){
     if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then 
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         docker push rainbond/builder:${release_ver}
-        if [ "${DOMESTIC_BASE_NAME}" ];
-        then
-            new_tag="${DOMESTIC_BASE_NAME}/${DOMESTIC_NAMESPACE}/builder:${release_ver}"
-            docker tag goodrain.me/builder "$new_tag"
-            docker login -u "$DOMESTIC_DOCKER_USERNAME" -p "$DOMESTIC_DOCKER_PASSWORD" "${DOMESTIC_BASE_NAME}"
-            docker push "$new_tag"
-        fi
+        if [ ${DOMESTIC_BASE_NAME} ];
+		then
+            docker tag "rainbond/builder:${release_ver}" "${DOMESTIC_BASE_NAME}/${DOMESTIC_NAMESPACE}/builder:${release_ver}"
+            docker login -u "$DOMESTIC_DOCKER_USERNAME" -p "$DOMESTIC_DOCKER_PASSWORD" ${DOMESTIC_BASE_NAME}
+            docker push "${DOMESTIC_BASE_NAME}/${DOMESTIC_NAMESPACE}/builder:${release_ver}"
+		fi
     else
         # TODO
         echo ''

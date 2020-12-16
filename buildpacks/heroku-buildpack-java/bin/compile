@@ -25,7 +25,19 @@ install_jdk "${BUILD_DIR}" "${CACHE_DIR}"
 [ -n "$(find ${BUILD_DIR} -type f -name "*.kt")" ] && mcount "kotlin.source"
 [ -n "$(find ${BUILD_DIR} -type f -name "*.groovy")" ] && mcount "groovy.source"
 
+if [[ -f bin/java-pre-compile ]]; then
+    status "Running bin/java-pre-compile hook"
+    chmod a+x bin/java-pre-compile
+    bin/java-pre-compile
+fi
+
 run_mvn "compile" $BUILD_DIR $CACHE_DIR
+
+if [[ -f bin/java-post-compile ]]; then
+    status "Running bin/java-post-compile hook"
+    chmod a+x bin/java-post-compile
+    bin/java-post-compile
+fi
 
 if [ -f "$BUILD_DIR/.iswar" ];then
     WEBSERVER=`cat $BUILD_DIR/webserver`
