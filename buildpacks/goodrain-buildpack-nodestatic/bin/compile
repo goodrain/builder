@@ -3,9 +3,9 @@
 
 ### Configure environment
 
-set -o errexit    # always exit on error
-set -o pipefail   # don't ignore exit codes when piping output
-unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
+set -o errexit  # always exit on error
+set -o pipefail # don't ignore exit codes when piping output
+unset GIT_DIR   # Avoid GIT_DIR leak from previous build steps
 
 ### Constants
 
@@ -16,7 +16,11 @@ BPLOG_PREFIX="buildpack.nodejs"
 BUILD_DIR=${1:-}
 CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
-BP_DIR=$(cd "$(dirname ${0:-})"; cd ..; pwd)
+BP_DIR=$(
+  cd "$(dirname ${0:-})"
+  cd ..
+  pwd
+)
 # STDLIB_FILE=$(mktemp -t stdlib.XXXXX)
 
 ### Load dependencies
@@ -39,7 +43,7 @@ source $BP_DIR/lib/plugin.sh
 export PATH="$BUILD_DIR/.heroku/node/bin:$BUILD_DIR/.heroku/yarn/bin":$PATH
 
 LOG_FILE=$(mktemp -t node-build-log.XXXXX)
-echo "" > "$LOG_FILE"
+echo "" >"$LOG_FILE"
 
 handle_failure() {
   header "Build failed"
@@ -54,8 +58,6 @@ handle_failure() {
   warn_missing_devdeps "$LOG_FILE"
   warn_econnreset "$LOG_FILE"
   failure_message | output "$LOG_FILE"
-  header "You Should Read this"
-  cat -n "$LOG_FILE"
 }
 trap 'handle_failure' ERR
 
@@ -121,8 +123,8 @@ install_bins() {
     mcount "version.iojs.$node_version"
   else
     warn_node_engine "$node_engine"
-    install_nodejs "$node_engine" "$BUILD_DIR/.heroku/node" || exit 1;
-    install_npm "$npm_engine" "$BUILD_DIR/.heroku/node" $NPM_LOCK  || exit 1;
+    install_nodejs "$node_engine" "$BUILD_DIR/.heroku/node" || exit 1
+    install_npm "$npm_engine" "$BUILD_DIR/.heroku/node" $NPM_LOCK || exit 1
     local node_version="$(node --version)"
     mcount "version.node.$node_version"
   fi
@@ -131,7 +133,7 @@ install_bins() {
   # has specified a version of yarn under "engines". We'll still
   # only install using yarn if there is a yarn.lock file
   if $YARN || [ -n "$yarn_engine" ]; then
-    install_yarn "$BUILD_DIR/.heroku/yarn" "$yarn_engine"  || exit 1;
+    install_yarn "$BUILD_DIR/.heroku/yarn" "$yarn_engine" || exit 1
   fi
 
   if $YARN; then
@@ -176,7 +178,7 @@ restore_cache() {
       # If the user has specified custom cache directories, be more explicit
       echo "Invalidating cache due to a change in version of node, npm, yarn or stack"
       echo "Will not restore the following directories for this build:"
-      for directory in $(< $cache_directories); do
+      for directory in $(<$cache_directories); do
         echo "  $directory"
       done
     fi
@@ -217,9 +219,9 @@ build_dependencies | output "$LOG_FILE"
 
 static_build() {
   if $YARN; then
-    ${NODE_BUILD_CMD:-yarn run build} || exit 1;
+    ${NODE_BUILD_CMD:-yarn run build} || exit 1
   else
-    ${NODE_BUILD_CMD:-npm run build}  || exit 1;
+    ${NODE_BUILD_CMD:-npm run build} || exit 1
   fi
 }
 
