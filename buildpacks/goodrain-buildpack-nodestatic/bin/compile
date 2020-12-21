@@ -225,6 +225,8 @@ static_build() {
   fi
 }
 
+run_if_present 'prebuild'
+
 header "Build static"
 static_build | output "$LOG_FILE"
 
@@ -270,6 +272,9 @@ summarize_build() {
 install_plugin $BP_DIR $BUILD_DIR
 
 header "Build succeeded!" | output "$LOG_FILE"
+
+run_if_present 'postbuild'
+
 mcount "compile"
 summarize_build | output "$LOG_FILE"
 
