@@ -50,13 +50,14 @@ EOF
 
 nodestatic_prepare(){
     local buildpath=$(read_json "$BUILD_DIR/nodestatic.json" ".path")
-    mkdir -p /tmp/www/www /tmp/buildxxx
+    # ADD ENV ROOT_PATH,User could define /path by it.
+    mkdir -p /tmp/www/www/${ROOT_PATH} /tmp/buildxxx
     echo "-----> Synchronous static resources."
     if [ -n "$buildpath" ]; then
-        mv $buildpath/* /tmp/www/www/
+        mv $buildpath/* /tmp/www/www/${ROOT_PATH}
     else
         if [ -d "dists" ]; then
-            mv dists/* /tmp/www/www/
+            mv dists/* /tmp/www/www/${ROOT_PATH}
         fi
     fi
     count=$(ls /tmp/www/www/|wc -w)
