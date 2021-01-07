@@ -184,8 +184,8 @@ runtimes::php() {
     7.2 | 7.2.26 | 7.2.16)
       jqe update require.php="7.2.16" -f "${composer}"
       ;;
-    7.3 | 7.3.13)
-      jqe update require.php="7.3.13" -f "${composer}"
+    7.3 | 7.3.13 | 7.3.3)
+      jqe update require.php="7.3.3" -f "${composer}"
       ;;
     5.6 | 5.6.35)
       jqe update require.php="5.6.35" -f "${composer}"
