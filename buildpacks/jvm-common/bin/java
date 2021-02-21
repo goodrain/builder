@@ -80,6 +80,7 @@ install_java() {
 
   _install_tools ${baseDir}
   install_pinpoit_agent ${baseDir}
+  install_jmx_exporter_agent ${baseDir}
   _create_profile_script ${baseDir}
   _create_export_script ${JAVA_HOME} "$(pwd)"
   _install_pgconfig ${JAVA_HOME}
@@ -215,12 +216,14 @@ _create_profile_script() {
   local profileScript="${1}/.profile.d/jvmcommon.sh"
   local jdbcProfileScript="${1}/.profile.d/jdbc.sh"
   local pinpointProfileScript="${1}/.profile.d/pinpoint.sh"
+  local jmxexporterProfileScript="${1}/.profile.d/jmx-exporter.sh"
   local curDir=${JVM_COMMON_DIR:-$(cd $(dirname ${BASH_SOURCE[0]}) && cd .. && pwd )}
 
   mkdir -p "$(dirname $profileScript)"
   cp "$curDir/opt/jvmcommon.sh" "$profileScript"
   cp "$curDir/opt/jdbc.sh" "$jdbcProfileScript"
   cp "$curDir/opt/pinpoint.sh" "$pinpointProfileScript"
+  cp "$curDir/opt/jmx-exporter.sh" "$jmxexporterProfileScript"
 }
 
 _install_tools() {
@@ -287,4 +290,20 @@ install_pinpoit_agent() {
   mkdir "${install_dir}/.pinpoint"
   curl --retry 3 --silent --location "$PINPOINT_AGENT" | tar xzm -C "${install_dir}/.pinpoint"
   status "Install pinpoint agent success"
+}
+
+install_jmx_exporter_agent() {
+  local install_dir=${1}
+  JMX_EXPORTER_AGENT_VERSION=${JMX_EXPORTER_AGENT_VERSION:-0.15.0}
+  JMX_EXPORTER_AGENT="http://lang.goodrain.me/java/jmx-exporter/jmx_prometheus_javaagent-${JMX_EXPORTER_AGENT_VERSION}.jar"
+  mkdir "${install_dir}/.jmx-exporter"
+  curl --retry 3 --silent --location "${JMX_EXPORTER_AGENT}" -o "${install_dir}/.jmx-exporter/jmx_prometheus_javaagent-${JMX_EXPORTER_AGENT_VERSION}.jar"
+  cat > ${install_dir}/.jmx-exporter/config.yaml << EOF
+---
+lowercaseOutputLabelNames: true
+lowercaseOutputName: true
+rules:
+- pattern: ".*"
+EOF
+  status "Install jmx exporter agent success"
 }
