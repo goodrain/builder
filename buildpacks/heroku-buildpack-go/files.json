@@ -579,5 +579,21 @@
     "LocalName": "tq",
     "SHA": "f22ab0a1694fb329f96e564f1f0b44876b2a60023ef26b1b42a15fb94287378e",
     "URL": "https://github.com/heroku/tq/releases/download/v0.5/tq-v0.5-linux-amd64"
+  },
+  "go1.13.15.linux-amd64.tar.gz": {
+    "SHA": "01cc3ddf6273900eba3e2bf311238828b7168b822bb57a9ccab4d7aa2acd6028",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.13.15.linux-amd64.tar.gz"
+  },
+  "go1.14.15.linux-amd64.tar.gz": {
+    "SHA": "c64a57b374a81f7cf1408d2c410a28c6f142414f1ffa9d1062de1d653b0ae0d6",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.14.15.linux-amd64.tar.gz"
+  },
+  "go1.15.10.linux-amd64.tar.gz": {
+    "SHA": "4aa1267517df32f2bf1cc3d55dfc27d0c6b2c2b0989449c96dd19273ccca051d",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.15.10.linux-amd64.tar.gz"
+  },
+  "go1.16.2.linux-amd64.tar.gz": {
+    "SHA": "542e936b19542e62679766194364f45141fde55169db2d8d01046555ca9eb4b8",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.16.2.linux-amd64.tar.gz"
   }
 }
