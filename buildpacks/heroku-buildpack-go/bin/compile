@@ -15,21 +15,21 @@ source_stdlib
 
 snapshotBinBefore
 
-DefaultGoVersion="$(<${DataJSON} jq -r '.Go.DefaultVersion')"
-DepVersion="$(<${DataJSON} jq -r '.Dep.DefaultVersion')"
-GlideVersion="$(<${DataJSON} jq -r '.Glide.DefaultVersion')"
-GovendorVersion="$(<${DataJSON} jq -r '.Govendor.DefaultVersion')"
-GBVersion="$(<${DataJSON} jq -r '.GB.DefaultVersion')"
-PkgErrorsVersion="$(<${DataJSON} jq -r '.PkgErrors.DefaultVersion')"
-MercurialVersion="$(<${DataJSON} jq -r '.HG.DefaultVersion')"
-BazaarVersion="$(<${DataJSON} jq -r '.BZR.DefaultVersion')"
-MattesMigrateVersion="$(<${DataJSON} jq -r '.MattesMigrate.DefaultVersion')"
-GolangMigrateVersion="$(<${DataJSON} jq -r '.GolangMigrate.DefaultVersion')"
-TQVersion="$(<${DataJSON} jq -r '.tq.DefaultVersion')"
+DefaultGoVersion="$(jq <${DataJSON} -r '.Go.DefaultVersion')"
+DepVersion="$(jq <${DataJSON} -r '.Dep.DefaultVersion')"
+GlideVersion="$(jq <${DataJSON} -r '.Glide.DefaultVersion')"
+GovendorVersion="$(jq <${DataJSON} -r '.Govendor.DefaultVersion')"
+GBVersion="$(jq <${DataJSON} -r '.GB.DefaultVersion')"
+PkgErrorsVersion="$(jq <${DataJSON} -r '.PkgErrors.DefaultVersion')"
+MercurialVersion="$(jq <${DataJSON} -r '.HG.DefaultVersion')"
+BazaarVersion="$(jq <${DataJSON} -r '.BZR.DefaultVersion')"
+MattesMigrateVersion="$(jq <${DataJSON} -r '.MattesMigrate.DefaultVersion')"
+GolangMigrateVersion="$(jq <${DataJSON} -r '.GolangMigrate.DefaultVersion')"
+TQVersion="$(jq <${DataJSON} -r '.tq.DefaultVersion')"
 
 # For specified versions of Go we need to keep concurrency.sh
 needConcurrency() {
-    <"${DataJSON}" jq -e '.Go.NeedsConcurrency | any(. == "'${1}'")' &> /dev/null
+    jq <"${DataJSON}" -e '.Go.NeedsConcurrency | any(. == "'${1}'")' &>/dev/null
 }
 
 handleDefaultPkgSpec() {
@@ -37,29 +37,29 @@ handleDefaultPkgSpec() {
         warn "Installing package '.' (default)"
         warn ""
         case "${TOOL}" in
-            gomodules)
-                warn "To install a different package spec add a comment in the following form to your \`go.mod\` file:"
-                warn ""
+        gomodules)
+            warn "To install a different package spec add a comment in the following form to your \`go.mod\` file:"
+            warn ""
             ;;
-            dep)
-                warn "To install a different package spec set 'metadata.heroku.install' in 'Gopkg.toml'"
-                warn ""
-                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
-                warn ""
+        dep)
+            warn "To install a different package spec set 'metadata.heroku.install' in 'Gopkg.toml'"
+            warn ""
+            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
+            warn ""
             ;;
-            govendor)
-                warn "To install a different package spec set 'heroku.install' in 'vendor/vendor.json'"
-                warn ""
-                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
-                warn ""
+        govendor)
+            warn "To install a different package spec set 'heroku.install' in 'vendor/vendor.json'"
+            warn ""
+            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
+            warn ""
             ;;
-            glide)
-                warn "To install a different package spec for the next build run:"
-                warn ""
-                warn "'heroku config:set GO_INSTALL_PACKAGE_SPEC=\"<pkg spec>\"'"
-                warn ""
-                warn "For more details see: https://devcenter.heroku.com/articles/go-dependencies-via-glide"
-                warn ""
+        glide)
+            warn "To install a different package spec for the next build run:"
+            warn ""
+            warn "'heroku config:set GO_INSTALL_PACKAGE_SPEC=\"<pkg spec>\"'"
+            warn ""
+            warn "For more details see: https://devcenter.heroku.com/articles/go-dependencies-via-glide"
+            warn ""
             ;;
         esac
         pkgs="."
@@ -82,13 +82,13 @@ massagePkgSpecForVendor() {
 urlFor() {
     local ver=$1
     case $ver in
-        devel*)
-            local sha=$(echo ${ver} | cut -d - -f 2)  #assumes devel-<short sha> or devel-<full sha>
-            echo https://github.com/golang/go/archive/$sha.tar.gz
+    devel*)
+        local sha=$(echo ${ver} | cut -d - -f 2) #assumes devel-<short sha> or devel-<full sha>
+        echo https://github.com/golang/go/archive/$sha.tar.gz
         ;;
-        *)
-            local file="${ver}.linux-amd64.tar.gz"
-            echo ${BucketURL}/${file}
+    *)
+        local file="${ver}.linux-amd64.tar.gz"
+        echo ${BucketURL}/${file}
         ;;
     esac
 }
@@ -103,7 +103,7 @@ expandVer() {
     if [[ "${v}" =~ ^[[:digit:]]+ ]]; then
         v="go${v}"
     fi
-    echo $(<${DataJSON} jq -r 'if .Go.VersionExpansion."'${v}'" then .Go.VersionExpansion."'${v}'" else "'${v}'" end')
+    echo $(jq <${DataJSON} -r 'if .Go.VersionExpansion."'${v}'" then .Go.VersionExpansion."'${v}'" else "'${v}'" end')
 }
 
 # Report development versions to user
@@ -113,14 +113,14 @@ reportVer() {
     mcount "version.go.$ver"
 
     case $ver in
-        devel*)
-            warn ""
-            warn "You are using a development build of Go."
-            warn "This is provided for users requiring an unreleased Go version"
-            warn "but is otherwise unsupported."
-            warn ""
-            warn "Build tests are NOT RUN!!"
-            warn ""
+    devel*)
+        warn ""
+        warn "You are using a development build of Go."
+        warn "This is provided for users requiring an unreleased Go version"
+        warn "but is otherwise unsupported."
+        warn ""
+        warn "Build tests are NOT RUN!!"
+        warn ""
         ;;
     esac
 }
@@ -167,14 +167,14 @@ wantAdditionalTool() {
     local addt="${1}"
 
     case "${TOOL}" in
-        govendor)
-            <${vendorJSON} jq -e '.heroku.additionalTools | contains(["'${addt}'"])' &> /dev/null
+    govendor)
+        jq <${vendorJSON} -e '.heroku.additionalTools | contains(["'${addt}'"])' &>/dev/null
         ;;
-        dep)
-          <${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep "^${addt}$" &> /dev/null
+    dep)
+        tq <${depTOML} '$.metadata.heroku["additional-tools"]' | grep "^${addt}$" &>/dev/null
         ;;
-        *)
-            false
+    *)
+        false
         ;;
     esac
 }
@@ -185,13 +185,13 @@ additionalToolVersion() {
 
     local tv=""
     case "${TOOL}" in
-        govendor)
-            tv="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("'${addt}'@"))) | if .[0] then .[0] else "@'${default}'" end | split("@") | .[1]')"
+    govendor)
+        tv="$(jq <${vendorJSON} -r '.heroku.additionalTools | map(select(contains("'${addt}'@"))) | if .[0] then .[0] else "@'${default}'" end | split("@") | .[1]')"
         ;;
-        dep)
-            f=$(<${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep ^${addt} | sed s:${addt}::)
-            f=${f:-"@${default}"}
-            tv="$(echo $f | cut -d @ -f 2)"
+    dep)
+        f=$(tq <${depTOML} '$.metadata.heroku["additional-tools"]' | grep ^${addt} | sed s:${addt}::)
+        f=${f:-"@${default}"}
+        tv="$(echo $f | cut -d @ -f 2)"
         ;;
     esac
 
@@ -240,9 +240,9 @@ ensureGB() {
         rm -f "${gbPath}/${gbFile}"
 
         start "Installing GB v${GBVersion}"
-            pushd "${gbPath}" &> /dev/null
-                go install ./...
-            popd &> /dev/null
+        pushd "${gbPath}" &>/dev/null
+        go install ./...
+        popd &>/dev/null
         finished
     fi
 }
@@ -262,17 +262,17 @@ ensureGo() {
         fi
         rm -rf ${cache}/*
         case "${goVersion}" in
-            devel*)
-                local bGoVersion="$(expandVer ${DefaultGoVersion})"
-                goFile="${bGoVersion}.linux-amd64.tar.gz"
-                goPath="${cache}/${bGoVersion}/go"
-                txt="Installing bootstrap ${bGoVersion}"
+        devel*)
+            local bGoVersion="$(expandVer ${DefaultGoVersion})"
+            goFile="${bGoVersion}.linux-amd64.tar.gz"
+            goPath="${cache}/${bGoVersion}/go"
+            txt="Installing bootstrap ${bGoVersion}"
             ;;
-            go1)
-                goFile="go.go1.linux-amd64.tar.gz"
+        go1)
+            goFile="go.go1.linux-amd64.tar.gz"
             ;;
-            *)
-                goFile="${goVersion}.linux-amd64.tar.gz"
+        *)
+            goFile="${goVersion}.linux-amd64.tar.gz"
             ;;
         esac
 
@@ -281,29 +281,33 @@ ensureGo() {
         rm -f "${goPath}/${goFile}"
 
         case "${goVersion}" in
-            devel*)
-                pushd "${cache}" &> /dev/null
-                    mkdir -p "${goVersion}"
-                    pushd "${goVersion}" &> /dev/null
-                        local sha=$(echo ${goVersion} | cut -d - -f 2)  #assumes devel-<short sha> or devel-<full sha>
-                        local url="https://github.com/golang/go/archive/$sha.tar.gz"
-                        start "Downloading development Go version ${goVersion}"
-                            ${CURL} ${url} | tar zxf -
-                            mv go-${sha}* go
-                        finished
-                        step "Compiling development Go version ${goVersion}"
-                        pushd go/src &> /dev/null
-                            echo "devel +${sha} $(date "+%a %b %H:%M:%S %G %z")"> ../VERSION
-                            GOROOT_BOOTSTRAP=$(pushd ${cache}/${bGoVersion}/go > /dev/null; pwd; popd > /dev/null) ./make.bash 2>&1
-                        popd &> /dev/null
-                        go/bin/go version
-                        rm -rf "${goPath}"
-                    popd &> /dev/null
-                popd &> /dev/null
-                goPath="${cache}/${goVersion}/go"
+        devel*)
+            pushd "${cache}" &>/dev/null
+            mkdir -p "${goVersion}"
+            pushd "${goVersion}" &>/dev/null
+            local sha=$(echo ${goVersion} | cut -d - -f 2) #assumes devel-<short sha> or devel-<full sha>
+            local url="https://github.com/golang/go/archive/$sha.tar.gz"
+            start "Downloading development Go version ${goVersion}"
+            ${CURL} ${url} | tar zxf -
+            mv go-${sha}* go
+            finished
+            step "Compiling development Go version ${goVersion}"
+            pushd go/src &>/dev/null
+            echo "devel +${sha} $(date "+%a %b %H:%M:%S %G %z")" >../VERSION
+            GOROOT_BOOTSTRAP=$(
+                pushd ${cache}/${bGoVersion}/go >/dev/null
+                pwd
+                popd >/dev/null
+            ) ./make.bash 2>&1
+            popd &>/dev/null
+            go/bin/go version
+            rm -rf "${goPath}"
+            popd &>/dev/null
+            popd &>/dev/null
+            goPath="${cache}/${goVersion}/go"
             ;;
-            *)
-            ;;
+        *) ;;
+
         esac
     fi
 
@@ -312,7 +316,7 @@ ensureGo() {
 
     # Export GOCACHE if Go >= 1.10
     if go env | grep -q '^GOCACHE='; then
-      export GOCACHE="${cache}/go-build-cache"
+        export GOCACHE="${cache}/go-build-cache"
     fi
 }
 
@@ -393,11 +397,11 @@ mkdir -p "${build}/bin"
 FLAGS=(-tags heroku)
 if [ -n "${GO_LINKER_SYMBOL}" -a -n "${GO_LINKER_VALUE}" ]; then
     case "${ver}" in
-        go1|go1.0.*|go1.1|go1.1.*|go1.2|go1.2.*|go1.3|go1.3.*|go1.4|go1.4.*)
-            xval="${GO_LINKER_SYMBOL} ${GO_LINKER_VALUE}"
+    go1 | go1.0.* | go1.1 | go1.1.* | go1.2 | go1.2.* | go1.3 | go1.3.* | go1.4 | go1.4.*)
+        xval="${GO_LINKER_SYMBOL} ${GO_LINKER_VALUE}"
         ;;
-        *)
-            xval="${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}"
+    *)
+        xval="${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}"
         ;;
     esac
     FLAGS+=(-ldflags "-X ${xval}")
@@ -409,8 +413,8 @@ export GOPATH
 mcount "pkgmanagement.$TOOL"
 
 mainPackagesInModule() {
-  # For an explanation of what this is doing, see https://dave.cheney.net/2014/09/14/go-list-your-swiss-army-knife
-  go list -find -mod=vendor -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./...
+    # For an explanation of what this is doing, see https://dave.cheney.net/2014/09/14/go-list-your-swiss-army-knife
+    go list -find -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./...
 }
 
 setupProcfile() {
@@ -433,11 +437,11 @@ setupProcfile() {
     info "Created a Procfile with the following entries:"
     if [ ${#pf[@]} -eq 1 ]; then
         local line="web: bin/$(echo ${pf[0]} | cut -d / -f 2)"
-        echo "${line}" > ${build}/Procfile
+        echo "${line}" >${build}/Procfile
         info "\t\t${line}"
     elif [ ${#pf[@]} -gt 1 ]; then
         for pfl in "${pf[@]}"; do
-            echo "${pfl}" >> ${build}/Procfile
+            echo "${pfl}" >>${build}/Procfile
             info "\t\t${pfl}"
         done
     fi
@@ -458,190 +462,190 @@ setGOPROXY() {
 }
 
 case "${TOOL}" in
-    gomodules)
-        cd ${build}
-        step "Determining packages to install"
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
+gomodules)
+    cd ${build}
+    step "Determining packages to install"
+    pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
+    if [ -z "${pkgs}" ]; then
+        pkgs=$(mainPackagesInModule)
         if [ -z "${pkgs}" ]; then
-            pkgs=$(mainPackagesInModule)
-            if [ -z "${pkgs}" ]; then
-                warn ""
-                warn "No main packages found in module ${name}"
-                warn ""
-                warn "Unsure what package(s) to install, defaulting to '.'"
-                warn ""
-                pkgs="default"
-                mcount "pkginstall.detect-failed"
-            else
-                info ""
-                info "Detected the following main packages to install:"
-                for pkg in ${pkgs}; do
-                    info "\t\t${pkg}"
-                done
-                info ""
-                mcount "pkginstall.auto"
-            fi
-        else
-            if [ -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
-                mcount "pkginstall.go_install_package_spec"
-            else
-                mcount "pkginstall.heroku_install"
-            fi
-        fi
-
-        if [[ "${pkgs}" =~ "..." ]]; then
-            mcount "package_spec.contains.dot_dot_dot"
-        fi
-        setGOPROXY
-        warnPackageSpecOverride
-        handleDefaultPkgSpec
-        massagePkgSpecForVendor
-
-        if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
-            FLAGS+=(-mod=vendor)
-        fi
-
-        unset GIT_DIR # unset git dir or it will mess with goinstall
-        export GOBIN="${build}/bin"
-        if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
-            export GOPATH="${build}/.heroku/go-path"
-            mkdir -p $GOPATH # ensure that it's created
-        else
-            export GOPATH="${cache}/go-path"
-        fi
-        if [[ -f bin/go-pre-compile ]]; then
-            step "Running bin/go-pre-compile hook"
-            chmod a+x bin/go-pre-compile
-            bin/go-pre-compile
-        fi
-        
-        installPkgs
-
-        if [[ -f bin/go-post-compile ]]; then
-            step "Running bin/go-post-compile hook"
-            chmod a+x bin/go-post-compile
-            bin/go-post-compile
-        fi
-    ;;
-    dep)
-        eval "$(setupGOPATH ${name})"
-        depTOML="${src}/Gopkg.toml"
-
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${depTOML} tq '$.metadata.heroku["install"]')}
-        if [ -z "${pkgs}" ]; then
+            warn ""
+            warn "No main packages found in module ${name}"
+            warn ""
+            warn "Unsure what package(s) to install, defaulting to '.'"
+            warn ""
             pkgs="default"
-        fi
-        warnPackageSpecOverride
-        handleDefaultPkgSpec
-
-        unset GIT_DIR # unset git dir or it will mess with goinstall
-        cd "${src}"
-
-        if [ "$(< ${depTOML} tq '$.metadata.heroku["ensure"]')" != "false" ]; then
-            ensureInPath "dep-${DepVersion}-linux-amd64" "${cache}/dep/bin"
-            step "Fetching any unsaved dependencies (dep ensure)"
-            dep ensure
-        fi
-        massagePkgSpecForVendor
-
-        installPkgs
-    ;;
-    godep)
-        eval "$(setupGOPATH ${name})"
-        godepsJSON="${src}/Godeps/Godeps.json"
-
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${godepsJSON} jq -r 'if .Packages then .Packages | join(" ") else "default" end')}
-        warnPackageSpecOverride
-        handleDefaultPkgSpec
-
-        UseGodepCommand="false" # Default to not wrapping go install with godep (vendor)
-        if [ -d "${src}/Godeps/_workspace/src" ]; then
-            UseGodepCommand="true"
-            if [ -d "${src}/vendor" ]; then
-                warn ""
-                warn "Godeps/_workspace/src and vendor/ exist"
-                warn "code may not compile. Please convert all deps to vendor/"
-                warn ""
-            fi
-        fi
-        # Warn that GO15VENDOREXPIERMENT is set, but the go version does not support it.
-        if ! <"${DataJSON}" jq -e '.Go.SupportsVendorExperiment | any(. == "'${ver}'")' &> /dev/null; then
-            if [ -n "${GO15VENDOREXPERIMENT}" ]; then
-                warn ""
-                warn "GO15VENDOREXPERIMENT is set, but is not supported by ${ver}"
-                warn ""
-            fi
-        fi
-
-        unset GIT_DIR # unset git dir or it will mess with goinstall
-        cd "${src}"
-        if [ "${UseGodepCommand}" = "true" ]; then
-            ensureInPath "godep_linux_amd64" "${cache}/godep/bin"
-
-            step "Running: godep go install -v ${FLAGS[@]} ${pkgs}"
-            godep go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+            mcount "pkginstall.detect-failed"
         else
-            massagePkgSpecForVendor
-            installPkgs
+            info ""
+            info "Detected the following main packages to install:"
+            for pkg in ${pkgs}; do
+                info "\t\t${pkg}"
+            done
+            info ""
+            mcount "pkginstall.auto"
         fi
+    else
+        if [ -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
+            mcount "pkginstall.go_install_package_spec"
+        else
+            mcount "pkginstall.heroku_install"
+        fi
+    fi
+
+    if [[ "${pkgs}" =~ "..." ]]; then
+        mcount "package_spec.contains.dot_dot_dot"
+    fi
+    setGOPROXY
+    warnPackageSpecOverride
+    handleDefaultPkgSpec
+    massagePkgSpecForVendor
+
+    if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
+        FLAGS+=(-mod=vendor)
+    fi
+
+    unset GIT_DIR # unset git dir or it will mess with goinstall
+    export GOBIN="${build}/bin"
+    if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
+        export GOPATH="${build}/.heroku/go-path"
+        mkdir -p $GOPATH # ensure that it's created
+    else
+        export GOPATH="${cache}/go-path"
+    fi
+    if [[ -f bin/go-pre-compile ]]; then
+        step "Running bin/go-pre-compile hook"
+        chmod a+x bin/go-pre-compile
+        bin/go-pre-compile
+    fi
+
+    installPkgs
+
+    if [[ -f bin/go-post-compile ]]; then
+        step "Running bin/go-post-compile hook"
+        chmod a+x bin/go-post-compile
+        bin/go-post-compile
+    fi
     ;;
-    govendor)
-        ensureInPath "govendor_linux_amd64" "${cache}/govendor/bin"
+dep)
+    eval "$(setupGOPATH ${name})"
+    depTOML="${src}/Gopkg.toml"
 
-        eval "$(setupGOPATH ${name})"
-        vendorJSON="${src}/vendor/vendor.json"
+    pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(tq <${depTOML} '$.metadata.heroku["install"]')}
+    if [ -z "${pkgs}" ]; then
+        pkgs="default"
+    fi
+    warnPackageSpecOverride
+    handleDefaultPkgSpec
 
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${vendorJSON} jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
-        warnPackageSpecOverride
-        handleDefaultPkgSpec
+    unset GIT_DIR # unset git dir or it will mess with goinstall
+    cd "${src}"
 
-        unset GIT_DIR # unset git dir or it will mess with goinstall
-        cd "${src}"
+    if [ "$(tq <${depTOML} '$.metadata.heroku["ensure"]')" != "false" ]; then
+        ensureInPath "dep-${DepVersion}-linux-amd64" "${cache}/dep/bin"
+        step "Fetching any unsaved dependencies (dep ensure)"
+        dep ensure
+    fi
+    massagePkgSpecForVendor
 
-        if [ "$(<${vendorJSON} jq -r '.heroku.sync')" != "false" ]; then
-            step "Fetching any unsaved dependencies (govendor sync)"
-            govendor sync
+    installPkgs
+    ;;
+godep)
+    eval "$(setupGOPATH ${name})"
+    godepsJSON="${src}/Godeps/Godeps.json"
+
+    pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(jq <${godepsJSON} -r 'if .Packages then .Packages | join(" ") else "default" end')}
+    warnPackageSpecOverride
+    handleDefaultPkgSpec
+
+    UseGodepCommand="false" # Default to not wrapping go install with godep (vendor)
+    if [ -d "${src}/Godeps/_workspace/src" ]; then
+        UseGodepCommand="true"
+        if [ -d "${src}/vendor" ]; then
+            warn ""
+            warn "Godeps/_workspace/src and vendor/ exist"
+            warn "code may not compile. Please convert all deps to vendor/"
+            warn ""
         fi
+    fi
+    # Warn that GO15VENDOREXPIERMENT is set, but the go version does not support it.
+    if ! jq <"${DataJSON}" -e '.Go.SupportsVendorExperiment | any(. == "'${ver}'")' &>/dev/null; then
+        if [ -n "${GO15VENDOREXPERIMENT}" ]; then
+            warn ""
+            warn "GO15VENDOREXPERIMENT is set, but is not supported by ${ver}"
+            warn ""
+        fi
+    fi
+
+    unset GIT_DIR # unset git dir or it will mess with goinstall
+    cd "${src}"
+    if [ "${UseGodepCommand}" = "true" ]; then
+        ensureInPath "godep_linux_amd64" "${cache}/godep/bin"
+
+        step "Running: godep go install -v ${FLAGS[@]} ${pkgs}"
+        godep go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+    else
         massagePkgSpecForVendor
-
         installPkgs
+    fi
     ;;
-    glide)
-        ensureGlide "${GlideVersion}"
+govendor)
+    ensureInPath "govendor_linux_amd64" "${cache}/govendor/bin"
 
-        # Do this before setupGOPATH as we need ${name} set first
-        cd "${build}"
-        name=$(glide name 2>/dev/null)
+    eval "$(setupGOPATH ${name})"
+    vendorJSON="${src}/vendor/vendor.json"
 
-        eval "$(setupGOPATH ${name})"
+    pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(jq <${vendorJSON} -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
+    warnPackageSpecOverride
+    handleDefaultPkgSpec
 
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-"default"}
-        handleDefaultPkgSpec
+    unset GIT_DIR # unset git dir or it will mess with goinstall
+    cd "${src}"
 
-        unset GIT_DIR
-        cd "${src}"
+    if [ "$(jq <${vendorJSON} -r '.heroku.sync')" != "false" ]; then
+        step "Fetching any unsaved dependencies (govendor sync)"
+        govendor sync
+    fi
+    massagePkgSpecForVendor
 
-        if [[ "${GLIDE_SKIP_INSTALL}" != "true" ]]; then
-            step "Fetching any unsaved dependencies (glide install)"
-            glide install 2>&1
-        fi
-
-        massagePkgSpecForVendor
-
-        installPkgs
+    installPkgs
     ;;
-    gb)
-        ensureGB "${GBVersion}"
+glide)
+    ensureGlide "${GlideVersion}"
 
-        cd $build
-        step "Running: gb build ${FLAGS[@]}"
-        gb build "${FLAGS[@]}" 2>&1
+    # Do this before setupGOPATH as we need ${name} set first
+    cd "${build}"
+    name=$(glide name 2>/dev/null)
 
-        step "Post Compile Cleanup"
-        for f in bin/*-heroku; do
-            mv "$f" "${f/-heroku}"
-        done
-        rm -rf pkg
+    eval "$(setupGOPATH ${name})"
+
+    pkgs=${GO_INSTALL_PACKAGE_SPEC:-"default"}
+    handleDefaultPkgSpec
+
+    unset GIT_DIR
+    cd "${src}"
+
+    if [[ "${GLIDE_SKIP_INSTALL}" != "true" ]]; then
+        step "Fetching any unsaved dependencies (glide install)"
+        glide install 2>&1
+    fi
+
+    massagePkgSpecForVendor
+
+    installPkgs
+    ;;
+gb)
+    ensureGB "${GBVersion}"
+
+    cd $build
+    step "Running: gb build ${FLAGS[@]}"
+    gb build "${FLAGS[@]}" 2>&1
+
+    step "Post Compile Cleanup"
+    for f in bin/*-heroku; do
+        mv "$f" "${f/-heroku/}"
+    done
+    rm -rf pkg
     ;;
 esac
 
@@ -652,7 +656,7 @@ _newOrUpdatedBinFiles=$(binDiff)
 info ""
 info "Installed the following binaries:"
 for fyle in ${_newOrUpdatedBinFiles}; do
-  info "\t\t${fyle}"
+    info "\t\t${fyle}"
 done
 
 if [ -n "${src}" -a "${src}" != "${build}" -a -e "${src}/Procfile" ]; then
@@ -664,32 +668,32 @@ if [ "${TOOL}" = "gomodules" ]; then
 fi
 
 if [ ! -e $build/Procfile -a -n "${name}" ]; then
-    echo -e "web: $(basename $name)" >> $build/Procfile
+    echo -e "web: $(basename $name)" >>$build/Procfile
 fi
 
 cd $build
 mkdir -p $build/.profile.d
-echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
+echo 'PATH=$PATH:$HOME/bin' >$build/.profile.d/go.sh
 
 if [ "${GO_INSTALL_TOOLS_IN_IMAGE}" = "true" ]; then
     start "Copying go tool chain to \$GOROOT=\$HOME/.heroku/go"
-        mkdir -p "${build}/.heroku/go"
-        cp -a "${GOROOT}/"* "${build}/.heroku/go"
-        echo 'export GOROOT=$HOME/.heroku/go' > "${build}/.profile.d/goroot.sh"
-        echo 'PATH=$PATH:$GOROOT/bin' >> "${build}/.profile.d/goroot.sh"
+    mkdir -p "${build}/.heroku/go"
+    cp -a "${GOROOT}/"* "${build}/.heroku/go"
+    echo 'export GOROOT=$HOME/.heroku/go' >"${build}/.profile.d/goroot.sh"
+    echo 'PATH=$PATH:$GOROOT/bin' >>"${build}/.profile.d/goroot.sh"
     finished
-    if which ${TOOL} &> /dev/null; then
-      step "Copying ${TOOL} binary"
-      cp $(which ${TOOL}) "${build}/bin"
+    if which ${TOOL} &>/dev/null; then
+        step "Copying ${TOOL} binary"
+        cp $(which ${TOOL}) "${build}/bin"
     fi
 fi
 
 if [ "${GO_SETUP_GOPATH_IN_IMAGE}" = "true" ]; then
     start "Cleaning up \$GOPATH/pkg"
-        rm -rf $GOPATH/pkg
+    rm -rf $GOPATH/pkg
     finished
-    echo 'export GOPATH=$HOME' > "${build}/.profile.d/zzgopath.sh"  #Try to make sure it's down in towards the end
-    echo 'cd $GOPATH/src/'${name} >> "${build}/.profile.d/zzgopath.sh" # because of this
+    echo 'export GOPATH=$HOME' >"${build}/.profile.d/zzgopath.sh"     #Try to make sure it's down in towards the end
+    echo 'cd $GOPATH/src/'${name} >>"${build}/.profile.d/zzgopath.sh" # because of this
 fi
 
 if needConcurrency ${ver}; then
@@ -699,8 +703,7 @@ fi
 t="${build}/.heroku/go"
 mkdir -p "${t}"
 t="${t}/.meta"
-echo "TOOL=${TOOL}" > "${t}"
+echo "TOOL=${TOOL}" >"${t}"
 if [ "${TOOL}" != "gb" ]; then
-    echo "NAME=${name}" >> "${t}"
+    echo "NAME=${name}" >>"${t}"
 fi
-
