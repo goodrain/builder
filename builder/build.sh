@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 set -eo pipefail
 
 [ "$DEBUG" ] && set -x
@@ -10,25 +10,24 @@ fi
 # Determine the first parameter to determine the path of the slug package
 if [[ "$1" == "-" ]]; then
     slug_file="$1"
-elif [[ "$1" == "local" ]];then
-    if [ -n "$SLUG_VERSION" ];then
+elif [[ "$1" == "local" ]]; then
+    if [ -n "$SLUG_VERSION" ]; then
         filename=$SLUG_VERSION
     else
-        filename=`date +%Y%m%d%H%M%S`
+        filename=$(date +%Y%m%d%H%M%S)
     fi
     slug_file=/tmp/slug/$filename.tgz
-elif [[ "$1" == "debug" ]];then
+elif [[ "$1" == "debug" ]]; then
     /bin/bash
-elif [[ "$1" == "version" ]];then
+elif [[ "$1" == "version" ]]; then
     echo $RELEASE_DESC
     exit 0
-else 
+else
     slug_file=/tmp/slug.tgz
     if [[ "$1" ]]; then
         put_url="$1"
     fi
 fi
-
 
 app_dir=/app
 slug_dir=/tmp/slug
@@ -53,8 +52,8 @@ function output_redirect() {
 # define debug info
 function debug_info() {
     DEBUG=${DEBUG:=false}
-    if [ "$DEBUG" == "true" ];then
-      echo $'debug:======>' $* | output_redirect
+    if [ "$DEBUG" == "true" ]; then
+        echo $'debug:======>' $* | output_redirect
     fi
 }
 
@@ -76,11 +75,31 @@ function ensure_indent() {
     done
 }
 
+function download_and_unpack_package() {
+    echo -e "\033[42;37m[ INFO ]\033[0m Downloading and unpack package file from ${PACKAGE_DOWNLOAD_URL}"
+    wget -nv --http-user="$PACKAGE_DOWNLOAD_USER" --http-password="$PACKAGE_DOWNLOAD_PASS" --tries=3 "$PACKAGE_DOWNLOAD_URL" -P /tmp
+    fileName=${PACKAGE_DOWNLOAD_URL##*/}
+    case ${fileName} in
+    *.zip)
+        unzip "/tmp/$fileName" -d $app_dir
+        ;;
+    *.tar)
+        tar -xmC $app_dir <"/tmp/$fileName"
+        ;;
+    *)
+        tar -xmzC $app_dir <"/tmp/$fileName"
+        ;;
+    esac
+}
+
 ## Copy application code over
 if [ -d "/tmp/app" ]; then
     cp -rf /tmp/app/. $app_dir
 elif [ -f "/tmp/app-source.tar" ]; then
-    tar -xmC $app_dir < /tmp/app-source.tar
+    tar -xmC $app_dir </tmp/app-source.tar
+elif [ $PACKAGE_DOWNLOAD_URL ]; then
+    # download from url
+    download_and_unpack_package
 else
     cat | tar -xmC $app_dir
 fi
@@ -103,53 +122,52 @@ export TYPE=${TYPE:-online}
 ## Buildpack detection
 case "$LANGUAGE" in
 "Java-maven")
-selected_buildpack="heroku-buildpack-java"
-;;
+    selected_buildpack="heroku-buildpack-java"
+    ;;
 "Java-jar")
-selected_buildpack="goodrain-buildpack-java-jar"
-;;
+    selected_buildpack="goodrain-buildpack-java-jar"
+    ;;
 "Java-war")
-selected_buildpack="goodrain-buildpack-java-war"
-;;
+    selected_buildpack="goodrain-buildpack-java-war"
+    ;;
 "PHP")
-selected_buildpack="heroku-buildpack-php"
-;;
+    selected_buildpack="heroku-buildpack-php"
+    ;;
 "Python")
-selected_buildpack="heroku-buildpack-python"
-;;
+    selected_buildpack="heroku-buildpack-python"
+    ;;
 "Node.js")
-selected_buildpack="heroku-buildpack-nodejs"
-;;
+    selected_buildpack="heroku-buildpack-nodejs"
+    ;;
 "Go")
-selected_buildpack="heroku-buildpack-go"
-;;
+    selected_buildpack="heroku-buildpack-go"
+    ;;
 "Gradle")
-selected_buildpack="heroku-buildpack-gradle"
-;;
+    selected_buildpack="heroku-buildpack-gradle"
+    ;;
 "static")
-selected_buildpack="goodrain-buildpack-static"
-;;
+    selected_buildpack="goodrain-buildpack-static"
+    ;;
 "NodeJSStatic")
-selected_buildpack="goodrain-buildpack-nodestatic"
-;;
-"no"|"")
-echo_title "Unable to select a buildpack"
-exit 1
-;;
+    selected_buildpack="goodrain-buildpack-nodestatic"
+    ;;
+"no" | "")
+    echo_title "Unable to select a buildpack"
+    exit 1
+    ;;
 esac
 
 selected_buildpack="$buildpack_root/$selected_buildpack"
 
 ## Buildpack compile
 $selected_buildpack/bin/compile "$build_root" "$cache_root" 2>&1 | ensure_indent
-$selected_buildpack/bin/release "$build_root" "$cache_root" > $build_root/.release
-
+$selected_buildpack/bin/release "$build_root" "$cache_root" >$build_root/.release
 
 ## Display process types
 echo_title "Discovering process types"
 
-if [[ "$PROCFILE" ]];then
-	echo "$PROCFILE" > $build_root/Procfile
+if [[ "$PROCFILE" ]]; then
+    echo "$PROCFILE" >$build_root/Procfile
 fi
 
 if [[ -f "$build_root/Procfile" ]]; then

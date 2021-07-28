@@ -1,9 +1,9 @@
 #!/bin/bash
 
-set -xe
+# set -xe
 
 commitid=$(git log -n 1 --pretty --format=%h)
-release_ver=v5.3.1
+release_ver=v5.3.3
 
 DOMESTIC_BASE_NAME=${DOMESTIC_BASE_NAME:-'registry.cn-hangzhou.aliyuncs.com'}
 DOMESTIC_NAMESPACE=${DOMESTIC_NAMESPACE:-'goodrain'}
