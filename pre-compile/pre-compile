@@ -31,6 +31,7 @@ PHPDefault="5.6.11"
 Pythondeps="requirements.txt"
 Rubydeps="Gemfile"
 
+# jq arm64
 JQBIN="/tmp/pre-compile/bin/jq"
 
 read_json() {

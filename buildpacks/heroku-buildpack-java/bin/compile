@@ -3,6 +3,7 @@
 
 # fail fast
 set -e
+[ "$DEBUG" ] && set -x
 
 BPLOG_PREFIX="buildpack.java"
 
