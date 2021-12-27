@@ -3,6 +3,7 @@
 
 # fail fast
 set -e
+[[ $DEBUG ]] && set -x
 
 # config
 
@@ -31,16 +32,16 @@ if [ -f www/Procfile ]; then
 fi
 
 fetch_nginx_tarball() {
-    local NGINX_VERSION="1.14.2"
-    local NGINX_URL="http://lang.goodrain.me/static/r6d/nginx/nginx-${NGINX_VERSION}.tar.gz"
+    local NGINX_VERSION="1.18.0-arm64" # for arm64
+    local NGINX_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/r6d/nginx/nginx-${NGINX_VERSION}.tar.gz"
     local NGINX_PATH="nginx"
     # install nginx if needed
     if [ ! -d "$NGINX_PATH" ]; then
         [ -z "$DEBUG_INFO" ] && echo "-----> Installed Nginx ${NGINX_VERSION}" || echo "-----> Installed Nginx ${NGINX_VERSION} from $NGINX_URL."
-        mkdir -p $NGINX_PATH/conf.d
+        mkdir -p $NGINX_PATH/conf.d 
         curl --silent --max-time 60 --location $NGINX_URL | tar xz --strip-components 2 -C $NGINX_PATH
     fi
-
+   
     # update config files
     cp -a $LP_DIR/conf/nginx.conf $NGINX_PATH/conf/nginx.conf
     if [ -f "nginx.conf" ];then
@@ -77,9 +78,9 @@ EOF
 }
 
 fetch_apache_tarball() {
-    local APACHE_VERSION="2.2.19"
+    local APACHE_VERSION="2.2.19-arm64" # for arm64
     local APACHE_PATH="apache"
-    local APACHE_URL="http://lang.goodrain.me/static/apache-$APACHE_VERSION.tar.gz"
+    local APACHE_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/apache-$APACHE_VERSION.tar.gz"
     # install apache if needed
     if [ ! -d "$APACHE_PATH" ]; then
       [ -z "$DEBUG_INFO" ] && echo "-----> Installing Apache $APACHE_VERSION" || echo "-----> Installing Apache $APACHE_VERSION from $APACHE_URL."
