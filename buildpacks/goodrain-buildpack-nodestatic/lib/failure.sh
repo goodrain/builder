@@ -28,6 +28,7 @@ failure_message() {
 }
 
 fail_invalid_package_json() {
+  echo $JQBIN
   if ! cat ${1:-}/package.json | $JQ "." 1>/dev/null; then
     error "Unable to parse package.json"
     mcount 'failures.parse.package-json'

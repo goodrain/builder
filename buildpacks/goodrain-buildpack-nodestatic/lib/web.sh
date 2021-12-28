@@ -1,7 +1,7 @@
 
 fetch_nginx_tarball() {
-    local version="1.14.2"
-    local nginx_tarball_url="http://lang.goodrain.me/static/r6d/nginx/nginx-${version}.tar.gz"
+    local version="1.18.0-arm64" # for arm64
+    local nginx_tarball_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/r6d/nginx/nginx-${version}.tar.gz"
     local NGINX_PATH="nginx"
     local BP_DIR=$1
     # install nginx if needed

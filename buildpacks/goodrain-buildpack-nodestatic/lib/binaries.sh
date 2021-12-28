@@ -38,16 +38,14 @@ install_nodejs() {
   local dir="${2:?}"
   local version="$(echo $nodejs_version| awk -F "." '{print $1}').x"
   echo "Resolving node version $nodejs_version($version)..."
-  #if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "https://nodebin.herokai.com/v1/node/$platform/latest.txt"); then
-  #  fail_bin_install node $version;
-  #fi
-  if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "http://lang.goodrain.me/nodejs/v1/node/linux-x64/latest-$version.txt"); then
+
+  if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/nodejs/v1/node/linux-x64/latest-$version.txt"); then
     fail_bin_install node $version;
   fi
   if [ -f "${BUILD_DIR}/runtime.txt" ]; then
     number=$(cat ${BUILD_DIR}/runtime.txt)
   fi
-  node_url="http://lang.goodrain.me/nodejs/node/release/linux-x64/node-v$number-linux-x64.tar.gz"
+  node_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/nodejs/node/release/linux-arm64/node-v$number-linux-arm64.tar.gz" # for arm64
   [ -z "$DEBUG_INFO" ] && echo "Downloading and installing node $number..." || echo "Downloading and installing node $number from $node_url"
   local code=$(curl "$node_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/node.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
