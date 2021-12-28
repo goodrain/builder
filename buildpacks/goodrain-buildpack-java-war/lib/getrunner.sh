@@ -25,7 +25,7 @@ dl_webapp_runner(){
         # 在线构建默认使用OFFLINE
         WEBSERVER_BASE_URL="http://maven.goodrain.me/com/github/jsimone/webapp-runner"
     fi
-    WEBSERVER_BASE_URL=${WEBSERVER_BASE_URL:-"http://lang.goodrain.me/java/webapp-runner"}
+    WEBSERVER_BASE_URL=${WEBSERVER_BASE_URL:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/java/webapp-runner"}
     WEBSERVER_URL_90=${WEBSERVER_URL_9:-"$WEBSERVER_BASE_URL/webapp-runner-9.0.16.0.jar"}
     WEBSERVER_URL_85=${WEBSERVER_URL_85:-"$WEBSERVER_BASE_URL/webapp-runner-8.5.38.0.jar"}
     WEBSERVER_URL_80=${WEBSERVER_URL_8:-"$WEBSERVER_BASE_URL/webapp-runner-8.0.52.0.jar"}
@@ -72,7 +72,7 @@ dl_jetty_runner(){
         # 在线构建默认使用OFFLINE
         WEBSERVER_BASE_URL="http://maven.goodrain.me/org/eclipse/jetty/jetty-runner"
     fi
-    WEBSERVER_BASE_URL=${WEBSERVER_BASE_URL:-"http://lang.goodrain.me/java/jetty-runner"}
+    WEBSERVER_BASE_URL=${WEBSERVER_BASE_URL:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/java/jetty-runner"}
     WEBSERVER_URL_754=${WEBSERVER_URL_9:-"$WEBSERVER_BASE_URL/jetty-runner-7.5.4.v20111024.jar"}
     WEBSERVER_URL_940=${WEBSERVER_URL_85:-"$WEBSERVER_BASE_URL/jetty-runner-9.4.0.v20161208.jar"}
 
