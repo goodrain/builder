@@ -2,7 +2,7 @@
 # bin/compile <build-dir> <cache-dir> <env-dir>
 
 ### Configure environment
-
+set -x
 set -o errexit    # always exit on error
 set -o pipefail   # don't ignore exit codes when piping output
 unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
@@ -128,6 +128,7 @@ install_bins() {
   # Download yarn if there is a yarn.lock file or if the user
   # has specified a version of yarn under "engines". We'll still
   # only install using yarn if there is a yarn.lock file
+  # Todo install yarn for arm64
   if $YARN || [ -n "$yarn_engine" ]; then
     install_yarn "$BUILD_DIR/.heroku/yarn" "$yarn_engine"
   fi

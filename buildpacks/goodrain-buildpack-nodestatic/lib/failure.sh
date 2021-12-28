@@ -28,7 +28,6 @@ failure_message() {
 }
 
 fail_invalid_package_json() {
-  echo $JQBIN
   if ! cat ${1:-}/package.json | $JQ "." 1>/dev/null; then
     error "Unable to parse package.json"
     mcount 'failures.parse.package-json'
@@ -169,7 +168,7 @@ fail_bin_install() {
   local version="$2"
 
   # re-curl the result, saving off the reason for the failure this time
-  local error=$(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "http://lang.goodrain.me/nodejs/v1/$bin/$platform/latest-$version.txt")
+  local error=$(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/nodejs/v1/$bin/$platform/latest-$version.txt")
 
   if [[ $error = "No result" ]]; then
     case $bin in
