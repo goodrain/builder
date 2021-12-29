@@ -2,15 +2,25 @@
 
 set -e
 
-BASEURL="http://lang.goodrain.me/go/golang"
+BASEURL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/go/golang"
 V="$1"
+
+get_cpu() {
+  if [[ "$(uname -p)" = "i686" ]] || [[ "$(uname -p)" = "x86_64" ]]; then
+    echo "amd64"
+  elif [[ "$(uname -p)" = "aarch64" ]]; then
+    echo "arm64"
+  else
+    echo "x64"
+  fi
+}
 
 if [ -z "$V" ]; then
     echo "usage: $0 <go version>" >&2
     exit 1
 fi
 
-tgz_fn="$V.linux-amd64.tar.gz"
+tgz_fn="$V.linux-$(get_cpu).tar.gz"  # for arm64
 tgz_url="$BASEURL/$tgz_fn"
 sha256_url="$tgz_url.sha256"
 

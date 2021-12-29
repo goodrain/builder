@@ -1,13 +1,18 @@
 #!/bin/bash
 
 # Ensure jq is installed.
-ensureInPath "jq-linux64" "${cache}/.jq/bin"
+# ensureInPath "jq-linux64" "${cache}/.jq/bin"
 
-# Ensure we have a copy of the stdlib
-STDLIB_DIR=$(mktemp -d -t stdlib.XXXXX)
+# Use bins from pre-compile/bin. Like jq
+addToPATH /tmp/pre-compile/bin
+info "Use Local jq"
+
+# Ensure we have a copy of the stdlib. Use Local stdlib.v8
+STDLIB_DIR=${buildpack}/lib
 BPLOG_PREFIX="buildpack.go"
-ensureFile "stdlib.sh.v8" "${STDLIB_DIR}" "chmod a+x"
 
 source_stdlib() {
+  info "Use Local stdlib.sh.v8"
+  chmod a+x ${STDLIB_DIR}/stdlib.sh.v8
   source "${STDLIB_DIR}/stdlib.sh.v8"
 }

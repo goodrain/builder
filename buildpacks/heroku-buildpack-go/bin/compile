@@ -2,7 +2,7 @@
 # usage: bin/compile <build-dir> <cache-dir> <env-dir>
 
 set -eo pipefail
-[ "$DEBUG" ] && set -x
+[[ $DEBUG_INFO ]] && set -x
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
@@ -15,7 +15,7 @@ source_stdlib
 
 snapshotBinBefore
 
-DefaultGoVersion="$(jq <${DataJSON} -r '.Go.DefaultVersion')"
+DefaultGoVersion="${RUNTIME:-$(jq <${DataJSON} -r '.Go.DefaultVersion')}" # config Go version with env
 DepVersion="$(jq <${DataJSON} -r '.Dep.DefaultVersion')"
 GlideVersion="$(jq <${DataJSON} -r '.Glide.DefaultVersion')"
 GovendorVersion="$(jq <${DataJSON} -r '.Govendor.DefaultVersion')"
@@ -247,6 +247,17 @@ ensureGB() {
     fi
 }
 
+# Run on both arm64 and x86
+get_cpu() {
+  if [[ "$(uname -p)" = "i686" ]] || [[ "$(uname -p)" = "x86_64" ]]; then
+    echo "amd64"
+  elif [[ "$(uname -p)" = "aarch64" ]]; then
+    echo "arm64"
+  else
+    echo "x64"
+  fi
+}
+
 ensureGo() {
     local goVersion="${1}"
     local goPath="${cache}/${goVersion}/go"
@@ -264,15 +275,15 @@ ensureGo() {
         case "${goVersion}" in
         devel*)
             local bGoVersion="$(expandVer ${DefaultGoVersion})"
-            goFile="${bGoVersion}.linux-amd64.tar.gz"
+            goFile="${bGoVersion}.linux-$(get_cpu).tar.gz"
             goPath="${cache}/${bGoVersion}/go"
             txt="Installing bootstrap ${bGoVersion}"
             ;;
         go1)
-            goFile="go.go1.linux-amd64.tar.gz"
+            goFile="go.go1.linux-$(get_cpu).tar.gz"
             ;;
         *)
-            goFile="${goVersion}.linux-amd64.tar.gz"
+            goFile="${goVersion}.linux-$(get_cpu).tar.gz"
             ;;
         esac
 
