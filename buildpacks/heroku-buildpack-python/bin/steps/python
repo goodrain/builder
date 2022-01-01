@@ -4,16 +4,31 @@ set +e
 runtime-fixer runtime.txt
 PYTHON_VERSION=$(cat runtime.txt)
 
+if [ $ARCH == "arm64" ]; then
+  MAJOR_VERSION=$(echo ${PYTHON_VERSION} | sed -e 's/^python-//' -e 's/-arm64$//' -e 's/..$//')
+else
+  MAJOR_VERSION=$(echo ${PYTHON_VERSION#*-} | sed 's/..$//')
+fi
+
 # The location of the pre-compiled python binary.
 VENDORED_PYTHON="${VENDOR_URL}/runtimes/$PYTHON_VERSION.tar.gz"
 
 # check if runtime exists
-if curl --output /dev/null --silent --head --fail "$VENDORED_PYTHON"; then
+# Python3.7 and later rely on openssl 1.0.2 and later.
+# There are currently no plans to upgrade the base image adaptation to this point
+# So the build process is blocked when python-3.7.x is received.
+if [ $(expr $MAJOR_VERSION \>= 3.7) -eq 1 ]; then
+  puts-warn "Rainbond does not supports runtime versions 3.7.x or later versions."
+  puts-warn "We recommend upgrading by specifying the default supported version ($LATEST_36)."
+  puts-warn "Exiting..."
+  exit 1
+elif curl --output /dev/null --silent --head --fail "$VENDORED_PYTHON"; then
   puts-step "Using supported version $PYTHON_VERSION"
 else
-  puts-warn "Rainbond supports runtime versions $LATEST_35, $LATEST_36, $LATEST_37, $LATEST_38 and $LATEST_2."
+  puts-warn "Rainbond supports runtime versions $LATEST_35, $LATEST_36, and $LATEST_2."
   puts-warn "You are using $PYTHON_VERSION, which is unsupported."
   puts-warn "We recommend upgrading by specifying the default supported version ($LATEST_36)."
+  puts-warn "Exiting..."
   exit 1
 fi
 
@@ -51,6 +66,18 @@ if [ ! "$SKIP_INSTALL" ]; then
     exit 1
   fi
 
+  # When only python2/python3 is in the bin directory and not python
+  if [ ! -f /app/.heroku/python/bin/python ]; then
+    ln -s $(find /app/.heroku/python/bin -type f -name "python*" -not -name "*m*") /app/.heroku/python/bin/python
+    puts-step "Found $(find /app/.heroku/python/bin -type f -name "python*" -not -name "*m*" | awk -F '/' '{print $NF}') binary,change to python"
+  fi
+
+  # When only pip3 is in the bin directory and not pip
+  if [ ! -f /app/.heroku/python/bin/pip ] && [ -f /app/.heroku/python/bin/pip3 ]; then
+    mv /app/.heroku/python/bin/pip3 /app/.heroku/python/bin/pip
+    puts-step "Found pip3 binary,change to pip"
+  fi
+
   puts-done
 
   # Record for future reference.
@@ -69,15 +96,17 @@ if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_UPDATE* ]]; then
   # Remove old installations.
   rm -fr /app/.heroku/python/lib/python*/site-packages/pip-*
   rm -fr /app/.heroku/python/lib/python*/site-packages/setuptools-*
-  RUN_PIP_INDEX_URL="${PIP_INDEX_URL:-https://pypi.tuna.tsinghua.edu.cn/simple}"
-  if ! /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i "${RUN_PIP_INDEX_URL}"; then
+  RUN_PIP_INDEX_URL="${PIP_INDEX_URL:-https://mirrors.aliyun.com/pypi/simple/}" # change to aliyun mirrors
+  if ! /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i "${RUN_PIP_INDEX_URL}" --default-timeout=100; then
     puts-warn "Install pip $PIP_UPDATE failure"
     exit 1
   fi
   # upgrade pip
   puts-step "Upgrade pip to latest version"
-  /app/.heroku/python/bin/python -m /app/.heroku/python/bin/pip install -i "$RUN_PIP_INDEX_URL" --upgrade pip
+  pushd /app/.heroku/python/bin
+  /app/.heroku/python/bin/python -m pip install -i "$RUN_PIP_INDEX_URL" --upgrade pip --default-timeout=100
   /app/.heroku/python/bin/pip install "$ROOT_DIR/vendor/setuptools-39.0.1-py2.py3-none-any.whl" &>/dev/null
+  popd
   puts-done
 fi
 

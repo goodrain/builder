@@ -5,24 +5,24 @@ LATEST_JDK_VERSION="1.8"
 # 默认情况下，使用 http://lang.goodrain.me 经由 rbd-resource-proxy 代理到 OSS 对象存储下载各类资源
 # 本地调试时，可以使用 $LANG_GOODRAIN_ME 直接指定到 OSS 对象存储的桶域名
 if [ ${STACK:-""} = "cedar" ]; then
-  DEFAULT_JDK_VERSION="1.6"
-  JDK_URL_1_8=${JDK_URL_1_8:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/openjdk1.8.0_20.tar.gz"}
-  JDK_URL_1_7=${JDK_URL_1_7:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/openjdk1.7.0_55.tar.gz"}
-  JDK_URL_1_6=${JDK_URL_1_6:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/openjdk1.6.0_27.tar.gz"}
+  DEFAULT_JDK_VERSION=-"1.8"
+  JDK_URL_1_8=${JDK_URL_1_8:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/arm64/openjdk-8u312b07_linux-aarch64.tar.gz"}
+  JDK_URL_1_7=${JDK_URL_1_7:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/do_not_support_1.7_anymore"}
+  JDK_URL_1_6=${JDK_URL_1_6:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/do_not_support_1.6_anymore"}
 else
   DEFAULT_JDK_VERSION="1.8"
   JDK_BASE_URL=${JDK_BASE_URL:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/cedar-14"}
-  JDK_URL_13=${JDK_URL_12:-"$JDK_BASE_URL/openjdk13.0.1.tar.gz"}
-  JDK_URL_12=${JDK_URL_12:-"$JDK_BASE_URL/openjdk12.0.2.tar.gz"}
-  JDK_URL_11=${JDK_URL_11:-"$JDK_BASE_URL/openjdk11.0.5.tar.gz"}
-  JDK_URL_10=${JDK_URL_10:-"$JDK_BASE_URL/openjdk10.0.2.tar.gz"}
-  JDK_URL_1_9=${JDK_URL_1_9:-"$JDK_BASE_URL/openjdk9.0.4.tar.gz"}
-  JDK_URL_1_8=${JDK_URL_1_8:-"$JDK_BASE_URL/jdk-8u311-linux-aarch64.tar.gz"} # for arm64
-  JDK_URL_1_7=${JDK_URL_1_7:-"$JDK_BASE_URL/openjdk1.7.0_242.tar.gz"}
-  JDK_URL_1_6=${JDK_URL_1_6:-"$JDK_BASE_URL/openjdk1.6.0_27.tar.gz"}
+  JDK_URL_13=${JDK_URL_12:-"$JDK_BASE_URL/arm64/openjdk-13.0.2_8_linux-aarch64.tar.gz"}
+  JDK_URL_12=${JDK_URL_12:-"$JDK_BASE_URL/arm64/openjdk-12.0.2_10_linux-aarch64.tar.gz"}
+  JDK_URL_11=${JDK_URL_11:-"$JDK_BASE_URL/arm64/openjdk-11.0.13_8_linux-aarch64.tar.gz"}
+  JDK_URL_10=${JDK_URL_10:-"$JDK_BASE_URL/arm64/openjdk-10.0.2_13_linux-aarch64.tar.gz"}
+  JDK_URL_1_9=${JDK_URL_1_9:-"$JDK_BASE_URL/arm64/openjdk-9_181_linux-aarch64.tar.gz"}
+  JDK_URL_1_8=${JDK_URL_1_8:-"$JDK_BASE_URL/arm64/openjdk-8u312b07_linux-aarch64.tar.gz"} # for arm64. what a nice site https://adoptopenjdk.net/archive.html
+  JDK_URL_1_7=${JDK_URL_1_7:-"$JDK_BASE_URL/do_not_support_1.7_anymore"}
+  JDK_URL_1_6=${JDK_URL_1_6:-"$JDK_BASE_URL/do_not_support_1.6_anymore"}
 fi
 
-ORACLEJDK_URL_11="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/jdk-11.0.1_linux-x64_bin.tar.gz"
+ORACLEJDK_URL_11="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/jdk-11.0.13_linux-aarch64_bin.tar.gz"
 
 install_java_with_overlay() {
   local buildDir=${1}
@@ -60,7 +60,7 @@ install_java() {
     [ -z "$DEBUG_INFO" ] && echo "" || echo "Download JDK from ${jdkUrl} "
     validate_jdk_url ${jdkUrl} ${jdkVersion}
     curl --retry 3 --silent --show-error --location ${jdkUrl} --output ${jdkTarball}
-    tar pxzf ${jdkTarball} --strip-components 1 --directory  "${jdkDir}" # for arm64
+    tar pxzf ${jdkTarball} --strip-components 1 --directory  "${jdkDir}" # for arm64 jdk tar add --strip-components 1 
     rm ${jdkTarball}
     install_cacerts ${jdkDir}
     echo "${javaVersion}" > "${jdkDir}/version"
@@ -116,6 +116,7 @@ If you continue to have trouble, you can open a support ticket here:
 http://www.rainbond.com/docs
 2. Please check your network to ensure network resources can be download.Similar to the reference:
 https://t.goodrain.com/t/5-1-2/839/2
+3. For rainbond arm64/aarch64 source buildpack. jdk 1.6 and 1.7 are no longer supported.
 
 Thanks,
 Goodrain"

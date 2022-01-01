@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-
+set -x
 # shellcheck source=bin/utils
 source "$BIN_DIR/utils"
+
+# get global env from pre-compile
+source /tmp/pre-compile/lib/globalenv.sh
 
 sqlite3_version() {
   if [ "$STACK" = "cedar-14" ]; then
@@ -49,12 +52,15 @@ sqlite3_install() {
 
   # copy over sqlite3 headers & bins and setup linking against the stack image library
   mv "$HEROKU_PYTHON_DIR/sqlite3/usr/include/"* "$HEROKU_PYTHON_DIR/include/"
-  mv "$HEROKU_PYTHON_DIR/sqlite3/usr/lib/x86_64-linux-gnu"/libsqlite3.*a "$HEROKU_PYTHON_DIR/lib/"
+  # use aarch64 but not arm64, because the path below should be aarch64-linux-gnu
+  # use x86_64 at amd64 envriment
+  [[ ${ARCH} == "arm64" ]] && ARCH="aarch64"
+  mv "$HEROKU_PYTHON_DIR/sqlite3/usr/lib/${ARCH}-linux-gnu"/libsqlite3.*a "$HEROKU_PYTHON_DIR/lib/"
   mkdir -p "$HEROKU_PYTHON_DIR/lib/pkgconfig"
   # set the right prefix/lib directories
-  sed -e 's/prefix=\/usr/prefix=\/app\/.heroku\/python/' -e 's/\/x86_64-linux-gnu//' "$HEROKU_PYTHON_DIR/sqlite3/usr/lib/x86_64-linux-gnu/pkgconfig/sqlite3.pc" > "$HEROKU_PYTHON_DIR/lib/pkgconfig/sqlite3.pc"
+  sed -e 's/prefix=\/usr/prefix=\/app\/.heroku\/python/' -e "s/\/${ARCH}-linux-gnu//" "$HEROKU_PYTHON_DIR/sqlite3/usr/lib/${ARCH}-linux-gnu/pkgconfig/sqlite3.pc" > "$HEROKU_PYTHON_DIR/lib/pkgconfig/sqlite3.pc"
   # need to point the libsqlite3.so to the stack image library for /usr/bin/ld -lsqlite3
-  SQLITE3_LIBFILE="/usr/lib/x86_64-linux-gnu/$(readlink -n "$HEROKU_PYTHON_DIR/sqlite3/usr/lib/x86_64-linux-gnu/libsqlite3.so")"
+  SQLITE3_LIBFILE="/usr/lib/${ARCH}-linux-gnu/$(readlink -n "$HEROKU_PYTHON_DIR/sqlite3/usr/lib/${ARCH}-linux-gnu/libsqlite3.so")"
   ln -s "$SQLITE3_LIBFILE" "$HEROKU_PYTHON_DIR/lib/libsqlite3.so"
   if [ -z "$HEADERS_ONLY" ]; then
     mv "$HEROKU_PYTHON_DIR/sqlite3/usr/bin"/* "$HEROKU_PYTHON_DIR/bin/"
@@ -75,6 +81,8 @@ buildpack_sqlite3_install() {
   fi
 
   # python version check
+  # Restore python versions when using ARM64
+  [[ $ARCH == "arm64" ]] && PYTHON_VERSION=${PYTHON_VERSION%-arm64}
   if python_sqlite3_check "$PYTHON_VERSION"; then
     # only install if the sqlite3 version has changed
     if [ "$INSTALLED_SQLITE3_VERSION" != "$SQLITE3_VERSION" ]; then

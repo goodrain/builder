@@ -8,7 +8,8 @@
 # adapter between a Python application and Heroku's runtime.
 #
 # This script is invoked by [`bin/compile`](/).
-
+# get global env from pre-compile
+source /tmp/pre-compile/lib/globalenv.sh
 # The location of the pre-compiled cryptography binary.
 VENDORED_GDAL="${VENDOR_URL}/libraries/vendor/gdal.tar.gz"
 VENDORED_GEOS="${VENDOR_URL}/libraries/vendor/geos.tar.gz"
@@ -33,7 +34,7 @@ if [[ "$BUILD_WITH_GEO_LIBRARIES" ]]; then
 
     # Copy libjasper from build image to slug.
     if [[ "$STACK" == "heroku-16" ]]; then
-      cp /usr/lib/x86_64-linux-gnu/libjasper.so* ".heroku/vendor/lib/."
+      cp /usr/lib/${ARCH}-linux-gnu/libjasper.so* ".heroku/vendor/lib/."
     fi
 
   fi

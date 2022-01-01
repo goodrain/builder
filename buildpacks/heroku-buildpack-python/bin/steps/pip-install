@@ -29,7 +29,8 @@ if [ ! "$SKIP_PIP_INSTALL" ]; then
     fi
 
     # Set RUN_PIP_INDEX_URL
-    RUN_PIP_INDEX_URL="${PIP_INDEX_URL:-https://pypi.tuna.tsinghua.edu.cn/simple}"
+    # use aliyun mirror
+    RUN_PIP_INDEX_URL="${PIP_INDEX_URL:-https://mirrors.aliyun.com/pypi/simple/}" 
     puts-step "Default Mirrors: $RUN_PIP_INDEX_URL"
 
     set +e
@@ -42,7 +43,7 @@ if [ ! "$SKIP_PIP_INSTALL" ]; then
         mcount "failure.none-version"
     fi
 
-    /app/.heroku/python/bin/pip install -i "$RUN_PIP_INDEX_URL" -r "$BUILD_DIR/requirements.txt" --exists-action=w --src=/app/.heroku/src --disable-pip-version-check --no-cache-dir 2>&1 | tee "$WARNINGS_LOG" | cleanup | indent
+    /app/.heroku/python/bin/pip install -i "$RUN_PIP_INDEX_URL" -r "$BUILD_DIR/requirements.txt" --exists-action=w --src=/app/.heroku/src --disable-pip-version-check --no-cache-dir --default-timeout=100 2>&1 | tee "$WARNINGS_LOG" | cleanup | indent
     PIP_STATUS="${PIPESTATUS[0]}"
     set -e
 

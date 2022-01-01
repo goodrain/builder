@@ -11,6 +11,8 @@ buildpack=$(cd "$(dirname $0)/.." && pwd)
 
 source "${buildpack}/lib/common.sh"
 source "${buildpack}/lib/common_tools.sh"
+# get global env from pre-compile
+source /tmp/pre-compile/lib/globalenv.sh
 source_stdlib
 
 snapshotBinBefore

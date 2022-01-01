@@ -4,8 +4,10 @@
 # ensureInPath "jq-linux64" "${cache}/.jq/bin"
 
 # Use bins from pre-compile/bin. Like jq
-addToPATH /tmp/pre-compile/bin
-info "Use Local jq"
+# addToPATH /tmp/pre-compile/bin
+# ln -s /tmp/pre-compile/bin/jq-${ARCH} /tmp/pre-compile/bin/jq 
+# info "Use Local jq"
+# define jq in pre-compoile
 
 # Ensure we have a copy of the stdlib. Use Local stdlib.v8
 STDLIB_DIR=${buildpack}/lib
