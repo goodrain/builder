@@ -1,0 +1,5 @@
+
+buildpacks/.DS_Store
+buildpacks/heroku-buildpack-php/.DS_Store
+buildpacks/heroku-buildpack-php/support/.DS_Store
+buildpacks/heroku-buildpack-php/support/build/.DS_Store
