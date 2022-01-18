@@ -7,36 +7,10 @@
 # Comment : 根据用户的选择，添加必要依赖及Procfile内容
 
 [ $DEBUG ] && set -x
-
 PROC_ENV=${PROC_ENV:-\{\}}
 
 BUILD_DIR=$1
-#BUILD_DIR="./build"
 LIBDIR="/tmp/pre-compile/lib"
-
-#### Language runtimes file
-PHPfile="composer.json"
-PythonRuntimefile="runtime.txt"
-PHPRuntimefile="runtime.txt"
-JAVARuntimefile="system.properties"
-NodejsRuntimefile="package.json"
-RubyRuntimefile="Gemfile"
-GolangRuntimefile="runtime.txt"
-StaticRuntimefile="runtime.txt"
-
-### default runtimes
-PHPDefault="5.6.11"
-
-## deps file
-Pythondeps="requirements.txt"
-Rubydeps="Gemfile"
-
-JQBIN="/tmp/pre-compile/bin/jq"
-
-read_json() {
-    key=$1
-    echo $PROC_ENV | $JQBIN --raw-output "$key // \"\"" || return 1
-}
 
 function output_redirect() {
     if [[ "$slug_file" == "-" ]]; then
@@ -79,6 +53,62 @@ function ensure_indent() {
     done
 }
 
+# This function ensures that environment variables are valid
+# in all environments where the script runs
+# usage: export_env_global key value
+function export_env_global() {
+    local key=$1
+    local value=$2
+    # make sure can valid in current script
+    export $key=$value
+    # the script will be sourced in runner
+    echo "export $key=$value" >>/tmp/build/.profile.d/globalenv.sh
+}
+
+# Detect OS and CPU architecture
+export_env_global OS $(uname | tr A-Z a-z)
+
+if [[ "$(uname -p)" = "i686" ]] || [[ "$(uname -p)" = "x86_64" ]] || [[ "$(uname -p)" = "amd64" ]]; then
+    export_env_global ARCH "x86_64"
+elif [[ "$(uname -p)" = "aarch64" ]]; then
+    export_env_global ARCH "arm64"
+else
+    echo_title "Unknown CPU Arch"
+    exit 1
+fi
+echo_title "Detected CPU architecture $OS-${ARCH}"
+
+# Language runtimes file
+PHPfile="composer.json"
+PythonRuntimefile="runtime.txt"
+PHPRuntimefile="runtime.txt"
+JAVARuntimefile="system.properties"
+NodejsRuntimefile="package.json"
+RubyRuntimefile="Gemfile"
+GolangRuntimefile="runtime.txt"
+StaticRuntimefile="runtime.txt"
+
+# default runtimes
+PHPDefault="5.6.11"
+
+# deps file
+Pythondeps="requirements.txt"
+Rubydeps="Gemfile"
+
+# The jq bin can run both amd64 and arm64
+# Different Buildpacks use different calls to JQ
+# Both to environment variables and direct calls
+# Todo: change jq calls from environment variables to direct calls
+export_env_global JQBIN "/tmp/pre-compile/bin/jq"
+
+# common bins should be stored in this dir
+export_env_global PATH $PATH:/tmp/pre-compile/bin/
+
+read_json() {
+    key=$1
+    echo $PROC_ENV | jq --raw-output "$key // \"\"" || return 1
+}
+
 #LANG=`read_json ".language"`      # null|(php|ruby|python|nodejs|java-war|java-maven|static)
 #RUNTIMES=`read_json ".runtimes"`  # null|(确切的版本)
 #DEPDS=`read_json ".dependencies"` # {}| 相应的依赖
@@ -89,6 +119,7 @@ source $LIBDIR/depds.sh
 source $LIBDIR/procfile.sh
 source $LIBDIR/runtimes.sh
 source $LIBDIR/slugignore.sh
+source $LIBDIR/sqlvercontrol.sh
 
 #============ main ==========
 
@@ -101,6 +132,10 @@ R6D_Runtimes $LANGUAGE $RUNTIMES
 
 # 处理依赖
 Save_Deps $LANGUAGE "$DEPDS"
+
+# 根据判断决定是否利用 liquibase 处理数据库版本
+
+detectSqlControl $LANGUAGE
 
 # 处理Procfile
 #Save_Procfile $LANGUAGE "$PROCFILE"

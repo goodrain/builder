@@ -1,19 +1,23 @@
-get_os() {
-  uname | tr A-Z a-z
-}
+# get_os() {
+#   uname | tr A-Z a-z
+# }
 
-get_cpu() {
-  if [[ "$(uname -p)" = "i686" ]]; then
-    echo "x86"
-  else
-    echo "x64"
-  fi
-}
+# get_cpu() {
+#   if [[ "$(uname -p)" = "i686" ]]; then
+#     echo "x86"
+#   elif [[ "$(uname -p)" = "aarch64" ]]; then
+#     echo "arm64"
+#   else
+#     echo "x64"
+#   fi
+# }
 
-os=$(get_os)
-cpu=$(get_cpu)
-platform="$os-$cpu"
-export JQ="$BP_DIR/vendor/jq-$os"
+# os=$(get_os)
+# cpu=$(get_cpu)
+# platform="$os-$cpu"
+
+# From pre-compile
+export JQ=${JQBIN}
 
 create_default_env() {
   export NPM_CONFIG_LOGLEVEL=${NPM_CONFIG_LOGLEVEL:-info}

@@ -271,7 +271,7 @@ R6D_Runtimes() {
     runtimes::php $runtime
     ;;
   python)
-    runtimes::python $runtime #目前不由预编译处理，由buildpack处理
+    runtimes::python $runtime
     ;;
   node.js | nodejsstatic)
     runtimes::nodejs $runtime
