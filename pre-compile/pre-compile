@@ -12,8 +12,7 @@ PROC_ENV=${PROC_ENV:-\{\}}
 BUILD_DIR=$1
 LIBDIR="/tmp/pre-compile/lib"
 
- 
- function output_redirect() {
+function output_redirect() {
     if [[ "$slug_file" == "-" ]]; then
         cat - 1>&2
     else
@@ -54,7 +53,7 @@ function ensure_indent() {
     done
 }
 
-# This function ensures that environment variables are valid 
+# This function ensures that environment variables are valid
 # in all environments where the script runs
 # usage: export_env_global key value
 function export_env_global() {
@@ -62,19 +61,20 @@ function export_env_global() {
     local value=$2
     # make sure can valid in current script
     export $key=$value
-    echo "export $key=$value" >> $LIBDIR/globalenv.sh
+    # the script will be sourced in runner
+    echo "export $key=$value" >>/tmp/build/.profile.d/globalenv.sh
 }
 
 # Detect OS and CPU architecture
 export_env_global OS $(uname | tr A-Z a-z)
 
 if [[ "$(uname -p)" = "i686" ]] || [[ "$(uname -p)" = "x86_64" ]] || [[ "$(uname -p)" = "amd64" ]]; then
-  export_env_global ARCH "x86_64"
+    export_env_global ARCH "x86_64"
 elif [[ "$(uname -p)" = "aarch64" ]]; then
-  export_env_global ARCH "arm64"
+    export_env_global ARCH "arm64"
 else
-  echo_title "Unknown CPU Arch"
-  exit 1
+    echo_title "Unknown CPU Arch"
+    exit 1
 fi
 echo_title "Detected CPU architecture $OS-${ARCH}"
 
@@ -109,8 +109,6 @@ read_json() {
     echo $PROC_ENV | jq --raw-output "$key // \"\"" || return 1
 }
 
-
-
 #LANG=`read_json ".language"`      # null|(php|ruby|python|nodejs|java-war|java-maven|static)
 #RUNTIMES=`read_json ".runtimes"`  # null|(确切的版本)
 #DEPDS=`read_json ".dependencies"` # {}| 相应的依赖
@@ -121,6 +119,7 @@ source $LIBDIR/depds.sh
 source $LIBDIR/procfile.sh
 source $LIBDIR/runtimes.sh
 source $LIBDIR/slugignore.sh
+source $LIBDIR/sqlvercontrol.sh
 
 #============ main ==========
 
@@ -133,6 +132,10 @@ R6D_Runtimes $LANGUAGE $RUNTIMES
 
 # 处理依赖
 Save_Deps $LANGUAGE "$DEPDS"
+
+# 根据判断决定是否利用 liquibase 处理数据库版本
+
+detectSqlControl $LANGUAGE
 
 # 处理Procfile
 #Save_Procfile $LANGUAGE "$PROCFILE"

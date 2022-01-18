@@ -4,7 +4,7 @@
 source "$BIN_DIR/utils"
 
 # get global env from pre-compile
-source /tmp/pre-compile/lib/globalenv.sh
+source /tmp/build/.profile.d/globalenv.sh
 
 sqlite3_version() {
   if [ "$STACK" = "cedar-14" ]; then

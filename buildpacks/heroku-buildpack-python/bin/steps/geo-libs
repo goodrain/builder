@@ -9,7 +9,7 @@
 #
 # This script is invoked by [`bin/compile`](/).
 # get global env from pre-compile
-source /tmp/pre-compile/lib/globalenv.sh
+source /tmp/build/.profile.d/globalenv.sh
 # The location of the pre-compiled cryptography binary.
 VENDORED_GDAL="${VENDOR_URL}/libraries/vendor/gdal.tar.gz"
 VENDORED_GEOS="${VENDOR_URL}/libraries/vendor/geos.tar.gz"

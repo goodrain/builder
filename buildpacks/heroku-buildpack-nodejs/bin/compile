@@ -23,7 +23,7 @@ STDLIB_FILE=$(mktemp -t stdlib.XXXXX)
 #curl --silent --retry 5 --retry-max-time 15 'http://lang.goodrain.me/common/buildpack-stdlib/v7/stdlib.sh' > "$STDLIB_FILE"
 #source "$STDLIB_FILE"
 # get global env from pre-compile
-source /tmp/pre-compile/lib/globalenv.sh
+source /tmp/build/.profile.d/globalenv.sh
 source $BP_DIR/lib/stdlib.sh
 source $BP_DIR/lib/output.sh
 source $BP_DIR/lib/monitor.sh
