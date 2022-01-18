@@ -429,7 +429,7 @@ export -f composer
 
 # log runtime version
 mcount "platform.packages.php.$($engine_r "echo ${engine^^}_VERSION;")"
-[[ $PAUSE:-"1" ]] && sleep $PAUSE
+
 if eoldate=$($engine $bp_dir/bin/util/eol.php); then
 	:
 else
