@@ -28,7 +28,7 @@ export BUILDPACK_LOG_FILE=${BUILDPACK_LOG_FILE:-/dev/null}
 export JQ="/tmp/pre-compile/bin/jq"
 
 # get global env from pre-compile
-source /tmp/pre-compile/lib/globalenv.sh
+source /tmp/build/.profile.d/globalenv.sh
 # convenience functions
 source $bp_dir/bin/util/common.sh
 source $bp_dir/bin/util/json.sh
@@ -133,8 +133,8 @@ mkdir -p $COMPOSER_HOME
 [[ $build_dir == '/app' ]] || ln -s $build_dir/.heroku/php /app/.heroku/php
 
 status "Bootstrapping..."
-
-if [ $ARCH=="arm64" ]; then # for arm64
+# for arm64 and amd64
+if [ $ARCH=="arm64" ]; then 
 	s3_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/php-arm64/dist-${STACK}-stable/"
 else
 	s3_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/php-new/dist-${STACK}-stable/"

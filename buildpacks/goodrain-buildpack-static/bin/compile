@@ -13,6 +13,9 @@ CACHE_DIR=$2
 LP_DIR=`cd $(dirname $0); cd ..; pwd`
 StaticRuntimefile=$1"/runtime.txt"
 
+# import global environment variable
+source /tmp/build/.profile.d/globalenv.sh
+
 # include .files when moving things around
 shopt -s dotglob
 
@@ -32,7 +35,12 @@ if [ -f www/Procfile ]; then
 fi
 
 fetch_nginx_tarball() {
-    local NGINX_VERSION="1.18.0-arm64" # for arm64
+    # for arm64 and amd64
+    if [ $ARCH == "arm64" ]; then
+        local NGINX_VERSION="1.18.0-arm64" 
+    else
+        local NGINX_VERSION="1.14.2"
+    fi
     local NGINX_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/r6d/nginx/nginx-${NGINX_VERSION}.tar.gz"
     local NGINX_PATH="nginx"
     # install nginx if needed
@@ -78,7 +86,12 @@ EOF
 }
 
 fetch_apache_tarball() {
-    local APACHE_VERSION="2.2.19-arm64" # for arm64
+    # for arm64 and amd64
+    if [ $ARCH == "arm64" ]; then
+        local APACHE_VERSION="2.2.19-arm64" 
+    else
+        local APACHE_VERSION="2.2.19"
+    fi
     local APACHE_PATH="apache"
     local APACHE_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/apache-$APACHE_VERSION.tar.gz"
     # install apache if needed

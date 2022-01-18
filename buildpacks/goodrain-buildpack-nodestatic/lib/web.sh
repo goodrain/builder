@@ -1,6 +1,11 @@
-
+#!/bin/bash
 fetch_nginx_tarball() {
-    local version="1.18.0-arm64" # for arm64
+    # for arm64 and amd64
+    if [ $ARCH == "arm64" ]; then
+        local version="1.18.0-arm64" 
+    else
+        local version="1.14.2"
+    fi
     local nginx_tarball_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/r6d/nginx/nginx-${version}.tar.gz"
     local NGINX_PATH="nginx"
     local BP_DIR=$1
@@ -13,7 +18,7 @@ fetch_nginx_tarball() {
 
     # update config files
     cp -a $BP_DIR/conf/nginx.conf $NGINX_PATH/conf/nginx.conf
-    if [ -f "nginx.conf" ];then
+    if [ -f "nginx.conf" ]; then
         echo "-----> Detected custom nginx configuration: nginx.conf"
         mv nginx.conf $NGINX_PATH/conf.d/
     fi
@@ -25,7 +30,7 @@ fetch_nginx_tarball() {
         mv www/web.conf $NGINX_PATH/conf.d/
     else
         echo "-----> Use the default configuration: web.conf"
-        cat > $NGINX_PATH/conf.d/web.conf <<EOF
+        cat >$NGINX_PATH/conf.d/web.conf <<EOF
 server {
     listen       80;
     
@@ -48,7 +53,7 @@ exec /app/nginx/sbin/nginx -g 'daemon off;'
 EOF
 }
 
-nodestatic_prepare(){
+nodestatic_prepare() {
     local buildpath=$(read_json "$BUILD_DIR/nodestatic.json" ".path")
     # ADD ENV ROOT_PATH,User could define /path by it.
     mkdir -p /tmp/www/www/${ROOT_PATH} /tmp/buildxxx
@@ -60,8 +65,8 @@ nodestatic_prepare(){
             mv dists/* /tmp/www/www/${ROOT_PATH}
         fi
     fi
-    count=$(ls /tmp/www/www/|wc -w)
-    if [ "$count" == 0 ];then
+    count=$(ls /tmp/www/www/ | wc -w)
+    if [ "$count" == 0 ]; then
         error "No static file was generated. Check that the compilation process is correct."
         exit 1
     fi
@@ -70,7 +75,7 @@ nodestatic_prepare(){
     mv /tmp/build/* /tmp/buildxxx
     mv /tmp/www/* /tmp/build
     if [ ! -f "/tmp/build/Procfile" ]; then
-        cat > /tmp/build/Procfile <<EOF
+        cat >/tmp/build/Procfile <<EOF
 web: sh boot.sh
 EOF
     fi

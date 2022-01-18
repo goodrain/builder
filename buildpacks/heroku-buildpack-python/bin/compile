@@ -54,6 +54,7 @@ export VENDOR_URL
 # Python3.7 and later rely on openssl 1.0.2 and later. 
 # There are currently no plans to upgrade the base image adaptation to this point
 # So the build process is blocked when python-3.7.x is received.
+# for arm64 and amd64
 case $ARCH in
 "x86_64")
   DEFAULT_PYTHON_VERSION="python-3.6.10"

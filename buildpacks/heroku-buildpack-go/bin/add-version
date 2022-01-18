@@ -19,8 +19,8 @@ if [ -z "$V" ]; then
     echo "usage: $0 <go version>" >&2
     exit 1
 fi
-
-tgz_fn="$V.linux-$(get_cpu).tar.gz"  # for arm64
+# for arm64 and amd64
+tgz_fn="$V.linux-$(get_cpu).tar.gz"  
 tgz_url="$BASEURL/$tgz_fn"
 sha256_url="$tgz_url.sha256"
 

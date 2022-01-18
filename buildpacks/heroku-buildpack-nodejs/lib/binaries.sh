@@ -46,7 +46,12 @@ install_nodejs() {
   if [ -f "${BUILD_DIR}/runtime.txt" ]; then
     number=$(cat ${BUILD_DIR}/runtime.txt)
   fi
-  node_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/nodejs/node/release/linux-arm64/node-v$number-linux-arm64.tar.gz" # for arm64
+    # for arm64 and amd64
+  if [ $ARCH == "arm64" ]; then
+    node_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/nodejs/node/release/linux-arm64/node-v$number-linux-arm64.tar.gz"
+  else
+    node_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/nodejs/node/release/linux-x64/node-v$number-linux-x64.tar.gz"
+  fi
   [ -z "$DEBUG_INFO" ] && echo "Downloading and installing node $number..." || echo "Downloading and installing node $number from $node_url"
   local code=$(curl "$node_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/node.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
