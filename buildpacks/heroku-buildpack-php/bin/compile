@@ -196,6 +196,8 @@ fi
 
 # disbale secure-http
 composer config --global secure-http false
+# use aliyun composer source
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 # update composer
 composer update --ignore-platform-reqs
 # we use --no-plugins just in case the vendor dir is there, see e.g. https://github.com/Ocramius/PackageVersions/issues/64

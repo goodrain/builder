@@ -102,7 +102,8 @@ Rubydeps="Gemfile"
 export_env_global JQBIN "/tmp/pre-compile/bin/jq"
 
 # common bins should be stored in this dir
-export_env_global PATH $PATH:/tmp/pre-compile/bin/
+# enables PATH variables to be accumulated in the runner environment
+export_env_global PATH \$PATH:$PATH:/tmp/pre-compile/bin/
 
 read_json() {
     key=$1
