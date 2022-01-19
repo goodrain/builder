@@ -58,7 +58,11 @@ install_nodejs() {
   fi
   tar xzf /tmp/node.tar.gz -C /tmp
   rm -rf "$dir"/*
-  mv /tmp/node-v$number-$OS-$ARCH/* $dir
+  if [ $ARCH == "x86_64" ]; then
+    mv /tmp/node-v$number-$OS-x64/* $dir
+  else
+    mv /tmp/node-v$number-$OS-$ARCH/* $dir
+  fi
   chmod +x $dir/bin/*
 }
 
@@ -81,7 +85,11 @@ install_iojs() {
     echo "Unable to download iojs: $code" && false
   fi
   tar xzf /tmp/iojs.tar.gz -C /tmp
-  mv /tmp/iojs-v$number-$os-$cpu/* $dir
+  if [ $ARCH == "x86_64" ]; then
+    mv /tmp/iojs-v$number-$OS-x64/* $dir
+  else
+    mv /tmp/iojs-v$number-$OS-$ARCH/* $dir
+  fi
   chmod +x $dir/bin/*
 }
 
