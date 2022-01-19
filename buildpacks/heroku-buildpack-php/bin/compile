@@ -134,7 +134,7 @@ mkdir -p $COMPOSER_HOME
 
 status "Bootstrapping..."
 # for arm64 and amd64
-if [ $ARCH=="arm64" ]; then 
+if [ $ARCH == "arm64" ]; then 
 	s3_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/php-arm64/dist-${STACK}-stable/"
 else
 	s3_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/php-new/dist-${STACK}-stable/"
