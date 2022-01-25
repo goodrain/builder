@@ -6,8 +6,8 @@
 
 function detectSqlControl() {
     local lang=$1
-    schema_dir=${SCHEMA_DIR:-"Schemadir"}
-    if [ -d $BUILD_DIR/${SCHEMA_DIR} ]; then
+    schema_dir=${SCHEMA_DIR:-"Schema"}
+    if [ -d $BUILD_DIR/${schema_dir} ]; then
         echo_title "Database schema version control dir ${schema_dir} has been found."
         echo_title "Preparing the version control tool"
         ([[ $1 != Java* ]] && [[ $1 != Gradle ]]) && getJavaRuntime
