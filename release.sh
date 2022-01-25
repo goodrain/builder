@@ -49,9 +49,11 @@ build::public() {
 # manifest will be named like     example/builder:v5.5.0-release
 # amd64 images will be named like example/builder:v5.5.0-release
 # arm64 images will be named like example/builder:v5.5.0-release-arm64
+# manifest list can not be recreated except the image example/builder:v5.5.0-release has been re-pushed.
 build::manifest() {
     new_tag="${DOMESTIC_BASE_NAME}/${DOMESTIC_NAMESPACE}/builder:${release_ver}"
-    docker manifest create $new_tag
+    docker manifest rm $new_tag
+    docker manifest create $new_tag $new_tag $new_tag-arm64
     docker manifest annotate $new_tag $new_tag --os linux --arch amd64
     docker manifest annotate $new_tag $new_tag-arm64 --os linux --arch arm64 --variant v8
     docker manifest push $new_tag
