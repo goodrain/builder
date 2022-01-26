@@ -36,5 +36,5 @@ function getLiquibase() {
     [ -z "$DEBUG_INFO" ] && echo "" || echo "For SQL version control.Download liquibase from ${LIUQI_URL} "
     mkdir -p $BUILD_DIR/.liquibase
     curl --retry 3 --silent --show-error ${LIUQI_URL} | tar xz -C $BUILD_DIR/.liquibase
-    export_env_global PATH $PATH:$BUILD_DIR/.liquibase:$BUILD_DIR/.jdk/bin
+    export_env_global PATH $PATH:$BUILD_DIR/.liquibase/bin
 }
