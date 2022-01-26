@@ -34,7 +34,7 @@ function getLiquibase() {
     LIQUI_VERSION=4.7.0
     LIUQI_URL=${OSS_URL}/common/utils/liquibase/liquibase-${LIQUI_VERSION}.tar.gz
     [ -z "$DEBUG_INFO" ] && echo "" || echo "For SQL version control.Download liquibase from ${LIUQI_URL} "
-    mkdir -p $BUILD_DIR/.liquibase
-    curl --retry 3 --silent --show-error ${LIUQI_URL} | tar xz -C $BUILD_DIR/.liquibase
+    mkdir -p $BUILD_DIR/.liquibase/bin
+    curl --retry 3 --silent --show-error ${LIUQI_URL} | tar xz -C $BUILD_DIR/.liquibase/bin
     export_env_global PATH $PATH:$BUILD_DIR/.liquibase/bin
 }
