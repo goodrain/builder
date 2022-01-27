@@ -45,7 +45,8 @@ pushd ${dep_dirname}
 	--enable-proxy \
 	--enable-proxy-fcgi \
 	--enable-rewrite \
-	--enable-deflate
+	--enable-deflate \
+	--with-expat=/usr/local/expat
 make -s -j 9
 make install -s
 find ${OUT_PREFIX} -type f \( -executable -o -name '*.a' \) -exec sh -c "file -i '{}' | grep -Eq 'application/x-(archive|executable|sharedlib); charset=binary'" \; -print | xargs strip --strip-unneeded

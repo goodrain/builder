@@ -6,6 +6,8 @@ set -e
 
 # common functions
 source /tmp/buildpacks/functions/common.sh
+# get global env from pre-compile
+source /tmp/build/.profile.d/globalenv.sh
 
 BP_DIR=$(cd $(dirname $0)/..; pwd) # absolute path
 . $BP_DIR/lib/common.sh

@@ -2,7 +2,6 @@
 # bin/compile <build-dir> <cache-dir> <env-dir>
 
 ### Configure environment
-
 set -o errexit    # always exit on error
 set -o pipefail   # don't ignore exit codes when piping output
 unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
@@ -23,6 +22,8 @@ STDLIB_FILE=$(mktemp -t stdlib.XXXXX)
 
 #curl --silent --retry 5 --retry-max-time 15 'http://lang.goodrain.me/common/buildpack-stdlib/v7/stdlib.sh' > "$STDLIB_FILE"
 #source "$STDLIB_FILE"
+# get global env from pre-compile
+source /tmp/build/.profile.d/globalenv.sh
 source $BP_DIR/lib/stdlib.sh
 source $BP_DIR/lib/output.sh
 source $BP_DIR/lib/monitor.sh
@@ -33,6 +34,7 @@ source $BP_DIR/lib/binaries.sh
 source $BP_DIR/lib/cache.sh
 source $BP_DIR/lib/dependencies.sh
 source $BP_DIR/lib/plugin.sh
+
 
 export PATH="$BUILD_DIR/.heroku/node/bin:$BUILD_DIR/.heroku/yarn/bin":$PATH
 
@@ -128,6 +130,7 @@ install_bins() {
   # Download yarn if there is a yarn.lock file or if the user
   # has specified a version of yarn under "engines". We'll still
   # only install using yarn if there is a yarn.lock file
+  # Yarn can run on both arm64 and x86, good!
   if $YARN || [ -n "$yarn_engine" ]; then
     install_yarn "$BUILD_DIR/.heroku/yarn" "$yarn_engine"
   fi

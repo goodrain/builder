@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 export DEFAULT_MAVEN_VERSION="3.3.9"
-export BUILDPACK_STDLIB_URL="http://lang.goodrain.me/java/stdlib.sh"
+export BUILDPACK_STDLIB_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/java/stdlib.sh"
 
 install_maven() {
   local installDir=$1
@@ -14,7 +14,7 @@ install_maven() {
   mcount "mvn.version.${mavenVersion}"
 
   if is_supported_maven_version ${mavenVersion}; then
-    mavenUrl="http://lang.goodrain.me/jvm/maven/maven-${mavenVersion}.tar.gz"
+    mavenUrl=${mavenUrl:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jvm/maven/maven-${mavenVersion}.tar.gz"}
     [ -z "$DEBUG_INFO" ] && status_pending "Installing Maven ${mavenVersion}" || status_pending "Installing Maven ${mavenVersion} from $mavenUrl"
     download_maven ${mavenUrl} ${installDir} ${mavenHome}
     status_done
@@ -45,7 +45,7 @@ download_maven() {
 
 is_supported_maven_version() {
   local mavenVersion=${1}
-  local mavenUrl="http://lang.goodrain.me/jvm/maven/maven-${mavenVersion}.tar.gz"
+  local mavenUrl="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jvm/maven/maven-${mavenVersion}.tar.gz"
   if [ "$mavenVersion" = "$DEFAULT_MAVEN_VERSION" ]; then
     return 0
   elif curl -I --retry 3 --fail --silent --max-time 5 --location "${mavenUrl}" > /dev/null; then

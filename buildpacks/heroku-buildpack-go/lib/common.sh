@@ -19,7 +19,7 @@ NC='\033[0m' # No Color
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
 if [ -z "${GO_BUCKET_URL}" ]; then
-    BucketURL="http://lang.goodrain.me/go"
+    BucketURL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/go"
 else
     BucketURL="${GO_BUCKET_URL}"
 fi
