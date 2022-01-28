@@ -20,7 +20,7 @@ RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/id_rsa && \
     /tmp/builder/install-buildpacks && \
     chown rain.rain -R /tmp/pre-compile /tmp/builder /tmp/buildpacks && \
     chown -R rain:rain /app && \
-    wget -q https://buildpack.oss-cn-shanghai.aliyuncs.com/common/utils/jqe-$(arch) -O /usr/bin/jqe && chmod +x /usr/bin/jqe
+    wget -q https://buildpack.rainbond.com/common/utils/jqe-$(arch) -O /usr/bin/jqe && chmod +x /usr/bin/jqe
 
 # Default Support Chinese
 ENV LANG=zh_CN.utf8
