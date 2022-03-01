@@ -1,6 +1,6 @@
 {
   "Go": {
-    "DefaultVersion": "go1.12.14",
+    "DefaultVersion": "go1.11",
     "VersionExpansion": {
       "go1.14.0": "go1.14beta1",
       "go1.14": "go1.14beta1",
@@ -9,7 +9,7 @@
       "go1.12.0": "go1.12",
       "go1.12": "go1.12.14",
       "go1.11.0": "go1.11",
-      "go1.11": "go1.11.13",
+      "go1.11": "go1.11",
       "go1.10.0": "go1.10",
       "go1.10": "go1.10.8",
       "go1.9.0": "go1.9",

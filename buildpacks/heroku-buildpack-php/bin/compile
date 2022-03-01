@@ -9,6 +9,8 @@ set -eu
 # move hidden files too, just in case
 shopt -s dotglob
 
+[[ ${DEBUG_INFO:-""} ]] && set -x
+
 STACK=${STACK:-cedar-14} # Anvil has none
 build_dir=$1
 cache_dir=$2/php
@@ -25,6 +27,8 @@ export BPLOG_PREFIX="buildpack.php"
 export BUILDPACK_LOG_FILE=${BUILDPACK_LOG_FILE:-/dev/null}
 export JQ="/tmp/pre-compile/bin/jq"
 
+# get global env from pre-compile
+source /tmp/build/.profile.d/globalenv.sh
 # convenience functions
 source $bp_dir/bin/util/common.sh
 source $bp_dir/bin/util/json.sh
@@ -129,8 +133,12 @@ mkdir -p $COMPOSER_HOME
 [[ $build_dir == '/app' ]] || ln -s $build_dir/.heroku/php /app/.heroku/php
 
 status "Bootstrapping..."
-
-s3_url="http://lang.goodrain.me/php-new/dist-${STACK}-stable/"
+# for arm64 and amd64
+if [ $ARCH == "arm64" ]; then 
+	s3_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/php-arm64/dist-${STACK}-stable/"
+else
+	s3_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/php-new/dist-${STACK}-stable/"
+fi
 # prepend the default repo to the list configured by the user
 # list of repositories to use is in ascening order of precedence
 export_env_dir "$env_dir" '^HEROKU_PHP_PLATFORM_REPOSITORIES$'
@@ -161,6 +169,7 @@ curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/php-min.tar.gz
 tar xzf $build_dir/.heroku/php-min.tar.gz -C $build_dir/.heroku/php-min
 rm $build_dir/.heroku/php-min.tar.gz
 
+#
 curl_retry_on_18 --fail --silent --location -o $build_dir/.heroku/composer.tar.gz "${s3_url}composer-1.8.4.tar.gz" && (
 	notice "download composer-1.8.4.tar.gz sucessful"
 ) || {
@@ -187,6 +196,8 @@ fi
 
 # disbale secure-http
 composer config --global secure-http false
+# use aliyun composer source
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 # update composer
 composer update --ignore-platform-reqs
 # we use --no-plugins just in case the vendor dir is there, see e.g. https://github.com/Ocramius/PackageVersions/issues/64

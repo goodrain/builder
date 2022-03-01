@@ -8,18 +8,32 @@
 
 源码会通过 buildpacks 运行, 如果源码被检测是被支持的app则就会进行编译，生成gzip的压缩包形式，以备在各处运行。
 
-## 使用 Builder
+## 本地构建 Builder 镜像
 
-首先, 你需要有Docker，然后你可以从Docker官方镜像仓库拉取镜像:
-    ​```
-    $ docker pull goodrain.me/builder
-    ​```
+首先, 你需要有Docker，:
+```bash
+$ ./release.sh local
+```
 
-或者你也可以从源码build:
+## 本地调试
+
+以 Java 代码为例：
+code 目录保存代码
+slug 目录保存slug.tgz
+```bash
+docker run -ti --rm --name=builder \
+-e LANG_GOODRAIN_ME="https://buildpack.oss-cn-shanghai.aliyuncs.com" \
+-e RUNTIME=1.8 \
+-e LANGUAGE=Java-maven \
+-e SLUG_VERSION=demo \
+-e DEBUG_INFO=true \
+-e MAVEN_MIRROR_URL="http://mirrors.163.com/maven/repository/maven-public/" \
+-v $(pwd)/slug:/tmp/slug/ \
+-v $(pwd)/code:/tmp/app \
+goodrain.me/builder local
 ```
-	$ cd builder
-	$ make
-```
+
+## 标准输出输入用法
 
 当容器运行起来后，它准备通过标准输入设备接收app源码包。所以让我们通过`git archive` 来得到源码包:
 ```
