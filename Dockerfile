@@ -25,7 +25,9 @@ RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/id_rsa && \
 # Default Support Chinese
 ENV LANG=zh_CN.utf8
 
-USER rain
+# Non-root user will cause permission error.
+# For example. changes to /etc/hosts will be denied.
+# USER rain
 
 ENV HOME /app
 ENV RELEASE_DESC=__RELEASE_DESC__
