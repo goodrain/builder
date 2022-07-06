@@ -106,6 +106,10 @@ fi
 
 # Precompile commands are executed to pre-compile the user code
 echo_title "Start pre-compile..."
+
+# Choose different binaries depending on your architecture
+# for amd64 and arm64
+mv /tmp/pre-compile/bin/jq-$(arch) /tmp/pre-compile/bin/jq
 /bin/bash /tmp/pre-compile/pre-compile $app_dir
 
 # In heroku, there are two separate directories, and some
