@@ -1,0 +1,26 @@
+#!/bin/bash
+### envrender - Rendering file with environment variables
+### Usage: envrender <file path>
+
+# Define variables
+destFile=$1
+tmpFile=$1.bak
+
+# Pick envs from environment
+definedEnvs=$(printf '${%s} ' $(env | cut -d= -f1))
+
+# Environment check
+# The destination file must can be write
+[ ! -w $destFile ] && exit 0
+
+# Cmd we used must exist
+[ ! $(which envsubst) ] && exit 0
+
+# Touch a tmp file
+touch $tmpFile
+
+# Render file
+envsubst "$definedEnvs" < "$destFile" > "$tmpFile"
+
+# Copy tmpfile to destFile
+mv -f $tmpFile $destFile
