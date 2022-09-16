@@ -45,7 +45,7 @@ server {
 EOF
     fi
 
-    cat >>boot.sh <<EOF
+    cat >boot.sh <<EOF
 #/bin/bash
 # Linux OS always have sed cmd, but not envsubst for envrender
 # Make conf files always can be render
