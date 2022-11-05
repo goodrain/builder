@@ -64,6 +64,8 @@ steps:
       from_secret: domestic_docker_password
     RELEASE_VERSION:
       from_secret: release_version
+    DOMESTIC_NAMESPACE:
+      from_secret: domestic_namespace
   commands:
   - ./release.sh
 volumes:
