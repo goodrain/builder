@@ -91,6 +91,8 @@ yarn_node_modules() {
 
   echo "Installing node modules (yarn.lock)"
   cd "$build_dir"
+  # Deal with code UNABLE_TO_VERIFY_LEAF_SIGNATURE
+  yarn config set "strict-ssl" false -g
   monitor "yarn-install" yarn install --registry=${YARN_REGISTRY:-https://registry.npm.taobao.org} --production=$production --frozen-lockfile --ignore-engines 2>&1
 }
 
@@ -126,6 +128,8 @@ npm_node_modules() {
     else
       echo "Installing node modules (package.json)"
     fi
+    # Deal with code UNABLE_TO_VERIFY_LEAF_SIGNATURE
+    npm config set strict-ssl false -g
     monitor "npm-install" npm install --registry=${NPM_REGISTRY:-https://registry.npm.taobao.org} --production=$production --unsafe-perm --userconfig $build_dir/.npmrc 2>&1
   else
     echo "Skipping (no package.json)"
