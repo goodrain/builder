@@ -1,4 +1,4 @@
-FROM rainbond/cedar14:20211224
+FROM registry.cn-hangzhou.aliyuncs.com/goodrain/stack-image:22
 
 LABEL MAINTAINER ="guox <guox@goodrain.com>"
 
