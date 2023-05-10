@@ -25,7 +25,7 @@ _webapp_runner() {
   (cd $ctxDir; find . -type f -name webapp-runner-*.jar)
 }
 
-echo "---"
+# echo "---"
 if [ ! -f $BUILD_DIR/Procfile ]; then
   if is_spring_boot $BUILD_DIR; then
     echo "default_process_types:"

@@ -2,9 +2,10 @@
 fetch_nginx_tarball() {
     # for arm64 and amd64
     if [ $ARCH == "arm64" ]; then
-        local version="1.18.0-arm64" 
+        local version="1.18.0-arm64"
     else
-        local version="1.14.2"
+        #local version="1.14.2"
+        local version="1.18.0" # update nginx version
     fi
     local nginx_tarball_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/r6d/nginx/nginx-${version}.tar.gz"
     local NGINX_PATH="nginx"
@@ -18,6 +19,8 @@ fetch_nginx_tarball() {
 
     # update config files
     cp -a $BP_DIR/conf/nginx.conf $NGINX_PATH/conf/nginx.conf
+    # add envrender script
+    cp -a $BP_DIR/bin/envrender $NGINX_PATH/sbin/envrender
     if [ -f "nginx.conf" ]; then
         echo "-----> Detected custom nginx configuration: nginx.conf"
         mv nginx.conf $NGINX_PATH/conf.d/
@@ -42,14 +45,20 @@ server {
 EOF
     fi
 
-    cat >>boot.sh <<EOF
-sed -i -r  "s/(listen ).*/\1\$PORT;/" /app/nginx/conf.d/web.conf
-touch /app/nginx/logs/access.log
-touch /app/nginx/logs/error.log
-ln -sf /dev/stdout /app/nginx/logs/error.log
-ln -sf /dev/stderr /app/nginx/logs/access.log
+    cat >boot.sh <<EOF
+#/bin/bash
+# Linux OS always have sed cmd, but not envsubst for envrender
+# Make conf files always can be render
+sed -i -r "s#\/app#\$HOME#g" \$HOME/nginx/conf/nginx.conf
+sed -i -r "s#\/app#\$HOME#g" \$HOME/nginx/conf.d/web.conf
+sed -i -r  "s/(listen ).*/\1\$PORT;/" \$HOME/nginx/conf.d/web.conf
+\$HOME/nginx/sbin/envrender \$HOME/nginx/conf.d/web.conf
+touch \$HOME/nginx/logs/access.log
+touch \$HOME/nginx/logs/error.log
+ln -sf /dev/stdout \$HOME/nginx/logs/error.log
+ln -sf /dev/stderr \$HOME/nginx/logs/access.log
 echo "Launching nginx"
-exec /app/nginx/sbin/nginx -g 'daemon off;'
+exec \$HOME/nginx/sbin/nginx -g "daemon off;user \$(whoami);" -c \$HOME/nginx/conf/nginx.conf
 EOF
 }
 
@@ -76,7 +85,7 @@ nodestatic_prepare() {
     mv /tmp/www/* /tmp/build
     if [ ! -f "/tmp/build/Procfile" ]; then
         cat >/tmp/build/Procfile <<EOF
-web: sh boot.sh
+web: bash boot.sh
 EOF
     fi
 }

@@ -10,7 +10,11 @@ set -e
 BIN_DIR=$(dirname $0)
 BUILD_DIR=$1
 CACHE_DIR=$2
-LP_DIR=`cd $(dirname $0); cd ..; pwd`
+LP_DIR=$(
+    cd $(dirname $0)
+    cd ..
+    pwd
+)
 StaticRuntimefile=$1"/runtime.txt"
 
 # import global environment variable
@@ -28,41 +32,43 @@ mkdir -p /tmp/www
 mv * /tmp/www
 mv /tmp/www .
 
-
 # keep Procfile
 if [ -f www/Procfile ]; then
-  mv www/Procfile .
+    mv www/Procfile .
 fi
 
 fetch_nginx_tarball() {
     # for arm64 and amd64
     if [ $ARCH == "arm64" ]; then
-        local NGINX_VERSION="1.18.0-arm64" 
+        local NGINX_VERSION="1.18.0-arm64"
     else
-        local NGINX_VERSION="1.14.2"
+        #local NGINX_VERSION="1.14.2"
+        local NGINX_VERSION="1.18.0" # update nginx version
     fi
     local NGINX_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/r6d/nginx/nginx-${NGINX_VERSION}.tar.gz"
     local NGINX_PATH="nginx"
     # install nginx if needed
     if [ ! -d "$NGINX_PATH" ]; then
         [ -z "$DEBUG_INFO" ] && echo "-----> Installed Nginx ${NGINX_VERSION}" || echo "-----> Installed Nginx ${NGINX_VERSION} from $NGINX_URL."
-        mkdir -p $NGINX_PATH/conf.d 
+        mkdir -p $NGINX_PATH/conf.d
         curl --silent --max-time 60 --location $NGINX_URL | tar xz --strip-components 2 -C $NGINX_PATH
     fi
-   
+
     # update config files
     cp -a $LP_DIR/conf/nginx.conf $NGINX_PATH/conf/nginx.conf
-    if [ -f "nginx.conf" ];then
+    # add envrender script
+    cp -a $LP_DIR/bin/envrender $NGINX_PATH/sbin/envrender
+    if [ -f "nginx.conf" ]; then
         echo "-----> Detected custom nginx configuration: nginx.conf"
         mv nginx.conf $NGINX_PATH/conf.d/
     fi
     if [ -f "www/web.conf" ]; then
         echo "-----> Detected custom configuration: web.conf"
         mv www/web.conf $NGINX_PATH/conf.d/
-        # Todo check web.conf 
+        # Todo check web.conf
     else
         echo "-----> Use the default configuration: web.conf"
-        cat > $NGINX_PATH/conf.d/web.conf <<EOF
+        cat >$NGINX_PATH/conf.d/web.conf <<EOF
 server {
     listen       80;
     
@@ -74,21 +80,27 @@ server {
 EOF
     fi
 
-    cat >>boot.sh <<EOF
-sed -i -r  "s/(listen ).*/\1\$PORT;/" /app/nginx/conf.d/web.conf
-touch /app/nginx/logs/access.log
-touch /app/nginx/logs/error.log
-ln -sf /dev/stdout /app/nginx/logs/error.log
-ln -sf /dev/stderr /app/nginx/logs/access.log
+    cat >boot.sh <<EOF
+#/bin/bash
+# Linux OS always have sed cmd, but not envsubst for envrender
+# Make conf files always can be render
+sed -i -r "s#\/app#\$HOME#g" \$HOME/nginx/conf/nginx.conf
+sed -i -r "s#\/app#\$HOME#g" \$HOME/nginx/conf.d/web.conf
+sed -i -r  "s/(listen ).*/\1\$PORT;/" \$HOME/nginx/conf.d/web.conf
+\$HOME/nginx/sbin/envrender \$HOME/nginx/conf.d/web.conf
+touch \$HOME/nginx/logs/access.log
+touch \$HOME/nginx/logs/error.log
+ln -sf /dev/stdout \$HOME/nginx/logs/error.log
+ln -sf /dev/stderr \$HOME/nginx/logs/access.log
 echo "Launching nginx"
-exec /app/nginx/sbin/nginx -g 'daemon off;'
+exec \$HOME/nginx/sbin/nginx -g "daemon off;user \$(whoami);" -c \$HOME/nginx/conf/nginx.conf
 EOF
 }
 
 fetch_apache_tarball() {
     # for arm64 and amd64
     if [ $ARCH == "arm64" ]; then
-        local APACHE_VERSION="2.2.19-arm64" 
+        local APACHE_VERSION="2.2.19-arm64"
     else
         local APACHE_VERSION="2.2.19"
     fi
@@ -96,23 +108,24 @@ fetch_apache_tarball() {
     local APACHE_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/apache-$APACHE_VERSION.tar.gz"
     # install apache if needed
     if [ ! -d "$APACHE_PATH" ]; then
-      [ -z "$DEBUG_INFO" ] && echo "-----> Installing Apache $APACHE_VERSION" || echo "-----> Installing Apache $APACHE_VERSION from $APACHE_URL."
-      curl --silent --max-time 60 --location $APACHE_URL | tar xz
+        [ -z "$DEBUG_INFO" ] && echo "-----> Installing Apache $APACHE_VERSION" || echo "-----> Installing Apache $APACHE_VERSION from $APACHE_URL."
+        curl --silent --max-time 60 --location $APACHE_URL | tar xz
     fi
     # update config files
     cp $LP_DIR/conf/apache.conf $APACHE_PATH/conf/httpd.conf
+    sed -i "s#\app#$HOME#g" $APACHE_PATH/conf/httpd.conf
 
     cat >>boot.sh <<EOF
-sed -i 's/Listen 80/Listen '\$PORT'/' /app/apache/conf/httpd.conf
+sed -i 's/Listen 80/Listen '\$PORT'/' $HOME/apache/conf/httpd.conf
 for var in \`env|cut -f1 -d=\`; do
-  echo "PassEnv \$var" >> /app/apache/conf/httpd.conf;
+  echo "PassEnv \$var" >> $HOME/apache/conf/httpd.conf;
 done
-touch /app/apache/logs/error_log
-touch /app/apache/logs/access_log
-tail -F /app/apache/logs/error_log &
-tail -F /app/apache/logs/access_log &
+touch $HOME/apache/logs/error_log
+touch $HOME/apache/logs/access_log
+tail -F $HOME/apache/logs/error_log &
+tail -F $HOME/apache/logs/access_log &
 echo "Launching apache"
-exec /app/apache/bin/httpd -DNO_DETACH
+exec $HOME/apache/bin/httpd -DNO_DETACH
 EOF
 }
 
@@ -123,7 +136,7 @@ if [ ! -z "$USE_NGINX" ]; then
 elif [ ! -z "$USE_APACHE" ]; then
     fetch_apache_tarball
 else
-    echo ${RUNTIMES_SERVER:-nginx} | grep -i nginx >/dev/null  && fetch_nginx_tarball || fetch_apache_tarball
+    echo ${RUNTIMES_SERVER:-nginx} | grep -i nginx >/dev/null && fetch_nginx_tarball || fetch_apache_tarball
 fi
 
 chmod +x boot.sh

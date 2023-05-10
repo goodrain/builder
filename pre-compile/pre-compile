@@ -125,6 +125,7 @@ source $LIBDIR/sqlvercontrol.sh
 #============ main ==========
 
 # 处理运行时版本
+[ -n "${CUSTOM_RUNTIMES}" ] && RUNTIMES=${CUSTOM_RUNTIMES}
 echo_title "Prepare Handle Language $LANGUAGE RuntimeVersion $RUNTIMES"
 
 #Save_Runtimes $LANGUAGE $RUNTIMES
