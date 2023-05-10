@@ -17,8 +17,8 @@ VENDORED_PYTHON="${VENDOR_URL}/runtimes/$PYTHON_VERSION.tar.gz"
 # Python3.7 and later rely on openssl 1.0.2 and later.
 # There are currently no plans to upgrade the base image adaptation to this point
 # So the build process is blocked when python-3.7.x is received.
-if [ $(expr $MAJOR_VERSION \>= 3.7) -eq 1 ]; then
-  puts-warn "Rainbond does not supports runtime versions 3.7.x or later versions."
+if [ $(expr $MAJOR_VERSION \>= 4.0) -eq 1 ]; then
+  puts-warn "Rainbond does not supports runtime versions 4.0.x or later versions."
   puts-warn "We recommend upgrading by specifying the default supported version ($LATEST_36)."
   puts-warn "Exiting..."
   exit 1
