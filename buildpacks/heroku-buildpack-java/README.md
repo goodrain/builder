@@ -15,7 +15,7 @@ Example:
     ...
     -----> Java app detected
     -----> Installing OpenJDK 1.8... done
-    -----> Installing Maven 3.3.3... done
+    -----> Installing Maven 3.3.9... done
     ...
 
 ### 选择Maven版本

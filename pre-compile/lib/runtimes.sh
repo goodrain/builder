@@ -12,11 +12,8 @@ runtimes::jar() {
     fi
   else
     case $runtime in
-    1.6)
-      echo "java.runtime.version=1.6" >${BUILD_DIR}/$JAVARuntimefile
-      ;;
-    1.7)
-      echo "java.runtime.version=1.7" >${BUILD_DIR}/$JAVARuntimefile
+    1.8)
+      echo "java.runtime.version=1.8" >${BUILD_DIR}/$JAVARuntimefile
       ;;
     1.9)
       echo "java.runtime.version=1.9" >${BUILD_DIR}/$JAVARuntimefile
@@ -32,6 +29,15 @@ runtimes::jar() {
       ;;
     13)
       echo "java.runtime.version=13" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    14)
+      echo "java.runtime.version=14" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    15)
+      echo "java.runtime.version=15" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    16)
+      echo "java.runtime.version=16" >${BUILD_DIR}/$JAVARuntimefile
       ;;
     *)
       echo "java.runtime.version=1.8" >${BUILD_DIR}/$JAVARuntimefile
@@ -50,11 +56,8 @@ runtimes::war() {
     fi
   else
     case $runtime in
-    1.6)
-      echo "java.runtime.version=1.6" >${BUILD_DIR}/$JAVARuntimefile
-      ;;
-    1.7)
-      echo "java.runtime.version=1.7" >${BUILD_DIR}/$JAVARuntimefile
+    1.8)
+      echo "java.runtime.version=1.8" >${BUILD_DIR}/$JAVARuntimefile
       ;;
     1.9)
       echo "java.runtime.version=1.9" >${BUILD_DIR}/$JAVARuntimefile
@@ -70,6 +73,15 @@ runtimes::war() {
       ;;
     13)
       echo "java.runtime.version=13" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    14)
+      echo "java.runtime.version=14" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    15)
+      echo "java.runtime.version=15" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    16)
+      echo "java.runtime.version=16" >${BUILD_DIR}/$JAVARuntimefile
       ;;
     *)
       echo "java.runtime.version=1.8" >${BUILD_DIR}/$JAVARuntimefile
@@ -88,11 +100,8 @@ runtimes::gradle() {
     fi
   else
     case $runtime in
-    1.6)
-      echo "java.runtime.version=1.6" >${BUILD_DIR}/$JAVARuntimefile
-      ;;
-    1.7)
-      echo "java.runtime.version=1.7" >${BUILD_DIR}/$JAVARuntimefile
+    1.8)
+      echo "java.runtime.version=1.8" >${BUILD_DIR}/$JAVARuntimefile
       ;;
     1.9)
       echo "java.runtime.version=1.9" >${BUILD_DIR}/$JAVARuntimefile
@@ -108,6 +117,15 @@ runtimes::gradle() {
       ;;
     13)
       echo "java.runtime.version=13" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    14)
+      echo "java.runtime.version=14" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    15)
+      echo "java.runtime.version=15" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    16)
+      echo "java.runtime.version=16" >${BUILD_DIR}/$JAVARuntimefile
       ;;
     *)
       echo "java.runtime.version=1.8" >${BUILD_DIR}/$JAVARuntimefile
@@ -126,11 +144,8 @@ runtimes::maven() {
     fi
   else
     case $runtime in
-    1.6)
-      echo "java.runtime.version=1.6" >${BUILD_DIR}/$JAVARuntimefile
-      ;;
-    1.7)
-      echo "java.runtime.version=1.7" >${BUILD_DIR}/$JAVARuntimefile
+    1.8)
+      echo "java.runtime.version=1.8" >${BUILD_DIR}/$JAVARuntimefile
       ;;
     1.9)
       echo "java.runtime.version=1.9" >${BUILD_DIR}/$JAVARuntimefile
@@ -146,6 +161,15 @@ runtimes::maven() {
       ;;
     13)
       echo "java.runtime.version=13" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    14)
+      echo "java.runtime.version=14" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    15)
+      echo "java.runtime.version=15" >${BUILD_DIR}/$JAVARuntimefile
+      ;;
+    16)
+      echo "java.runtime.version=16" >${BUILD_DIR}/$JAVARuntimefile
       ;;
     *)
       echo "java.runtime.version=1.8" >${BUILD_DIR}/$JAVARuntimefile
@@ -190,6 +214,12 @@ runtimes::php() {
     5.6 | 5.6.35)
       jqe update require.php="5.6.35" -f "${composer}"
       ;;
+    8.1 | 8.1.18 )
+      jqe update require.php="8.1.18" -f "${composer}"
+      ;;
+    8.2 | 8.2.5 )
+      jqe update require.php="8.2.5" -f "${composer}"
+      ;;
     *)
       #TODO
       # 暂时不处理
@@ -211,7 +241,7 @@ runtimes::python() {
     echo "$runtime" >${BUILD_DIR}/$PythonRuntimefile
   else
     if [ ! -f "${BUILD_DIR}/$PythonRuntimefile" ]; then
-      echo "python-3.6.10" >${BUILD_DIR}/$PythonRuntimefile
+      echo "python-3.6.15" >${BUILD_DIR}/$PythonRuntimefile
     fi
     echo_title "Detection Python default runtime $(cat ${BUILD_DIR}/$PythonRuntimefile)"
   fi
