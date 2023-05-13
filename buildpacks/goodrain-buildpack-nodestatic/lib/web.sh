@@ -2,7 +2,7 @@
 fetch_nginx_tarball() {
     # for arm64 and amd64
     if [ $ARCH == "arm64" ]; then
-        local version="1.18.0-arm64"
+        local version="1.22.1-arm-ubuntu-22.04.2"
     else
         #local version="1.14.2"
         local version="1.22.1-x86-64-ubuntu-22.04.2" # update nginx version

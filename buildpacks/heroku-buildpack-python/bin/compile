@@ -66,12 +66,13 @@ case $ARCH in
   LATEST_2="python-2.7.18"
   ;;
 "arm64")
-  DEFAULT_PYTHON_VERSION="python-3.6.10-arm64"
-  LATEST_35="python-3.5.7-arm64"
-  LATEST_36="python-3.6.10-arm64"
-#  LATEST_37="python-3.7.6-arm64"
-#  LATEST_38="python-3.8.1-arm64"
-  LATEST_2="python-2.7.15-arm64"
+  DEFAULT_PYTHON_VERSION="python-3.6.15-arm64"
+  LATEST_35="python-3.5.6-arm64"
+  LATEST_36="python-3.6.15-arm64"
+  LATEST_37="python-3.7.16-arm64"
+  LATEST_38="python-3.8.16-arm64"
+  LATEST_39="python-3.9.16-arm64"
+  LATEST_2="python-2.7.18-arm64"
   ;;
 esac
 
