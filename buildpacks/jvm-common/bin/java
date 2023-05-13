@@ -14,15 +14,25 @@ arm64)
     JDK_URL_1_6=${JDK_URL_1_6:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/do_not_support_1.6_anymore"}
   else
     DEFAULT_JDK_VERSION="1.8"
-    JDK_BASE_URL=${JDK_BASE_URL:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/cedar-14"}
-    JDK_URL_13=${JDK_URL_12:-"$JDK_BASE_URL/arm64/openjdk-13.0.2_8_linux-aarch64.tar.gz"}
-    JDK_URL_12=${JDK_URL_12:-"$JDK_BASE_URL/arm64/openjdk-12.0.2_10_linux-aarch64.tar.gz"}
-    JDK_URL_11=${JDK_URL_11:-"$JDK_BASE_URL/arm64/openjdk-11.0.13_8_linux-aarch64.tar.gz"}
-    JDK_URL_10=${JDK_URL_10:-"$JDK_BASE_URL/arm64/openjdk-10.0.2_13_linux-aarch64.tar.gz"}
-    JDK_URL_1_9=${JDK_URL_1_9:-"$JDK_BASE_URL/arm64/openjdk-9_181_linux-aarch64.tar.gz"}
-    JDK_URL_1_8=${JDK_URL_1_8:-"$JDK_BASE_URL/arm64/openjdk-8u312b07_linux-aarch64.tar.gz"}
-    JDK_URL_1_7=${JDK_URL_1_7:-"$JDK_BASE_URL/do_not_support_1.7_anymore"}
-    JDK_URL_1_6=${JDK_URL_1_6:-"$JDK_BASE_URL/do_not_support_1.6_anymore"}
+    # JDK_BASE_URL=${JDK_BASE_URL:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/cedar-14"}
+    # JDK_URL_13=${JDK_URL_12:-"$JDK_BASE_URL/arm64/openjdk-13.0.2_8_linux-aarch64.tar.gz"}
+    # JDK_URL_12=${JDK_URL_12:-"$JDK_BASE_URL/arm64/openjdk-12.0.2_10_linux-aarch64.tar.gz"}
+    # JDK_URL_11=${JDK_URL_11:-"$JDK_BASE_URL/arm64/openjdk-11.0.13_8_linux-aarch64.tar.gz"}
+    # JDK_URL_10=${JDK_URL_10:-"$JDK_BASE_URL/arm64/openjdk-10.0.2_13_linux-aarch64.tar.gz"}
+    # JDK_URL_1_9=${JDK_URL_1_9:-"$JDK_BASE_URL/arm64/openjdk-9_181_linux-aarch64.tar.gz"}
+    # JDK_URL_1_8=${JDK_URL_1_8:-"$JDK_BASE_URL/arm64/openjdk-8u312b07_linux-aarch64.tar.gz"}
+    # JDK_URL_1_7=${JDK_URL_1_7:-"$JDK_BASE_URL/do_not_support_1.7_anymore"}
+    # JDK_URL_1_6=${JDK_URL_1_6:-"$JDK_BASE_URL/do_not_support_1.6_anymore"}
+    JDK_BASE_URL=${JDK_BASE_URL:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/jammy-22"}
+    JDK_URL_16=${JDK_URL_16:-"$JDK_BASE_URL/arm64/openjdk16.0.2_7.tar.gz"}
+    JDK_URL_15=${JDK_URL_15:-"$JDK_BASE_URL/arm64/openjdk15.0.2_7.tar.gz"}
+    JDK_URL_14=${JDK_URL_14:-"$JDK_BASE_URL/arm64/openjdk14.0.2_12.tar.gz"}
+    JDK_URL_13=${JDK_URL_13:-"$JDK_BASE_URL/arm64/openjdk13.0.2_8.tar.gz"}
+    JDK_URL_12=${JDK_URL_12:-"$JDK_BASE_URL/arm64/openjdk12.0.2_10.tar.gz"}
+    JDK_URL_11=${JDK_URL_11:-"$JDK_BASE_URL/arm64/openjdk11.0.19_7.tar.gz"}
+    JDK_URL_10=${JDK_URL_10:-"$JDK_BASE_URL/arm64/openjdk10.0.2_13.tar.gz"}
+    JDK_URL_1_9=${JDK_URL_1_9:-"$JDK_BASE_URL/arm64/openjdk9_181.tar.gz"}
+    JDK_URL_1_8=${JDK_URL_1_8:-"$JDK_BASE_URL/arm64/openjdk8_362_09.tar.gz"}
   fi
   ORACLEJDK_URL_11="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/jdk-11.0.13_linux-aarch64_bin.tar.gz"
   ;;

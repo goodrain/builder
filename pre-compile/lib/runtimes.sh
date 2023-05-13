@@ -264,7 +264,7 @@ runtimes::golang() {
     echo "go$runtime" >${BUILD_DIR}/$GolangRuntimefile
   else
     if [ ! -f "${BUILD_DIR}/$GolangRuntimefile" ]; then
-      echo "go1.11.2" >${BUILD_DIR}/$GolangRuntimefile
+      echo "go1.12.17" >${BUILD_DIR}/$GolangRuntimefile
     fi
     echo_title "Detection Golang default runtime $(cat ${BUILD_DIR}/$GolangRuntimefile)"
   fi
