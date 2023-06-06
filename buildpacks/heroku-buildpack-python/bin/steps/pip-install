@@ -43,6 +43,14 @@ if [ ! "$SKIP_PIP_INSTALL" ]; then
         mcount "failure.none-version"
     fi
 
+    # 获取当前setuptools包的版本号
+    SETUPTOOLS_VERSION=$(/app/.heroku/python/bin/pip show setuptools | grep Version | awk '{print $2}')
+
+    # 比较版本号，如果小于60则执行升级命令
+    if (( $(awk 'BEGIN {print ("'$SETUPTOOLS_VERSION'" < 60)}') )); then
+        /app/.heroku/python/bin/pip install --upgrade setuptools -i https://pypi.tuna.tsinghua.edu.cn/simple
+    fi
+
     /app/.heroku/python/bin/pip install -i "$RUN_PIP_INDEX_URL" -r "$BUILD_DIR/requirements.txt" --exists-action=w --src=/app/.heroku/src --disable-pip-version-check --no-cache-dir --default-timeout=100 2>&1 | tee "$WARNINGS_LOG" | cleanup | indent
     PIP_STATUS="${PIPESTATUS[0]}"
     set -e

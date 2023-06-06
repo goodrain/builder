@@ -127,10 +127,6 @@
     "SHA": "b5a64335f1490277b585832d1f6c7f8c6c11206cba5cd3f771dcb87b98ad1a33",
     "URL": "https://dl.google.com/go/go1.10.linux-amd64.tar.gz"
   },
-  "go1.10.linux-arm64.tar.gz": {
-    "SHA": "efb47e5c0e020b180291379ab625c6ec1c2e9e9b289336bc7169e6aa1da43fd8",
-    "URL": "https://dl.google.com/go/go1.10.linux-arm64.tar.gz"
-  },
   "go1.10beta1.linux-amd64.tar.gz": {
     "SHA": "ec7a10b5bf147a8e06cf64e27384ff3c6d065c74ebd8fdd31f572714f74a1055",
     "URL": "https://storage.googleapis.com/golang/go1.10beta1.linux-amd64.tar.gz"
@@ -203,10 +199,6 @@
     "SHA": "b3fcf280ff86558e0559e185b601c9eade0fd24c900b4c63cd14d1d38613e499",
     "URL": "https://storage.googleapis.com/golang/go1.11.linux-amd64.tar.gz"
   },
-  "go1.11.linux-arm64.tar.gz": {
-    "SHA": "e4853168f41d0bea65e4d38f992a2d44b58552605f623640c5ead89d515c56c9",
-    "URL": "https://storage.googleapis.com/golang/go1.11.linux-arm64.tar.gz"
-  },
   "go1.11beta1.linux-amd64.tar.gz": {
     "SHA": "df7fe096ffab5d331d35c6d038d2ec0426b45ce17f55a93037e371d3af9d4e6d",
     "URL": "https://storage.googleapis.com/golang/go1.11beta1.linux-amd64.tar.gz"
@@ -247,9 +239,21 @@
     "SHA": "925a1a9d8b31c2425d7313fe73d3342288968a66e26cd8bf1b6b5656f4603fcb",
     "URL": "https://storage.googleapis.com/golang/go1.12.14.linux-amd64.tar.gz"
   },
-  "go1.12.14.linux-arm64.tar.gz": {
-    "SHA": "1ab765f4cf74f05cfba40ddcea9160ca6cf9a57915036a559ca1691942862e7c",
-    "URL": "https://storage.googleapis.com/golang/go1.12.14.linux-arm64.tar.gz"
+  "go1.12.15.linux-amd64.tar.gz": {
+    "SHA": "61068419f3d3fcd3cc415c352c4a93d6ae0e723ac18a22ac572b4904d78b5a4c",
+    "URL": "https://storage.googleapis.com/golang/go1.12.15.linux-amd64.tar.gz"
+  },
+  "go1.12.16.linux-amd64.tar.gz": {
+    "SHA": "bf3a85d75658144c06ce986ba05e07ef08af4320089b74b1d41de3b0f340ea7e",
+    "URL": "https://storage.googleapis.com/golang/go1.12.16.linux-amd64.tar.gz"
+  },
+  "go1.12.17.linux-amd64.tar.gz": {
+    "SHA": "a53dd476129d496047487bfd53d021dd17e0c96895865a0e7d0469ce3db8c8d2",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.12.17.linux-amd64.tar.gz"
+  },
+  "go1.12.17.linux-arm64.tar.gz": {
+    "SHA": "9d0819cce1451abdb090071880fe8771f16a3bcee71d6f6906023d17799574e2",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.12.17.linux-arm64.tar.gz"
   },
   "go1.12.2.linux-amd64.tar.gz": {
     "SHA": "f28c1fde8f293cc5c83ae8de76373cf76ae9306909564f54e0edcf140ce8fe3f",
@@ -287,10 +291,6 @@
     "SHA": "750a07fef8579ae4839458701f4df690e0b20b8bcce33b437e4df89c451b6f13",
     "URL": "https://storage.googleapis.com/golang/go1.12.linux-amd64.tar.gz"
   },
-  "go1.12.linux-arm64.tar.gz": {
-    "SHA": "b7bf59c2f1ac48eb587817a2a30b02168ecc99635fc19b6e677cce01406e3fac",
-    "URL": "https://storage.googleapis.com/golang/go1.12.linux-arm64.tar.gz"
-  },
   "go1.12beta1.linux-amd64.tar.gz": {
     "SHA": "65bfd4a99925f1f85d712f4c1109977aa24ee4c6e198162bf8e819fdde19e875",
     "URL": "https://storage.googleapis.com/golang/go1.12beta1.linux-amd64.tar.gz"
@@ -307,13 +307,33 @@
     "SHA": "94f874037b82ea5353f4061e543681a0e79657f787437974214629af8407d124",
     "URL": "https://storage.googleapis.com/golang/go1.13.1.linux-amd64.tar.gz"
   },
+  "go1.13.10.linux-amd64.tar.gz": {
+    "SHA": "8a4cbc9f2b95d114c38f6cbe94a45372d48c604b707db2057c787398dfbf8e7f",
+    "URL": "https://storage.googleapis.com/golang/go1.13.10.linux-amd64.tar.gz"
+  },
+  "go1.13.11.linux-amd64.tar.gz": {
+    "SHA": "a4d71ca9e02923fa96669a4b5faf78ee8331b18e7209b09dd87fe763b4838ada",
+    "URL": "https://storage.googleapis.com/golang/go1.13.11.linux-amd64.tar.gz"
+  },
+  "go1.13.12.linux-amd64.tar.gz": {
+    "SHA": "9cacc6653563771b458c13056265aa0c21b8a23ca9408278484e4efde4160618",
+    "URL": "https://storage.googleapis.com/golang/go1.13.12.linux-amd64.tar.gz"
+  },
+  "go1.13.13.linux-amd64.tar.gz": {
+    "SHA": "0b8573c2335bebef53e819ab8d323456dc2b94838bebdbd8cc6623bb8a6d77b7",
+    "URL": "https://storage.googleapis.com/golang/go1.13.13.linux-amd64.tar.gz"
+  },
+  "go1.13.14.linux-amd64.tar.gz": {
+    "SHA": "32617db984b18308f2b00279c763bff060d2739229cb8037217a49c9e691b46a",
+    "URL": "https://storage.googleapis.com/golang/go1.13.14.linux-amd64.tar.gz"
+  },
   "go1.13.15.linux-amd64.tar.gz": {
     "SHA": "01cc3ddf6273900eba3e2bf311238828b7168b822bb57a9ccab4d7aa2acd6028",
     "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.13.15.linux-amd64.tar.gz"
   },
   "go1.13.15.linux-arm64.tar.gz": {
     "SHA": "a5c59e3f0aeaf6e939790152a8bfabb91d70c9787afb7aee06aef9bd4411c551",
-    "URL": "https://storage.googleapis.com/golang/go1.13.15.linux-arm64.tar.gz"
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.13.15.linux-arm64.tar.gz"
   },
   "go1.13.2.linux-amd64.tar.gz": {
     "SHA": "293b41a6ccd735eebcfb4094b6931bfd187595555cecf3e4386e9e119220c0b7",
@@ -331,6 +351,22 @@
     "SHA": "512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569",
     "URL": "https://storage.googleapis.com/golang/go1.13.5.linux-amd64.tar.gz"
   },
+  "go1.13.6.linux-amd64.tar.gz": {
+    "SHA": "a1bc06deb070155c4f67c579f896a45eeda5a8fa54f35ba233304074c4abbbbd",
+    "URL": "https://storage.googleapis.com/golang/go1.13.6.linux-amd64.tar.gz"
+  },
+  "go1.13.7.linux-amd64.tar.gz": {
+    "SHA": "b3dd4bd781a0271b33168e627f7f43886b4c5d1c794a4015abf34e99c6526ca3",
+    "URL": "https://storage.googleapis.com/golang/go1.13.7.linux-amd64.tar.gz"
+  },
+  "go1.13.8.linux-amd64.tar.gz": {
+    "SHA": "0567734d558aef19112f2b2873caa0c600f1b4a5827930eb5a7f35235219e9d8",
+    "URL": "https://storage.googleapis.com/golang/go1.13.8.linux-amd64.tar.gz"
+  },
+  "go1.13.9.linux-amd64.tar.gz": {
+    "SHA": "f4ad8180dd0aaf7d7cda7e2b0a2bf27e84131320896d376549a7d849ecf237d7",
+    "URL": "https://storage.googleapis.com/golang/go1.13.9.linux-amd64.tar.gz"
+  },
   "go1.13.linux-amd64.tar.gz": {
     "SHA": "68a2297eb099d1a76097905a2ce334e3155004ec08cdea85f24527be3c48e856",
     "URL": "https://storage.googleapis.com/golang/go1.13.linux-amd64.tar.gz"
@@ -347,6 +383,30 @@
     "SHA": "3cd4490021a5f1f25a7440edca03910e40a38e587b578cf52ab7143a81db1861",
     "URL": "https://storage.googleapis.com/golang/go1.13rc2.linux-amd64.tar.gz"
   },
+  "go1.14.1.linux-amd64.tar.gz": {
+    "SHA": "2f49eb17ce8b48c680cdb166ffd7389702c0dec6effa090c324804a5cac8a7f8",
+    "URL": "https://storage.googleapis.com/golang/go1.14.1.linux-amd64.tar.gz"
+  },
+  "go1.14.10.linux-amd64.tar.gz": {
+    "SHA": "66eb6858f375731ba07b0b33f5c813b141a81253e7e74071eec3ae85e9b37098",
+    "URL": "https://storage.googleapis.com/golang/go1.14.10.linux-amd64.tar.gz"
+  },
+  "go1.14.11.linux-amd64.tar.gz": {
+    "SHA": "ef150041e1af0890ecdd98ebdd6c759096884052a584c09ce50b2b5bb9bab2cd",
+    "URL": "https://storage.googleapis.com/golang/go1.14.11.linux-amd64.tar.gz"
+  },
+  "go1.14.12.linux-amd64.tar.gz": {
+    "SHA": "fb26f951c88c0685d7df393611189c58e6eabd3c17bdaef37df11355ab8db9d3",
+    "URL": "https://storage.googleapis.com/golang/go1.14.12.linux-amd64.tar.gz"
+  },
+  "go1.14.13.linux-amd64.tar.gz": {
+    "SHA": "bfea0c8d7b70c1ad99b0266b321608db57df75820e8f4333efa448a43da01992",
+    "URL": "https://storage.googleapis.com/golang/go1.14.13.linux-amd64.tar.gz"
+  },
+  "go1.14.14.linux-amd64.tar.gz": {
+    "SHA": "6f1354c9040d65d1622b451f43c324c1e5197aa9242d00c5a117d0e2625f3e0d",
+    "URL": "https://storage.googleapis.com/golang/go1.14.14.linux-amd64.tar.gz"
+  },
   "go1.14.15.linux-amd64.tar.gz": {
     "SHA": "c64a57b374a81f7cf1408d2c410a28c6f142414f1ffa9d1062de1d653b0ae0d6",
     "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.14.15.linux-amd64.tar.gz"
@@ -355,25 +415,205 @@
     "SHA": "4d964166a189c22032521c63935437c304bb7f01673b196898cff525897a1c27",
     "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.14.15.linux-arm64.tar.gz"
   },
+  "go1.14.2.linux-amd64.tar.gz": {
+    "SHA": "6272d6e940ecb71ea5636ddb5fab3933e087c1356173c61f4a803895e947ebb3",
+    "URL": "https://storage.googleapis.com/golang/go1.14.2.linux-amd64.tar.gz"
+  },
+  "go1.14.3.linux-amd64.tar.gz": {
+    "SHA": "1c39eac4ae95781b066c144c58e45d6859652247f7515f0d2cba7be7d57d2226",
+    "URL": "https://storage.googleapis.com/golang/go1.14.3.linux-amd64.tar.gz"
+  },
+  "go1.14.4.linux-amd64.tar.gz": {
+    "SHA": "aed845e4185a0b2a3c3d5e1d0a35491702c55889192bb9c30e67a3de6849c067",
+    "URL": "https://storage.googleapis.com/golang/go1.14.4.linux-amd64.tar.gz"
+  },
+  "go1.14.5.linux-amd64.tar.gz": {
+    "SHA": "82a1b84f16858db03231eb201f90cce2a991078dda543879b87e738e2586854b",
+    "URL": "https://storage.googleapis.com/golang/go1.14.5.linux-amd64.tar.gz"
+  },
+  "go1.14.6.linux-amd64.tar.gz": {
+    "SHA": "5c566ddc2e0bcfc25c26a5dc44a440fcc0177f7350c1f01952b34d5989a0d287",
+    "URL": "https://storage.googleapis.com/golang/go1.14.6.linux-amd64.tar.gz"
+  },
+  "go1.14.7.linux-amd64.tar.gz": {
+    "SHA": "4a7fa60f323ee1416a4b1425aefc37ea359e9d64df19c326a58953a97ad41ea5",
+    "URL": "https://storage.googleapis.com/golang/go1.14.7.linux-amd64.tar.gz"
+  },
+  "go1.14.8.linux-amd64.tar.gz": {
+    "SHA": "5504e077a29d0bd6649ca7b66e317f1a4b264e960f74115d6f0f405c49a8e738",
+    "URL": "https://storage.googleapis.com/golang/go1.14.8.linux-amd64.tar.gz"
+  },
+  "go1.14.9.linux-amd64.tar.gz": {
+    "SHA": "f0d26ff572c72c9823ae752d3c81819a81a60c753201f51f89637482531c110a",
+    "URL": "https://storage.googleapis.com/golang/go1.14.9.linux-amd64.tar.gz"
+  },
+  "go1.14.linux-amd64.tar.gz": {
+    "SHA": "08df79b46b0adf498ea9f320a0f23d6ec59e9003660b4c9c1ce8e5e2c6f823ca",
+    "URL": "https://storage.googleapis.com/golang/go1.14.linux-amd64.tar.gz"
+  },
   "go1.14beta1.linux-amd64.tar.gz": {
     "SHA": "ebe68aa4219b673dbd060b8a6d9a339b6b6b0383772aa4349c8183f0a8f339e4",
     "URL": "https://storage.googleapis.com/golang/go1.14beta1.linux-amd64.tar.gz"
   },
+  "go1.14rc1.linux-amd64.tar.gz": {
+    "SHA": "69398d41e5f6b87cdf3969aae665be4dfd3cc2ef36a61ab47a261f96130ed788",
+    "URL": "https://storage.googleapis.com/golang/go1.14rc1.linux-amd64.tar.gz"
+  },
+  "go1.15.1.linux-amd64.tar.gz": {
+    "SHA": "70ac0dbf60a8ee9236f337ed0daa7a4c3b98f6186d4497826f68e97c0c0413f6",
+    "URL": "https://dl.google.com/go/go1.15.1.linux-amd64.tar.gz"
+  },
   "go1.15.10.linux-amd64.tar.gz": {
     "SHA": "4aa1267517df32f2bf1cc3d55dfc27d0c6b2c2b0989449c96dd19273ccca051d",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.15.10.linux-amd64.tar.gz"
+    "URL": "https://dl.google.com/go/go1.15.10.linux-amd64.tar.gz"
   },
-  "go1.15.10.linux-arm64.tar.gz": {
-    "SHA": "ca3f3e84d863d8e758bfaab65430b12b6cff8f5a5648139245321d3401da64a7",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.15.10.linux-arm64.tar.gz"
+  "go1.15.11.linux-amd64.tar.gz": {
+    "SHA": "8825b72d74b14e82b54ba3697813772eb94add3abf70f021b6bdebe193ed01ec",
+    "URL": "https://dl.google.com/go/go1.15.11.linux-amd64.tar.gz"
+  },
+  "go1.15.12.linux-amd64.tar.gz": {
+    "SHA": "bbdb935699e0b24d90e2451346da76121b2412d30930eabcd80907c230d098b7",
+    "URL": "https://dl.google.com/go/go1.15.12.linux-amd64.tar.gz"
+  },
+  "go1.15.13.linux-amd64.tar.gz": {
+    "SHA": "3d3beec5fc66659018e09f40abb7274b10794229ba7c1e8bdb7d8ca77b656a13",
+    "URL": "https://dl.google.com/go/go1.15.13.linux-amd64.tar.gz"
+  },
+  "go1.15.14.linux-amd64.tar.gz": {
+    "SHA": "6f5410c113b803f437d7a1ee6f8f124100e536cc7361920f7e640fedf7add72d",
+    "URL": "https://dl.google.com/go/go1.15.14.linux-amd64.tar.gz"
+  },
+  "go1.15.15.linux-amd64.tar.gz": {
+    "SHA": "0885cf046a9f099e260d98d9ec5d19ea9328f34c8dc4956e1d3cd87daaddb345",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.15.15.linux-amd64.tar.gz"
+  },
+  "go1.15.15.linux-arm64.tar.gz": {
+    "SHA": "714abb01af210473dd6af331094ad6847162eff81a7fc7241d24f5a85496c9fa",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.15.15.linux-arm64.tar.gz"
+  },
+  "go1.15.2.linux-amd64.tar.gz": {
+    "SHA": "b49fda1ca29a1946d6bb2a5a6982cf07ccd2aba849289508ee0f9918f6bb4552",
+    "URL": "https://dl.google.com/go/go1.15.2.linux-amd64.tar.gz"
+  },
+  "go1.15.3.linux-amd64.tar.gz": {
+    "SHA": "010a88df924a81ec21b293b5da8f9b11c176d27c0ee3962dc1738d2352d3c02d",
+    "URL": "https://dl.google.com/go/go1.15.3.linux-amd64.tar.gz"
+  },
+  "go1.15.4.linux-amd64.tar.gz": {
+    "SHA": "eb61005f0b932c93b424a3a4eaa67d72196c79129d9a3ea8578047683e2c80d5",
+    "URL": "https://dl.google.com/go/go1.15.4.linux-amd64.tar.gz"
+  },
+  "go1.15.5.linux-amd64.tar.gz": {
+    "SHA": "9a58494e8da722c3aef248c9227b0e9c528c7318309827780f16220998180a0d",
+    "URL": "https://dl.google.com/go/go1.15.5.linux-amd64.tar.gz"
+  },
+  "go1.15.6.linux-amd64.tar.gz": {
+    "SHA": "3918e6cc85e7eaaa6f859f1bdbaac772e7a825b0eb423c63d3ae68b21f84b844",
+    "URL": "https://dl.google.com/go/go1.15.6.linux-amd64.tar.gz"
+  },
+  "go1.15.7.linux-amd64.tar.gz": {
+    "SHA": "0d142143794721bb63ce6c8a6180c4062bcf8ef4715e7d6d6609f3a8282629b3",
+    "URL": "https://dl.google.com/go/go1.15.7.linux-amd64.tar.gz"
+  },
+  "go1.15.8.linux-amd64.tar.gz": {
+    "SHA": "d3379c32a90fdf9382166f8f48034c459a8cc433730bc9476d39d9082c94583b",
+    "URL": "https://dl.google.com/go/go1.15.8.linux-amd64.tar.gz"
+  },
+  "go1.15.9.linux-amd64.tar.gz": {
+    "SHA": "a55f3e75bc1098045851d40ea74f9d77efc7958e9af85131a96ca387d38b1834",
+    "URL": "https://dl.google.com/go/go1.15.9.linux-amd64.tar.gz"
+  },
+  "go1.15.linux-amd64.tar.gz": {
+    "SHA": "2d75848ac606061efe52a8068d0e647b35ce487a15bb52272c427df485193602",
+    "URL": "https://dl.google.com/go/go1.15.linux-amd64.tar.gz"
+  },
+  "go1.16.1.linux-amd64.tar.gz": {
+    "SHA": "3edc22f8332231c3ba8be246f184b736b8d28f06ce24f08168d8ecf052549769",
+    "URL": "https://dl.google.com/go/go1.16.1.linux-amd64.tar.gz"
+  },
+  "go1.16.10.linux-amd64.tar.gz": {
+    "SHA": "414cd18ce1d193769b9e97d2401ad718755ab47816e13b2a1cde203d263b55cf",
+    "URL": "https://dl.google.com/go/go1.16.10.linux-amd64.tar.gz"
+  },
+  "go1.16.11.linux-amd64.tar.gz": {
+    "SHA": "aa22d0e2be68c0a7027a64e76cbb2869332fbc42ce14e3d10b69007b51030775",
+    "URL": "https://dl.google.com/go/go1.16.11.linux-amd64.tar.gz"
+  },
+  "go1.16.12.linux-amd64.tar.gz": {
+    "SHA": "7d657e86493ac1d5892f340a7d88b862b12edb5ac6e73c099e8e0668a6c916b7",
+    "URL": "https://dl.google.com/go/go1.16.12.linux-amd64.tar.gz"
+  },
+  "go1.16.13.linux-amd64.tar.gz": {
+    "SHA": "275fc03c90c13b0bbff13125a43f1f7a9f9c00a0d5a9f2d5b16dbc2fa2c6e12a",
+    "URL": "https://dl.google.com/go/go1.16.13.linux-amd64.tar.gz"
+  },
+  "go1.16.14.linux-amd64.tar.gz": {
+    "SHA": "f4f5f02eb6809ac5bf19b5ad517b23504fd5fc036f6487651968ad36aa7a20e0",
+    "URL": "https://dl.google.com/go/go1.16.14.linux-amd64.tar.gz"
+  },
+  "go1.16.15.linux-amd64.tar.gz": {
+    "SHA": "77c782a633186d78c384f972fb113a43c24be0234c42fef22c2d8c4c4c8e7475",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.16.15.linux-amd64.tar.gz"
+  },
+  "go1.16.15.linux-arm64.tar.gz": {
+    "SHA": "c2f27f0ce5620a9bc2ff3446165d1974ef94e9b885ec12dbfa3c07e0e198b7ce",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.16.15.linux-arm64.tar.gz"
   },
   "go1.16.2.linux-amd64.tar.gz": {
     "SHA": "542e936b19542e62679766194364f45141fde55169db2d8d01046555ca9eb4b8",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.16.2.linux-amd64.tar.gz"
+    "URL": "https://dl.google.com/go/go1.16.2.linux-amd64.tar.gz"
   },
-  "go1.16.2.linux-arm64.tar.gz": {
-    "SHA": "6924601d998a0917694fd14261347e3798bd2ad6b13c4d7f2edd70c9d57f62ab",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.16.2.linux-arm64.tar.gz"
+  "go1.16.3.linux-amd64.tar.gz": {
+    "SHA": "951a3c7c6ce4e56ad883f97d9db74d3d6d80d5fec77455c6ada6c1f7ac4776d2",
+    "URL": "https://dl.google.com/go/go1.16.3.linux-amd64.tar.gz"
+  },
+  "go1.16.4.linux-amd64.tar.gz": {
+    "SHA": "7154e88f5a8047aad4b80ebace58a059e36e7e2e4eb3b383127a28c711b4ff59",
+    "URL": "https://dl.google.com/go/go1.16.4.linux-amd64.tar.gz"
+  },
+  "go1.16.5.linux-amd64.tar.gz": {
+    "SHA": "b12c23023b68de22f74c0524f10b753e7b08b1504cb7e417eccebdd3fae49061",
+    "URL": "https://dl.google.com/go/go1.16.5.linux-amd64.tar.gz"
+  },
+  "go1.16.6.linux-amd64.tar.gz": {
+    "SHA": "be333ef18b3016e9d7cb7b1ff1fdb0cac800ca0be4cf2290fe613b3d069dfe0d",
+    "URL": "https://dl.google.com/go/go1.16.6.linux-amd64.tar.gz"
+  },
+  "go1.16.7.linux-amd64.tar.gz": {
+    "SHA": "7fe7a73f55ba3e2285da36f8b085e5c0159e9564ef5f63ee0ed6b818ade8ef04",
+    "URL": "https://dl.google.com/go/go1.16.7.linux-amd64.tar.gz"
+  },
+  "go1.16.8.linux-amd64.tar.gz": {
+    "SHA": "f32501aeb8b7b723bc7215f6c373abb6981bbc7e1c7b44e9f07317e1a300dce2",
+    "URL": "https://dl.google.com/go/go1.16.8.linux-amd64.tar.gz"
+  },
+  "go1.16.9.linux-amd64.tar.gz": {
+    "SHA": "d2c095c95f63c2a3ef961000e0ecb9d81d5c68b6ece176e2a8a2db82dc02931c",
+    "URL": "https://dl.google.com/go/go1.16.9.linux-amd64.tar.gz"
+  },
+  "go1.16.linux-amd64.tar.gz": {
+    "SHA": "013a489ebb3e24ef3d915abe5b94c3286c070dfe0818d5bca8108f1d6e8440d2",
+    "URL": "https://dl.google.com/go/go1.16.linux-amd64.tar.gz"
+  },
+  "go1.16rc1.linux-amd64.tar.gz": {
+    "SHA": "6a62610f56a04bae8702cd2bd73bfea34645c1b89ded3f0b81a841393b6f1f14",
+    "URL": "https://storage.googleapis.com/golang/go1.16rc1.linux-amd64.tar.gz"
+  },
+  "go1.17.1.linux-amd64.tar.gz": {
+    "SHA": "dab7d9c34361dc21ec237d584590d72500652e7c909bf082758fb63064fca0ef",
+    "URL": "https://dl.google.com/go/go1.17.1.linux-amd64.tar.gz"
+  },
+  "go1.17.10.linux-amd64.tar.gz": {
+    "SHA": "87fc728c9c731e2f74e4a999ef53cf07302d7ed3504b0839027bd9c10edaa3fd",
+    "URL": "https://dl.google.com/go/go1.17.10.linux-amd64.tar.gz"
+  },
+  "go1.17.11.linux-amd64.tar.gz": {
+    "SHA": "d69a4fe2694f795d8e525c72b497ededc209cb7185f4c3b62d7a98dd6227b3fe",
+    "URL": "https://dl.google.com/go/go1.17.11.linux-amd64.tar.gz"
+  },
+  "go1.17.12.linux-amd64.tar.gz": {
+    "SHA": "6e5203fbdcade4aa4331e441fd2e1db8444681a6a6c72886a37ddd11caa415d4",
+    "URL": "https://dl.google.com/go/go1.17.12.linux-amd64.tar.gz"
   },
   "go1.17.13.linux-amd64.tar.gz": {
     "SHA": "4cdd2bc664724dc7db94ad51b503512c5ae7220951cac568120f64f8e94399fc",
@@ -383,21 +623,133 @@
     "SHA": "914daad3f011cc2014dea799bb7490442677e4ad6de0b2ac3ded6cee7e3f493d",
     "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.17.13.linux-arm64.tar.gz"
   },
+  "go1.17.2.linux-amd64.tar.gz": {
+    "SHA": "f242a9db6a0ad1846de7b6d94d507915d14062660616a61ef7c808a76e4f1676",
+    "URL": "https://dl.google.com/go/go1.17.2.linux-amd64.tar.gz"
+  },
+  "go1.17.3.linux-amd64.tar.gz": {
+    "SHA": "550f9845451c0c94be679faf116291e7807a8d78b43149f9506c1b15eb89008c",
+    "URL": "https://dl.google.com/go/go1.17.3.linux-amd64.tar.gz"
+  },
+  "go1.17.4.linux-amd64.tar.gz": {
+    "SHA": "adab2483f644e2f8a10ae93122f0018cef525ca48d0b8764dae87cb5f4fd4206",
+    "URL": "https://dl.google.com/go/go1.17.4.linux-amd64.tar.gz"
+  },
+  "go1.17.5.linux-amd64.tar.gz": {
+    "SHA": "bd78114b0d441b029c8fe0341f4910370925a4d270a6a590668840675b0c653e",
+    "URL": "https://dl.google.com/go/go1.17.5.linux-amd64.tar.gz"
+  },
+  "go1.17.6.linux-amd64.tar.gz": {
+    "SHA": "231654bbf2dab3d86c1619ce799e77b03d96f9b50770297c8f4dff8836fc8ca2",
+    "URL": "https://dl.google.com/go/go1.17.6.linux-amd64.tar.gz"
+  },
+  "go1.17.7.linux-amd64.tar.gz": {
+    "SHA": "02b111284bedbfa35a7e5b74a06082d18632eff824fd144312f6063943d49259",
+    "URL": "https://dl.google.com/go/go1.17.7.linux-amd64.tar.gz"
+  },
+  "go1.17.8.linux-amd64.tar.gz": {
+    "SHA": "980e65a863377e69fd9b67df9d8395fd8e93858e7a24c9f55803421e453f4f99",
+    "URL": "https://dl.google.com/go/go1.17.8.linux-amd64.tar.gz"
+  },
+  "go1.17.9.linux-amd64.tar.gz": {
+    "SHA": "9dacf782028fdfc79120576c872dee488b81257b1c48e9032d122cfdb379cca6",
+    "URL": "https://dl.google.com/go/go1.17.9.linux-amd64.tar.gz"
+  },
+  "go1.17.linux-amd64.tar.gz": {
+    "SHA": "6bf89fc4f5ad763871cf7eac80a2d594492de7a818303283f1366a7f6a30372d",
+    "URL": "https://dl.google.com/go/go1.17.linux-amd64.tar.gz"
+  },
+  "go1.18.1.linux-amd64.tar.gz": {
+    "SHA": "b3b815f47ababac13810fc6021eb73d65478e0b2db4b09d348eefad9581a2334",
+    "URL": "https://dl.google.com/go/go1.18.1.linux-amd64.tar.gz"
+  },
+  "go1.18.10.linux-amd64.tar.gz": {
+    "SHA": "5e05400e4c79ef5394424c0eff5b9141cb782da25f64f79d54c98af0a37f8d49",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.18.10.linux-amd64.tar.gz"
+  },
+  "go1.18.10.linux-arm64.tar.gz": {
+    "SHA": "160497c583d4c7cbc1661230e68b758d01f741cf4bece67e48edc4fdd40ed92d",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.18.10.linux-arm64.tar.gz"
+  },
+  "go1.18.2.linux-amd64.tar.gz": {
+    "SHA": "e54bec97a1a5d230fc2f9ad0880fcbabb5888f30ed9666eca4a91c5a32e86cbc",
+    "URL": "https://dl.google.com/go/go1.18.2.linux-amd64.tar.gz"
+  },
+  "go1.18.3.linux-amd64.tar.gz": {
+    "SHA": "956f8507b302ab0bb747613695cdae10af99bbd39a90cae522b7c0302cc27245",
+    "URL": "https://dl.google.com/go/go1.18.3.linux-amd64.tar.gz"
+  },
+  "go1.18.4.linux-amd64.tar.gz": {
+    "SHA": "c9b099b68d93f5c5c8a8844a89f8db07eaa58270e3a1e01804f17f4cf8df02f5",
+    "URL": "https://dl.google.com/go/go1.18.4.linux-amd64.tar.gz"
+  },
+  "go1.18.5.linux-amd64.tar.gz": {
+    "SHA": "9e5de37f9c49942c601b191ac5fba404b868bfc21d446d6960acc12283d6e5f2",
+    "URL": "https://dl.google.com/go/go1.18.5.linux-amd64.tar.gz"
+  },
+  "go1.18.6.linux-amd64.tar.gz": {
+    "SHA": "bb05f179a773fed60c6a454a24141aaa7e71edfd0f2d465ad610a3b8f1dc7fe8",
+    "URL": "https://dl.google.com/go/go1.18.6.linux-amd64.tar.gz"
+  },
+  "go1.18.7.linux-amd64.tar.gz": {
+    "SHA": "6c967efc22152ce3124fc35cdf50fc686870120c5fd2107234d05d450a6105d8",
+    "URL": "https://dl.google.com/go/go1.18.7.linux-amd64.tar.gz"
+  },
   "go1.18.8.linux-amd64.tar.gz": {
     "SHA": "4d854c7bad52d53470cf32f1b287a5c0c441dc6b98306dea27358e099698142a",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.18.8.linux-amd64.tar.gz"
+    "URL": "https://dl.google.com/go/go1.18.8.linux-amd64.tar.gz"
   },
-  "go1.18.8.linux-arm64.tar.gz": {
-    "SHA": "df71bc84d84f7f62dad06aca5e1b8234045dce94a94dcefe71af0cb8f6e93a87",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.18.8.linux-arm64.tar.gz"
+  "go1.18.9.linux-amd64.tar.gz": {
+    "SHA": "015692d2a48e3496f1da3328cf33337c727c595011883f6fc74f9b5a9c86ffa8",
+    "URL": "https://dl.google.com/go/go1.18.9.linux-amd64.tar.gz"
+  },
+  "go1.18.linux-amd64.tar.gz": {
+    "SHA": "e85278e98f57cdb150fe8409e6e5df5343ecb13cebf03a5d5ff12bd55a80264f",
+    "URL": "https://dl.google.com/go/go1.18.linux-amd64.tar.gz"
+  },
+  "go1.19.1.linux-amd64.tar.gz": {
+    "SHA": "acc512fbab4f716a8f97a8b3fbaa9ddd39606a28be6c2515ef7c6c6311acffde",
+    "URL": "https://dl.google.com/go/go1.19.1.linux-amd64.tar.gz"
+  },
+  "go1.19.2.linux-amd64.tar.gz": {
+    "SHA": "5e8c5a74fe6470dd7e055a461acda8bb4050ead8c2df70f227e3ff7d8eb7eeb6",
+    "URL": "https://dl.google.com/go/go1.19.2.linux-amd64.tar.gz"
   },
   "go1.19.3.linux-amd64.tar.gz": {
     "SHA": "74b9640724fd4e6bb0ed2a1bc44ae813a03f1e72a4c76253e2d5c015494430ba",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.19.3.linux-amd64.tar.gz"
+    "URL": "https://dl.google.com/go/go1.19.3.linux-amd64.tar.gz"
   },
-  "go1.19.3.linux-arm64.tar.gz": {
-    "SHA": "99de2fe112a52ab748fb175edea64b313a0c8d51d6157dba683a6be163fd5eab",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.19.3.linux-arm64.tar.gz"
+  "go1.19.4.linux-amd64.tar.gz": {
+    "SHA": "c9c08f783325c4cf840a94333159cc937f05f75d36a8b307951d5bd959cf2ab8",
+    "URL": "https://dl.google.com/go/go1.19.4.linux-amd64.tar.gz"
+  },
+  "go1.19.5.linux-amd64.tar.gz": {
+    "SHA": "36519702ae2fd573c9869461990ae550c8c0d955cd28d2827a6b159fda81ff95",
+    "URL": "https://dl.google.com/go/go1.19.5.linux-amd64.tar.gz"
+  },
+  "go1.19.6.linux-amd64.tar.gz": {
+    "SHA": "e3410c676ced327aec928303fef11385702a5562fd19d9a1750d5a2979763c3d",
+    "URL": "https://dl.google.com/go/go1.19.6.linux-amd64.tar.gz"
+  },
+  "go1.19.7.linux-amd64.tar.gz": {
+    "SHA": "7a75720c9b066ae1750f6bcc7052aba70fa3813f4223199ee2a2315fd3eb533d",
+    "URL": "https://dl.google.com/go/go1.19.7.linux-amd64.tar.gz"
+  },
+  "go1.19.8.linux-amd64.tar.gz": {
+    "SHA": "e1a0bf0ab18c8218805a1003fd702a41e2e807710b770e787e5979d1cf947aba",
+    "URL": "https://dl.google.com/go/go1.19.8.linux-amd64.tar.gz"
+  },
+  "go1.19.9.linux-amd64.tar.gz": {
+    "SHA": "e858173b489ec1ddbe2374894f52f53e748feed09dde61be5b4b4ba2d73ef34b",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.19.9.linux-amd64.tar.gz"
+  },
+  "go1.19.9.linux-arm64.tar.gz": {
+    "SHA": "b947e457be9d7b52a082c68e42b6939f9cc151f1ad5b3d8fd646ca3352f6f2f1",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.19.9.linux-arm64.tar.gz"
+  },
+  "go1.19.linux-amd64.tar.gz": {
+    "SHA": "464b6b66591f6cf055bc5df90a9750bf5fbc9d038722bb84a9d56a2bea974be6",
+    "URL": "https://dl.google.com/go/go1.19.linux-amd64.tar.gz"
   },
   "go1.2.1.linux-amd64.tar.gz": {
     "SHA": "d6e9623b8cf566599003dac6c402d03a62f48d98158bfcfc3b0c743b51ad4be6",
@@ -410,6 +762,30 @@
   "go1.2.linux-amd64.tar.gz": {
     "SHA": "1252ca0aa0a96d53c0592fbc4ea9c9ff5c6b588169c92e08d06da9d89d9d91f2",
     "URL": "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/go/go1.2.linux-amd64.tar.gz"
+  },
+  "go1.20.1.linux-amd64.tar.gz": {
+    "SHA": "000a5b1fca4f75895f78befeb2eecf10bfff3c428597f3f1e69133b63b911b02",
+    "URL": "https://dl.google.com/go/go1.20.1.linux-amd64.tar.gz"
+  },
+  "go1.20.2.linux-amd64.tar.gz": {
+    "SHA": "4eaea32f59cde4dc635fbc42161031d13e1c780b87097f4b4234cfce671f1768",
+    "URL": "https://go.dev/dl/go1.20.2.linux-amd64.tar.gz"
+  },
+  "go1.20.3.linux-amd64.tar.gz": {
+    "SHA": "979694c2c25c735755bf26f4f45e19e64e4811d661dd07b8c010f7a8e18adfca",
+    "URL": "https://dl.google.com/go/go1.20.3.linux-amd64.tar.gz"
+  },
+  "go1.20.4.linux-amd64.tar.gz": {
+    "SHA": "698ef3243972a51ddb4028e4a1ac63dc6d60821bf18e59a807e051fee0a385bd",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.20.4.linux-amd64.tar.gz"
+  },
+  "go1.20.4.linux-arm64.tar.gz": {
+    "SHA": "105889992ee4b1d40c7c108555222ca70ae43fccb42e20fbf1eebb822f5e72c6",
+    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.20.4.linux-arm64.tar.gz"
+  },
+  "go1.20.linux-amd64.tar.gz": {
+    "SHA": "5a9ebcc65c1cce56e0d2dc616aff4c4cedcfbda8cc6f0288cc08cda3b18dcbf1",
+    "URL": "https://dl.google.com/go/go1.20.linux-amd64.tar.gz"
   },
   "go1.3.1.linux-amd64.tar.gz": {
     "SHA": "3af011cc19b21c7180f2604fd85fbc4ddde97143",
@@ -531,10 +907,6 @@
     "SHA": "de32e8db3dc030e1448a6ca52d87a1e04ad31c6b212007616cfcc87beb0e4d60",
     "URL": "https://storage.googleapis.com/golang/go1.8.7.linux-amd64.tar.gz"
   },
-  "go1.8.7.linux-arm64.tar.gz": {
-    "SHA": "804c2e73eca5ce309f2947aaf437fce9f67463b4fb9484f47c95b632d4eeabf6",
-    "URL": "https://storage.googleapis.com/golang/go1.8.7.linux-arm64.tar.gz"
-  },
   "go1.8.linux-amd64.tar.gz": {
     "SHA": "53ab94104ee3923e228a2cb2116e5e462ad3ebaeea06ff04463479d7f12d27ca",
     "URL": "https://storage.googleapis.com/golang/go1.8.linux-amd64.tar.gz"
@@ -591,10 +963,6 @@
     "SHA": "d70eadefce8e160638a9a6db97f7192d8463069ab33138893ad3bf31b0650a79",
     "URL": "https://storage.googleapis.com/golang/go1.9.linux-amd64.tar.gz"
   },
-  "go1.9.linux-arm64.tar.gz": {
-    "SHA": "0958dcf454f7f26d7acc1a4ddc34220d499df845bc2051c14ff8efdf1e3c29a6",
-    "URL": "https://storage.googleapis.com/golang/go1.9.linux-arm64.tar.gz"
-  },
   "go1.9beta1.linux-amd64.tar.gz": {
     "SHA": "85719a2c704ad1352052e185c760d7c65b9d8a18b491287a7e5f6775ccc27d3b",
     "URL": "https://storage.googleapis.com/golang/go1.9beta1.linux-amd64.tar.gz"
@@ -648,7 +1016,7 @@
   },
   "stdlib.sh.v8": {
     "SHA": "48b1c663ceda9e93a42fa2ed610fbdd12f9801abd55c317990b30ec75dc3d715",
-    "URL": "https://lang-common.s3.amazonaws.com/buildpack-stdlib/v8/stdlib.sh"
+    "URL": "https://lang-common.s3.us-east-1.amazonaws.com/buildpack-stdlib/v8/stdlib.sh"
   },
   "tq-v0.4-linux-amd64": {
     "LocalName": "tq",

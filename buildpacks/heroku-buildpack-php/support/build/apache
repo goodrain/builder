@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Build Path: /app/.heroku/php/
 
 # fail hard
 set -o pipefail
@@ -32,6 +31,9 @@ mkdir -p ${dep_dirname}/srclib/apr-util
 curl -L ${aprutil_url} | tar xz --strip-components=1 -C ${dep_dirname}/srclib/apr-util
 
 pushd ${dep_dirname}
+
+patch -p1 < $(dirname $BASH_SOURCE)/patches/httpd-ignoresigterm.patch
+
 ./configure \
 	--enable-layout=GNU \
 	--prefix=${OUT_PREFIX} \
@@ -45,11 +47,10 @@ pushd ${dep_dirname}
 	--enable-proxy \
 	--enable-proxy-fcgi \
 	--enable-rewrite \
-	--enable-deflate \
-	--with-expat=/usr/local/expat
+	--enable-deflate
 make -s -j 9
 make install -s
-find ${OUT_PREFIX} -type f \( -executable -o -name '*.a' \) -exec sh -c "file -i '{}' | grep -Eq 'application/x-(archive|executable|sharedlib); charset=binary'" \; -print | xargs strip --strip-unneeded
+find ${OUT_PREFIX} -type f \( -executable -o -name '*.a' \) -exec sh -c "file -i '{}' | grep -Eq 'application/x-(archive|(pie-)?executable|sharedlib); charset=binary'" \; -print | xargs strip --strip-unneeded
 popd
 
 rm -rf ${OUT_PREFIX}/man ${OUT_PREFIX}/share/apache2/manual

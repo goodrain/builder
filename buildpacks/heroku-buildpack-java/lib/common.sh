@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export DEFAULT_MAVEN_VERSION="3.3.9"
+export DEFAULT_MAVEN_VERSION="3.9.1"
 export BUILDPACK_STDLIB_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/java/stdlib.sh"
 
 install_maven() {

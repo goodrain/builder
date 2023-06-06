@@ -8,17 +8,17 @@ error() {
 	# if arguments are given, redirect them to stdin
 	# this allows the funtion to be invoked with a string argument, or with stdin, e.g. via <<-EOF
 	(( $# )) && exec <<< "$@"
-	echo "" # bold; red
+	echo -e "\033[1;31m" # bold; red
 	echo -n " !     ERROR: "
 	# this will be fed from stdin
 	indent no_first_line_indent " !     "
 	if [[ -s "$_captured_warnings_file" ]]; then
 		echo "" | indent "" " !     "
-		echo -e "REMINDER: the following warnings were emitted during the build;" | indent "" " !     "
+		echo -e "\033[1;33mREMINDER:\033[1;31m the following \033[1;33mwarnings\033[1;31m were emitted during the build;" | indent "" " !     "
 		echo "check the details above, as they may be related to this error:" | indent "" " !     "
-		cat "$_captured_warnings_file" | indent "" " !     "
+		cat "$_captured_warnings_file" | indent "" "$(echo -e " !     \033[1;33m-\033[1;31m ")"
 	fi
-	echo "" # reset style
+	echo -e "\033[0m" # reset style
 	exit 1
 }
 
@@ -28,13 +28,13 @@ warning() {
 	# if arguments are given, redirect them to stdin
 	# this allows the funtion to be invoked with a string argument, or with stdin, e.g. via <<-EOF
 	(( $# )) && exec <<< "$@"
-	echo "" # bold; yellow
+	echo -e "\033[1;33m" # bold; yellow
 	echo -n " !     WARNING: "
 	# indent will be fed from stdin
 	# we tee to FD 5, which is linked to STDOUT, and capture the real stdout into the warnings array
 	# we must cat in the process substitution to read the remaining lines, because head only reads one line, and then the pipe would close, leading tee to fail
 	indent no_first_line_indent " !     " | tee >(head -n1 >> "$_captured_warnings_file"; cat > /dev/null)
-	echo "" # reset style
+	echo -e "\033[0m" # reset style
 }
 
 warning_inline() {
@@ -43,13 +43,13 @@ warning_inline() {
 	# if arguments are given, redirect them to stdin
 	# this allows the funtion to be invoked with a string argument, or with stdin, e.g. via <<-EOF
 	(( $# )) && exec <<< "$@"
-	echo -n "" # bold; yellow
+	echo -n -e "\033[1;33m" # bold; yellow
 	echo -n " !     WARNING: "
 	# indent will be fed from stdin
 	# we tee to FD 5, which is linked to STDOUT, and capture the real stdout into the warnings array
 	# we must cat in the process substitution to read the remaining lines, because head only reads one line, and then the pipe would close, leading tee to fail
 	indent no_first_line_indent " !     " | tee >(head -n1 >> "$_captured_warnings_file"; cat > /dev/null)
-	echo -n "" # reset style
+	echo -n -e "\033[0m" # reset style
 }
 
 status() {
@@ -70,9 +70,9 @@ notice() {
 	# this allows the funtion to be invoked with a string argument, or with stdin, e.g. via <<-EOF
 	(( $# )) && exec <<< "$@"
 	echo
-	echo -n "" # bold; yellow
+	echo -n -e "\033[1;33m" # bold; yellow
 	echo -n "       NOTICE: "
-	echo -n "" # reset style
+	echo -n -e "\033[0m" # reset style
 	# this will be fed from stdin
 	indent no_first_line_indent
 	echo
@@ -84,9 +84,9 @@ notice_inline() {
 	# if arguments are given, redirect them to stdin
 	# this allows the funtion to be invoked with a string argument, or with stdin, e.g. via <<-EOF
 	(( $# )) && exec <<< "$@"
-	echo -n -e "" # bold; yellow
+	echo -n -e "\033[1;33m" # bold; yellow
 	echo -n "       NOTICE: "
-	echo -n -e "" # reset style
+	echo -n -e "\033[0m" # reset style
 	# this will be fed from stdin
 	indent no_first_line_indent
 }
@@ -124,6 +124,7 @@ curl_retry_on_18() {
 	while (( ec == 18 && attempts++ < 3 )); do
 		curl "$@" # -C - would return code 33 if unsupported by server
 		ec=$?
+		sleep "$attempts" # naive backoff
 	done
 	return $ec
 }

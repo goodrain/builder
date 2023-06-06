@@ -9,7 +9,7 @@ Rainbond静态html项目的源码构建核心部分是基于[Heroku buildpack fo
 ## 其他
 
 ### web服务器
-Nginx默认使用最新稳定版本 v1.14.2
+Nginx默认使用最新稳定版本 v1.22.1
 Apache默认使用稳定版本 v2.2.19
 
 ### 环境变量

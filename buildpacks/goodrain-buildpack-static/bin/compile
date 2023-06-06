@@ -40,10 +40,10 @@ fi
 fetch_nginx_tarball() {
     # for arm64 and amd64
     if [ $ARCH == "arm64" ]; then
-        local NGINX_VERSION="1.18.0-arm64"
+        local NGINX_VERSION="1.22.1-arm-ubuntu-22.04.2"
     else
         #local NGINX_VERSION="1.14.2"
-        local NGINX_VERSION="1.18.0" # update nginx version
+        local NGINX_VERSION="1.22.1-x86-64-ubuntu-22.04.2" # update nginx version
     fi
     local NGINX_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/r6d/nginx/nginx-${NGINX_VERSION}.tar.gz"
     local NGINX_PATH="nginx"
