@@ -40,6 +40,19 @@ case ${MEMORY_SIZE} in
        ;;
 esac
 
+# Adapt to Rainbond v5.14.1 custom memory resources
+if [ -z ${MEMORY_SIZE} ] && [ -n ${CUSTOM_MEMORY_SIZE} ];then
+  jmx_mem=$(echo ${CUSTOM_MEMORY_SIZE} | awk '{printf("%.0f",$1*0.7)}')
+  direct_mem=$(echo ${CUSTOM_MEMORY_SIZE} | awk '{printf("%.0f",$1*0.09375)}')
+  if [ $jmx_mem==0 ];then
+    export default_java_mem_opts=""
+    echo "Since there is no limit on instance memory, JVM memory is not set" >&2
+  else
+    export default_java_mem_opts="-Xms${jmx_mem}m -Xmx${jmx_mem}m -Xss512k -XX:MaxDirectMemorySize=${direct_mem}M"
+    echo -e "Based on a custom memory value of ${CUSTOM_MEMORY_SIZE} MB, the optimized JVM memory setting is: \n ${default_java_mem_opts}" >&2
+  fi
+fi
+
 export JAVA_HOME="$HOME/.jdk"
 export LD_LIBRARY_PATH="$JAVA_HOME/jre/lib/amd64/server:$LD_LIBRARY_PATH"
 export PATH="$HOME/.heroku/bin:$JAVA_HOME/bin:$PATH"
