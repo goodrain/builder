@@ -44,7 +44,7 @@ esac
 if [ -z ${MEMORY_SIZE} ] && [ -n ${CUSTOM_MEMORY_SIZE} ];then
   jmx_mem=$(echo ${CUSTOM_MEMORY_SIZE} | awk '{printf("%.0f",$1*0.7)}')
   direct_mem=$(echo ${CUSTOM_MEMORY_SIZE} | awk '{printf("%.0f",$1*0.09375)}')
-  if [ $jmx_mem==0 ];then
+  if [ $jmx_mem == 0 ];then
     export default_java_mem_opts=""
     echo "Since there is no limit on instance memory, JVM memory is not set" >&2
   else
