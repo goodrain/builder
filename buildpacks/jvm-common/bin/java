@@ -360,7 +360,7 @@ install_pinpoit_agent() {
 install_skywalking_agent(){
   local install_dir=${1}
   mkdir "${install_dir}/.skywalking"
-  curl --retry 3 --silent --location "http://175.178.4.33:8888/down/TTRH3o6AY9gR.gz" | tar -xzvf -C "${install_dir}/.skywalking"
+  curl --retry 3 --silent --location "http://175.178.4.33:8888/down/LqhKLYvXOvQh.gz" | tar -xzvf -C "${install_dir}/.skywalking"
   status "Install skywalking agent success"
 }
 
