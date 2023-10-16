@@ -8,6 +8,18 @@ if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
   curl -X POST "http://$NACOS_ADDR/nacos/v2/console/namespace" -d "namespaceId=${NS_NAME}&namespaceName=${NS_NAME}"
   echo "spring:
     cloud:
+      sentinel:
+        datasource:
+          rbd_flow:
+            nacos:
+              serverAddr: ${NACOS_ADDR}
+              dataId: rbd-sentinel-${APP_NAME}-flow-rules
+              ruleType: flow
+              groupId: SENTINEL_GROUP
+              dataType: json
+        transport:
+          port: 8719
+          dashboard: ${SENTINEL_ADDR:-sentinel.spring-cloud-system.svc.cluster.local:8080}
       nacos:
         config:
           file-extension: yaml
