@@ -9,6 +9,14 @@ if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
   echo "spring:
     cloud:
       nacos:
+        config:
+          file-extension: yaml
+          refresh-enabled: true
+          enabled: true
+          server-addr: ${NACOS_ADDR}
+          group: DEFAULT_GROUP
+          shared-configs:
+            - data-id: rbd-gateway-routes.yaml
         discovery:
           server-addr: ${NACOS_ADDR}
           namespace: ${NS_NAME}
