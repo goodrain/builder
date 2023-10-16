@@ -360,10 +360,12 @@ install_pinpoit_agent() {
 }
 
 install_skywalking_agent(){
-  local install_dir=${1}
-  mkdir "${install_dir}/.skywalking"
-  curl --retry 3 --silent --location "http://175.178.4.33:8888/down/LqhKLYvXOvQh.gz" | tar xzm -C "${install_dir}/.skywalking"
-  status "Install skywalking agent success"
+  if [[ $ES_ENABLE_SKY == "true" ]];then
+    local install_dir=${1}
+    mkdir "${install_dir}/.skywalking"
+    curl --retry 3 --silent --location "http://175.178.4.33:8888/down/LqhKLYvXOvQh.gz" | tar xzm -C "${install_dir}/.skywalking"
+    status "Install skywalking agent success"
+  fi
 }
 
 install_jmx_exporter_agent() {
