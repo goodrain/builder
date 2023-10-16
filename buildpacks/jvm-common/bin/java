@@ -282,7 +282,7 @@ _create_profile_script() {
   local jdbcProfileScript="${1}/.profile.d/jdbc.sh"
   local pinpointProfileScript="${1}/.profile.d/pinpoint.sh"
   local jmxexporterProfileScript="${1}/.profile.d/jmx-exporter.sh"
-  local skywalkingProfileScript="${1}/.profile.d/skywalking.sh"
+  local springcloudProfileScript="${1}/.profile.d/spring-cloud.sh"
   local curDir=${JVM_COMMON_DIR:-$(cd $(dirname ${BASH_SOURCE[0]}) && cd .. && pwd)}
 
   mkdir -p "$(dirname $profileScript)"
@@ -290,7 +290,7 @@ _create_profile_script() {
   cp "$curDir/opt/jdbc.sh" "$jdbcProfileScript"
   cp "$curDir/opt/pinpoint.sh" "$pinpointProfileScript"
   cp "$curDir/opt/jmx-exporter.sh" "$jmxexporterProfileScript"
-  cp "$curDir/opt/skywalking.sh" "$skywalkingProfileScript"
+  cp "$curDir/opt/spring-cloud.sh" "$springcloudProfileScript"
 }
 
 _install_tools() {
