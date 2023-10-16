@@ -13,7 +13,7 @@ if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
           rbd_flow:
             nacos:
               serverAddr: ${NACOS_ADDR}
-              dataId: rbd-sentinel-${APP_NAME}-flow-rules
+              dataId: ${spring.application.name}-flow-rules
               ruleType: flow
               groupId: SENTINEL_GROUP
               dataType: json
