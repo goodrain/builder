@@ -15,8 +15,10 @@ if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
           enabled: true
           server-addr: ${NACOS_ADDR}
           group: DEFAULT_GROUP
-          shared-configs:
+          extension-configs:
             - data-id: rbd-gateway-routes.yaml
+              group: GATEWAY_GROUP
+              refresh: true
         discovery:
           server-addr: ${NACOS_ADDR}
           namespace: ${NS_NAME}
