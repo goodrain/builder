@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
-  SKY_ADDR=${SKY_ADDR:-skywalking-oap.skywalking.svc.cluster.local:11800}
+  SKY_ADDR=${SKY_ADDR:-skywalking-oap.spring-cloud-system.svc.cluster.local:11800}
   NACOS_ADDR=${NACOS_ADDR:-nacos.spring-cloud-system.svc.cluster.local:8848}
   NS_NAME=${TENANT_ID} # 命名空间名称
   APP_NAME=${SERVICE_ID} # 应用名称
