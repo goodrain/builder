@@ -7,13 +7,15 @@ if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
   APP_NAME=${SERVICE_ID} # 应用名称
   curl -X POST "http://$NACOS_ADDR/nacos/v2/console/namespace" -d "namespaceId=${NS_NAME}&namespaceName=${NS_NAME}"
   echo "spring:
+    application:
+      name: ${APP_NAME}
     cloud:
       sentinel:
         datasource:
           rbd_flow:
             nacos:
               serverAddr: ${NACOS_ADDR}
-              dataId: ${spring.application.name}-flow-rules
+              dataId: ${APP_NAME}-flow-rules
               ruleType: flow
               groupId: SENTINEL_GROUP
               dataType: json
