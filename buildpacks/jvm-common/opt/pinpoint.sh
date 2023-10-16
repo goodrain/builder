@@ -16,4 +16,5 @@ if [[ $ES_ENABLE_APM == "true" ]];then
     COLLECTOR_SPAN_PORT=${COLLECTOR_SPAN_PORT:-9996}
     SPRING_PROFILES=${SPRING_PROFILES:-release}
     export JAVA_OPTS="$JAVA_OPTS -javaagent:${PINPOINT_AGENT_PATH}/pinpoint-agent-${PINPOINT_AGETN_VERSION}/pinpoint-bootstrap-${PINPOINT_AGETN_VERSION}.jar -Dpinpoint.agentId=${HOSTNAME##*-} -Dpinpoint.applicationName=${ES_TRACE_APP_NAME:-${SERVICE_NAME:-$HOSTNAME}} -Dpinpoint.profiler.profiles.active=release"
+    echo "JAVA_OPTS: $JAVA_OPTS"
 fi
