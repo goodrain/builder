@@ -360,7 +360,8 @@ install_pinpoit_agent() {
 }
 
 install_skywalking_agent(){
-  if [[ $ES_ENABLE_SKY == "true" ]];then
+  # skywalking包大概30mb只有开启了spring cloud治理模式才会下载
+  if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
     local install_dir=${1}
     mkdir "${install_dir}/.skywalking"
     curl --retry 3 --silent --location "http://175.178.4.33:8888/down/LqhKLYvXOvQh.gz" | tar xzm -C "${install_dir}/.skywalking"
