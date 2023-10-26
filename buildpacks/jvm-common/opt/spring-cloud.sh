@@ -28,6 +28,7 @@ if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
           refresh-enabled: true
           enabled: true
           server-addr: ${NACOS_ADDR}
+          namespace: ${ES_APP_NAME}
           group: DEFAULT_GROUP
           extension-configs:
             - data-id: rbd-gateway-routes.yaml
