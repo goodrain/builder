@@ -32,6 +32,7 @@ if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
           group: DEFAULT_GROUP
           extension-configs:
             - data-id: rbd-gateway-routes.yaml
+              namespace: ${ES_APP_NAME}
               group: GATEWAY_GROUP
               refresh: true
         discovery:
