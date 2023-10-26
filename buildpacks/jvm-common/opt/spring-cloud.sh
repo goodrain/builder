@@ -3,8 +3,8 @@
 if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
   export SW_AGENT_COLLECTOR_BACKEND_SERVICES=${SW_AGENT_COLLECTOR_BACKEND_SERVICES:-skywalking-oap.spring-cloud-system.svc.cluster.local:11800}
   NACOS_ADDR=${NACOS_ADDR:-nacos.spring-cloud-system.svc.cluster.local:8848}
-  RBD_APP_NAME=${RBD_APP_NAME} # 团队下的应用英文名
-  RBD_SERVICE_NAME=${RBD_SERVICE_NAME} # 团队下的应用下的组件英文名
+#  RBD_APP_NAME=${RBD_APP_NAME} # 团队下的应用英文名
+#  RBD_SERVICE_NAME=${RBD_SERVICE_NAME} # 团队下的应用下的组件英文名
   curl -X POST "http://$NACOS_ADDR/nacos/v2/console/namespace" -d "namespaceId=${RBD_APP_NAME}&namespaceName=${RBD_APP_NAME}"
   echo "spring:
     application:
