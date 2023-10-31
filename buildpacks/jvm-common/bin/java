@@ -363,8 +363,11 @@ install_skywalking_agent(){
   # skywalking包大概30mb只有开启了spring cloud治理模式才会下载
   if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
     local install_dir=${1}
+    SKW_AGENT_VERSION=${SKW_AGENT_VERSION:-9.0.0}
+    DEFAULT_SKW_AGENT_AGENT="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/java/skywalking/skywalking-agent-${SKW_AGENT_VERSION}.tar.gz"
     mkdir "${install_dir}/.skywalking"
-    curl --retry 3 --silent --location "http://175.178.4.33:8888/down/LqhKLYvXOvQh.gz" | tar xzm -C "${install_dir}/.skywalking"
+    SKW_AGENT=${SKW_AGENT:-"${DEFAULT_SKW_AGENT_AGENT}"}
+    curl --retry 3 --silent --location "$SKW_AGENT" | tar xzm -C "${install_dir}/.skywalking"
     status "Install skywalking agent success"
   fi
 }
