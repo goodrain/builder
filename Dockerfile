@@ -1,6 +1,5 @@
 FROM registry.cn-hangzhou.aliyuncs.com/goodrain/stack-image:22
-
-LABEL MAINTAINER ="guox <guox@goodrain.com>"
+ARG RELEASE_DESC
 
 # 时区设置
 ENV TZ=Asia/Shanghai
@@ -30,6 +29,6 @@ ENV LANG=zh_CN.utf8
 # USER rain
 
 ENV HOME /app
-ENV RELEASE_DESC=__RELEASE_DESC__
+ENV RELEASE_DESC=${RELEASE_DESC}
 
 ENTRYPOINT ["/tmp/builder/build.sh"]
