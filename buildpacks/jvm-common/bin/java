@@ -134,6 +134,7 @@ install_java() {
 
   _install_tools ${baseDir}
   install_pinpoit_agent ${baseDir}
+  install_skywalking_agent ${baseDir}
   install_jmx_exporter_agent ${baseDir}
   _create_profile_script ${baseDir}
   _create_export_script ${JAVA_HOME} "$(pwd)"
@@ -281,6 +282,7 @@ _create_profile_script() {
   local jdbcProfileScript="${1}/.profile.d/jdbc.sh"
   local pinpointProfileScript="${1}/.profile.d/pinpoint.sh"
   local jmxexporterProfileScript="${1}/.profile.d/jmx-exporter.sh"
+  local springcloudProfileScript="${1}/.profile.d/spring-cloud.sh"
   local curDir=${JVM_COMMON_DIR:-$(cd $(dirname ${BASH_SOURCE[0]}) && cd .. && pwd)}
 
   mkdir -p "$(dirname $profileScript)"
@@ -288,6 +290,7 @@ _create_profile_script() {
   cp "$curDir/opt/jdbc.sh" "$jdbcProfileScript"
   cp "$curDir/opt/pinpoint.sh" "$pinpointProfileScript"
   cp "$curDir/opt/jmx-exporter.sh" "$jmxexporterProfileScript"
+  cp "$curDir/opt/spring-cloud.sh" "$springcloudProfileScript"
 }
 
 _install_tools() {
@@ -354,6 +357,19 @@ install_pinpoit_agent() {
   mkdir "${install_dir}/.pinpoint"
   curl --retry 3 --silent --location "$PINPOINT_AGENT" | tar xzm -C "${install_dir}/.pinpoint"
   status "Install pinpoint agent success"
+}
+
+install_skywalking_agent(){
+  # skywalking包大概30mb只有开启了spring cloud治理模式才会下载
+  if [[ $ES_ENABLE_SPRING_CLOUD == "true" ]];then
+    local install_dir=${1}
+    SKW_AGENT_VERSION=${SKW_AGENT_VERSION:-9.0.0}
+    DEFAULT_SKW_AGENT_AGENT="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/java/skywalking/skywalking-agent-${SKW_AGENT_VERSION}.tar.gz"
+    mkdir "${install_dir}/.skywalking"
+    SKW_AGENT=${SKW_AGENT:-"${DEFAULT_SKW_AGENT_AGENT}"}
+    curl --retry 3 --silent --location "$SKW_AGENT" | tar xzm -C "${install_dir}/.skywalking"
+    status "Install skywalking agent success"
+  fi
 }
 
 install_jmx_exporter_agent() {
