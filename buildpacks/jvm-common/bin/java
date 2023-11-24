@@ -24,6 +24,7 @@ arm64)
     # JDK_URL_1_7=${JDK_URL_1_7:-"$JDK_BASE_URL/do_not_support_1.7_anymore"}
     # JDK_URL_1_6=${JDK_URL_1_6:-"$JDK_BASE_URL/do_not_support_1.6_anymore"}
     JDK_BASE_URL=${JDK_BASE_URL:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/jammy-22"}
+    JDK_URL_17=${JDK_URL_17:-"$JDK_BASE_URL/arm64/openjdk_17.tar.gz"}
     JDK_URL_16=${JDK_URL_16:-"$JDK_BASE_URL/arm64/openjdk16.0.2_7.tar.gz"}
     JDK_URL_15=${JDK_URL_15:-"$JDK_BASE_URL/arm64/openjdk15.0.2_7.tar.gz"}
     JDK_URL_14=${JDK_URL_14:-"$JDK_BASE_URL/arm64/openjdk14.0.2_12.tar.gz"}
@@ -56,6 +57,7 @@ x86_64)
 
     DEFAULT_JDK_VERSION="1.8"
     JDK_BASE_URL=${JDK_BASE_URL:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/jammy-22"}
+    JDK_URL_17=${JDK_URL_17:-"$JDK_BASE_URL/openjdk_17.0.9.tar.gz"}
     JDK_URL_16=${JDK_URL_16:-"$JDK_BASE_URL/openjdk16.0.2_7.tar.gz"}
     JDK_URL_15=${JDK_URL_15:-"$JDK_BASE_URL/openjdk15.0.2_7.tar.gz"}
     JDK_URL_14=${JDK_URL_14:-"$JDK_BASE_URL/openjdk14.0.2_12.tar.gz"}
@@ -216,6 +218,8 @@ _get_jdk_download_url() {
     local jdkUrl="${JDK_URL_15}"
   elif [ "${jdkVersion}" = "16" ]; then
     local jdkUrl="${JDK_URL_16}"
+  elif [ "${jdkVersion}" = "17" ]; then
+    local jdkUrl="${JDK_URL_17}"
   elif [ "$(expr "${jdkVersion}" : '^1[0-2]')" != 0 ]; then
     local jdkUrl="${JDK_BASE_URL}/openjdk${jdkVersion}.tar.gz"
   elif [ "$(expr "${jdkVersion}" : '^1.[6-9]$')" != 0 ]; then
