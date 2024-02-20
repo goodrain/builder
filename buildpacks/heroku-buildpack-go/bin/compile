@@ -300,6 +300,9 @@ ensureGo() {
             pushd "${goVersion}" &>/dev/null
             local sha=$(echo ${goVersion} | cut -d - -f 2) #assumes devel-<short sha> or devel-<full sha>
             local url="https://github.com/golang/go/archive/$sha.tar.gz"
+            if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
+              url=${CUSTOMIZE_RUNTIMES_URL}
+            fi
             start "Downloading development Go version ${goVersion}"
             ${CURL} ${url} | tar zxf -
             mv go-${sha}* go

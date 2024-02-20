@@ -51,18 +51,18 @@ install_nodejs() {
   else
     node_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/nodejs/node/release/linux-x64/node-v$number-linux-x64.tar.gz"
   fi
+  if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
+    node_url=${CUSTOMIZE_RUNTIMES_URL}
+  fi
   [ -z "$DEBUG_INFO" ] && echo "Downloading and installing node $number..." || echo "Downloading and installing node $number from $node_url"
   local code=$(curl "$node_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/node.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
     fail_bin_install node "v$number"
   fi
-  tar xzf /tmp/node.tar.gz -C /tmp
+  mkdir -p /tmp/node
+  tar zxvf /tmp/node.tar.gz --strip-components=1 -C /tmp/node
   rm -rf "$dir"/*
-  if [ $ARCH == "x86_64" ]; then
-    mv /tmp/node-v$number-$OS-x64/* $dir
-  else
-    mv /tmp/node-v$number-$OS-$ARCH/* $dir
-  fi
+  mv /tmp/node/* $dir
   chmod +x $dir/bin/*
 }
 

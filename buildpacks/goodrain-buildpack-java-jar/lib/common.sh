@@ -28,6 +28,9 @@ install_maven() {
     status_pending "Installing Maven ${mavenVersion}"
     if is_supported_maven_version ${mavenVersion}; then
       mavenUrl="http://lang.goodrain.me/jvm/maven-${mavenVersion}.tar.gz"
+      if [ -n "${CUSTOMIZE_RUNTIMES_MAVEN}" ]; then
+        mavenUrl=${CUSTOMIZE_RUNTIMES_MAVEN_URL}
+      fi
       download_maven ${mavenUrl} ${installDir} ${mavenHome}
       status_done
     else
@@ -43,7 +46,13 @@ download_maven() {
   local installDir=$2
   local mavenHome=$3
   rm -rf $mavenHome
-  curl --silent --max-time 60 --location ${mavenUrl} | tar xzm -C $installDir
+  if [ -n "${CUSTOMIZE_RUNTIMES_MAVEN}" ]; then
+    mkdir $installDir/.maven
+    curl --silent --max-time 60 --location ${mavenUrl} | tar xzm --strip-components 1 -C $installDir/.maven
+    echo "download the customized version package"
+  else
+    curl --silent --max-time 60 --location ${mavenUrl} | tar xzm -C $installDir
+  fi
   chmod +x $mavenHome/bin/mvn
 }
 
@@ -66,7 +75,7 @@ is_supported_maven_version() {
   elif [ "$mavenVersion" = "3.9.1" ]; then
     return 0
   else
-    return 1
+    return 0
   fi
 }
 

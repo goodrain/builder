@@ -15,6 +15,9 @@ install_maven() {
 
   if is_supported_maven_version ${mavenVersion}; then
     mavenUrl=${mavenUrl:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jvm/maven/maven-${mavenVersion}.tar.gz"}
+    if [ -n "${CUSTOMIZE_RUNTIMES_MAVEN}" ]; then
+      mavenUrl=${CUSTOMIZE_RUNTIMES_MAVEN_URL}
+    fi
     [ -z "$DEBUG_INFO" ] && status_pending "Installing Maven ${mavenVersion}" || status_pending "Installing Maven ${mavenVersion} from $mavenUrl"
     download_maven ${mavenUrl} ${installDir} ${mavenHome}
     status_done
@@ -39,13 +42,22 @@ download_maven() {
   local installDir=$2
   local mavenHome=$3
   rm -rf $mavenHome
-  curl --retry 3 --silent --max-time 60 --location ${mavenUrl} | tar xzm -C $installDir
+  if [ -n "${CUSTOMIZE_RUNTIMES_MAVEN}" ]; then
+    mkdir $installDir/.maven
+    curl --silent --max-time 60 --location ${mavenUrl} | tar xzm --strip-components 1 -C $installDir/.maven
+    echo "download the customized version package"
+  else
+    curl --retry 3 --silent --max-time 60 --location ${mavenUrl} | tar xzm -C $installDir
+  fi
   chmod +x $mavenHome/bin/mvn
 }
 
 is_supported_maven_version() {
   local mavenVersion=${1}
   local mavenUrl="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jvm/maven/maven-${mavenVersion}.tar.gz"
+  if [ -n "${CUSTOMIZE_RUNTIMES_MAVEN}" ]; then
+    mavenUrl=${CUSTOMIZE_RUNTIMES_MAVEN_URL}
+  fi
   if [ "$mavenVersion" = "$DEFAULT_MAVEN_VERSION" ]; then
     return 0
   elif curl -I --retry 3 --fail --silent --max-time 5 --location "${mavenUrl}" > /dev/null; then

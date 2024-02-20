@@ -52,19 +52,19 @@ install_nodejs() {
   else
     node_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/nodejs/node/release/linux-x64/node-v$number-linux-x64.tar.gz"
   fi
+  if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
+    node_url=${CUSTOMIZE_RUNTIMES_URL}
+  fi
   [ -z "$DEBUG_INFO" ] && echo "Downloading and installing node $number..." || echo "Downloading and installing node $number from $node_url"
   local code=$(curl "$node_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/node.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
     echo "$node_url"
     echo "Unable to download node($number): $code" && false
   fi
-  tar xzf /tmp/node.tar.gz -C /tmp
+  mkdir -p /tmp/node
+  tar zxf /tmp/node.tar.gz --strip-components=1 -C /tmp/node
   rm -rf "$dir"/*
-  if [ $ARCH == "x86_64" ]; then
-    mv /tmp/node-v$number-$OS-x64/* $dir
-  else
-    mv /tmp/node-v$number-$OS-$ARCH/* $dir
-  fi
+  mv /tmp/node/* $dir
   chmod +x $dir/bin/*
 }
 
@@ -96,14 +96,17 @@ install_iojs() {
 }
 
 install_npm() {
+  local npm_version
   local version="$1"
   local dir="$2"
   local npm_lock="$3"
-  local npm_version="$(npm --version)"
+  # Verify npm works before capturing and ensure its stderr is inspectable later
+  suppress_output npm --version
+  npm_version="$(npm --version)"
 
   # If the user has not specified a version of npm, but has an npm lockfile
   # upgrade them to npm 5.x if a suitable version was not installed with Node
-  if $npm_lock && [ "$version" == "" ] && [ "${npm_version:0:1}" -lt "5" ]; then
+  if $npm_lock && [ "$version" == "" ] && [ "$(npm_version_major)" -lt "5" ]; then
     echo "Detected package-lock.json: defaulting npm to version 5.x.x"
     version="5.x.x"
   fi
@@ -114,9 +117,26 @@ install_npm() {
     echo "npm $npm_version already installed with node"
   else
     echo "Bootstrapping npm $version (replacing $npm_version)..."
-    if ! npm install --unsafe-perm --quiet -g "npm@$version" 2>@1 >/dev/null; then
-      echo "Unable to install npm $version; does it exist?" && false
+    if ! npm install --unsafe-perm --quiet --no-audit --no-progress -g "npm@$version" >/dev/null; then
+      echo "Unable to install npm $version. " \
+        "Does npm $version exist? " \
+        "Is npm $version compatible with this Node.js version?" && false
     fi
-    echo "npm $version installed"
+    # Verify npm works before capturing and ensure its stderr is inspectable later
+    suppress_output npm --version
+    echo "npm $(npm --version) installed"
   fi
+}
+
+suppress_output() {
+  local TMP_COMMAND_OUTPUT
+  TMP_COMMAND_OUTPUT=$(mktemp)
+  trap "rm -rf '$TMP_COMMAND_OUTPUT' >/dev/null" RETURN
+
+  "$@" >"$TMP_COMMAND_OUTPUT" 2>&1 || {
+    local exit_code="$?"
+    cat "$TMP_COMMAND_OUTPUT"
+    return "$exit_code"
+  }
+  return 0
 }

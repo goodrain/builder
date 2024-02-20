@@ -5,7 +5,7 @@
 # fail hard
 set -o pipefail
 # fail harder
-set -eu
+set -e
 # move hidden files too, just in case
 shopt -s dotglob
 
@@ -270,7 +270,13 @@ fi
 mkdir -p $build_dir/.heroku/php-min
 ln -s $build_dir/.heroku/php-min /app/.heroku/php-min
 
-curl_retry_on_18 --retry-connrefused --retry 3 --connect-timeout 5 --fail --silent --location -o $build_dir/.heroku/php-min.tar.gz "${s3_url}php-min-8.2.5.tar.gz" || {
+url="${s3_url}php-min-8.2.5.tar.gz"
+if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
+  url=${CUSTOMIZE_RUNTIMES_URL}
+fi
+
+
+curl_retry_on_18 --retry-connrefused --retry 3 --connect-timeout 5 --fail --silent --location -o $build_dir/.heroku/php-min.tar.gz "${url}" || {
 	mcount "failures.bootstrap.download.php-min"
 	error <<-EOF
 		Failed to download minimal PHP for bootstrapping!

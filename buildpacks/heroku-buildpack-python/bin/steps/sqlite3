@@ -19,7 +19,7 @@ sqlite3_install() {
   HEROKU_PYTHON_DIR="$1"
   SQLITE3_VERSION="$2"
   HEADERS_ONLY="$3"
-
+  echo "---------------------1----------------------"
   mkdir -p "$HEROKU_PYTHON_DIR"
 
   APT_CACHE_DIR="$HEROKU_PYTHON_DIR/apt/cache"
@@ -27,18 +27,21 @@ sqlite3_install() {
 
   mkdir -p "$APT_CACHE_DIR/archives/partial"
   mkdir -p "$APT_STATE_DIR/lists/partial"
-
+  echo "---------------------2----------------------"
   APT_OPTIONS="-o debug::nolocking=true"
   APT_OPTIONS="$APT_OPTIONS -o dir::cache=$APT_CACHE_DIR"
   APT_OPTIONS="$APT_OPTIONS -o dir::state=$APT_STATE_DIR"
   APT_OPTIONS="$APT_OPTIONS -o dir::etc::sourcelist=/etc/apt/sources.list"
 
   apt-get $APT_OPTIONS update > /dev/null 2>&1
+  echo "---------------------3----------------------"
   if [ -z "$HEADERS_ONLY" ]; then
-    apt-get $APT_OPTIONS -y -d --reinstall install libsqlite3-dev="$SQLITE3_VERSION" sqlite3="$SQLITE3_VERSION" > /dev/null 2>&1
+    apt-get $APT_OPTIONS -y -d --reinstall install libsqlite3-dev sqlite3
   else
     apt-get $APT_OPTIONS -y -d --reinstall install libsqlite3-dev="$SQLITE3_VERSION"
   fi
+  echo "---------------------4----------------------"
+
   find "$APT_CACHE_DIR/archives/" -name "*.deb" -exec dpkg -x {} "$HEROKU_PYTHON_DIR/sqlite3/" \;
 
   mkdir -p "$HEROKU_PYTHON_DIR/include"
@@ -49,6 +52,7 @@ sqlite3_install() {
   find "$HEROKU_PYTHON_DIR/lib/" -name "libsqlite3.*" -exec rm -f {} \;
   rm -f "$HEROKU_PYTHON_DIR/lib/pkgconfig/sqlite3.pc"
   rm -f "$HEROKU_PYTHON_DIR/bin/sqlite3"
+  echo "---------------------5----------------------"
 
   # copy over sqlite3 headers & bins and setup linking against the stack image library
   mv "$HEROKU_PYTHON_DIR/sqlite3/usr/include/"* "$HEROKU_PYTHON_DIR/include/"
@@ -65,7 +69,7 @@ sqlite3_install() {
   if [ -z "$HEADERS_ONLY" ]; then
     mv "$HEROKU_PYTHON_DIR/sqlite3/usr/bin"/* "$HEROKU_PYTHON_DIR/bin/"
   fi
-
+  echo "---------------------6----------------------"
   # cleanup
   rm -rf "$HEROKU_PYTHON_DIR/sqlite3/"
   rm -rf "$HEROKU_PYTHON_DIR/apt/"
