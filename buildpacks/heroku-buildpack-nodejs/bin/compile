@@ -189,7 +189,7 @@ restore_cache() {
   mcount "cache.$cache_status"
 }
 
-restore_cache | output "$LOG_FILE"
+# restore_cache | output "$LOG_FILE"
 
 build_dependencies() {
   run_if_present 'heroku-prebuild'
@@ -234,7 +234,7 @@ cache_build() {
   save_signature
 }
 
-cache_build | output "$LOG_FILE"
+# cache_build | output "$LOG_FILE"
 
 prune_devdependencies() {
   if $YARN; then
@@ -245,7 +245,7 @@ prune_devdependencies() {
 }
 
 header "Pruning devDependencies" | output "$LOG_FILE"
-prune_devdependencies | output "$LOG_FILE"
+# prune_devdependencies | output "$LOG_FILE"
 
 summarize_build() {
   if $NODE_VERBOSE; then
