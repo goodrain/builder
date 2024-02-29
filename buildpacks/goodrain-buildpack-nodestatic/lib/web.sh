@@ -81,7 +81,7 @@ nodestatic_prepare() {
     fi
     mv nginx /tmp/www
     mv boot.sh /tmp/www
-    mv /tmp/build/* /tmp/buildxxx
+    # mv /tmp/build/* /tmp/buildxxx
     mv /tmp/www/* /tmp/build
     if [ ! -f "/tmp/build/Procfile" ]; then
         cat >/tmp/build/Procfile <<EOF
