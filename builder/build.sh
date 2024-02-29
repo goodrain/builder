@@ -190,9 +190,9 @@ sleep ${PAUSE:-0}
 ## Produce slug
 
 if [[ -f "$build_root/.slugignore" ]]; then
-    tar -z --exclude='.git' --exclude='node_modules' -X "$build_root/.slugignore" -C $build_root -cf $slug_file .
+    tar -z --exclude='.git' --exclude='node_modules' --exclude='.heroku' -X "$build_root/.slugignore" -C $build_root -cf $slug_file .
 else
-    tar -z --exclude='.git' --exclude='node_modules' -C $build_root -cf $slug_file .
+    tar -z --exclude='.git' --exclude='node_modules' --exclude='.heroku' -C $build_root -cf $slug_file .
 fi
 
 if [[ "$slug_file" != "-" ]]; then
