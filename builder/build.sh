@@ -189,17 +189,17 @@ sleep ${PAUSE:-0}
 
 ## Produce slug
 
-# if [[ -f "$build_root/.slugignore" ]]; then
-#     tar -z --exclude='.git' -X "$build_root/.slugignore" -C $build_root -cf $slug_file .
-# else
-#     tar -z --exclude='.git' -C $build_root -cf $slug_file .
-# fi
+if [[ -f "$build_root/.slugignore" ]]; then
+    tar -z --exclude='.git' -X "$build_root/.slugignore" -C $build_root -cf $slug_file .
+else
+    tar -z --exclude='.git' -C $build_root -cf $slug_file .
+fi
 
-# if [[ "$slug_file" != "-" ]]; then
-#     slug_size=$(du -Sh "$slug_file" | cut -f1)
-#     echo_title "Compiled slug size is $slug_size"
+if [[ "$slug_file" != "-" ]]; then
+    slug_size=$(du -Sh "$slug_file" | cut -f1)
+    echo_title "Compiled slug size is $slug_size"
 
-#     if [[ "$put_url" ]]; then
-#         curl -0 -s -o /dev/null -X PUT -T $slug_file "$put_url"
-#     fi
-# fi
+    if [[ "$put_url" ]]; then
+        curl -0 -s -o /dev/null -X PUT -T $slug_file "$put_url"
+    fi
+fi
