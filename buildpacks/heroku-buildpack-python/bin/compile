@@ -312,7 +312,7 @@ source "$BIN_DIR/steps/gdal"
 (( start=$(nowms) ))
 # shellcheck source=bin/steps/sqlite3
 source "$BIN_DIR/steps/sqlite3"
-buildpack_sqlite3_install
+# buildpack_sqlite3_install
 mtime "sqlite3.install.time" "${start}"
 
 # pip install
