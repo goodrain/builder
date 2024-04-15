@@ -143,24 +143,22 @@ downloadFile() {
         start "Fetching ${localName}"
             if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
               ${CURL}  "${CUSTOMIZE_RUNTIMES_URL}" -o ${fileName}
-              if [ -n "${xCmd}" ]; then
-                ${xCmd} ${targetFile}
-              fi
             else
               ${CURL} -O "${BucketURL}/${fileName}"
-              if [ "${fileName}" != "${localName}" ]; then
-                mv "${fileName}" "${localName}"
-              fi
-              if [ -n "${xCmd}" ]; then
-                ${xCmd} ${targetFile}
-              fi
-                if ! SHAValid "${fileName}" "${targetFile}"; then
-                err ""
-                err "Downloaded file (${fileName}) sha does not match recorded SHA"
-                err "Unable to continue."
-                err ""
-                exit 1
-              fi
+            fi
+              
+            if [ "${fileName}" != "${localName}" ]; then
+              mv "${fileName}" "${localName}"
+            fi
+            if [ -n "${xCmd}" ]; then
+              ${xCmd} ${targetFile}
+            fi
+            if ! SHAValid "${fileName}" "${targetFile}"; then
+              err ""
+              err "Downloaded file (${fileName}) sha does not match recorded SHA"
+              err "Unable to continue."
+              err ""
+              exit 1
             fi
         finished
     popd &> /dev/null
