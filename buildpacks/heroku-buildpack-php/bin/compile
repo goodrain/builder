@@ -5,7 +5,7 @@
 # fail hard
 set -o pipefail
 # fail harder
-set -e
+set -eu
 # move hidden files too, just in case
 shopt -s dotglob
 
@@ -274,7 +274,6 @@ url="${s3_url}php-min-8.2.5.tar.gz"
 if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
   url=${CUSTOMIZE_RUNTIMES_URL}
 fi
-
 
 curl_retry_on_18 --retry-connrefused --retry 3 --connect-timeout 5 --fail --silent --location -o $build_dir/.heroku/php-min.tar.gz "${url}" || {
 	mcount "failures.bootstrap.download.php-min"

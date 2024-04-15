@@ -59,10 +59,13 @@ install_nodejs() {
   if [ "$code" != "200" ]; then
     fail_bin_install node "v$number"
   fi
-  mkdir -p /tmp/node
-  tar zxvf /tmp/node.tar.gz --strip-components=1 -C /tmp/node
+  tar xzf /tmp/node.tar.gz -C /tmp
   rm -rf "$dir"/*
-  mv /tmp/node/* $dir
+  if [ $ARCH == "x86_64" ]; then
+    mv /tmp/node-v$number-$OS-x64/* $dir
+  else
+    mv /tmp/node-v$number-$OS-$ARCH/* $dir
+  fi
   chmod +x $dir/bin/*
 }
 

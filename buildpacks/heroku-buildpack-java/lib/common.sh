@@ -42,13 +42,7 @@ download_maven() {
   local installDir=$2
   local mavenHome=$3
   rm -rf $mavenHome
-  if [ -n "${CUSTOMIZE_RUNTIMES_MAVEN}" ]; then
-    mkdir $installDir/.maven
-    curl --silent --max-time 60 --location ${mavenUrl} | tar xzm --strip-components 1 -C $installDir/.maven
-    echo "download the customized version package"
-  else
-    curl --retry 3 --silent --max-time 60 --location ${mavenUrl} | tar xzm -C $installDir
-  fi
+  curl --retry 3 --silent --max-time 60 --location ${mavenUrl} | tar xzm -C $installDir
   chmod +x $mavenHome/bin/mvn
 }
 
