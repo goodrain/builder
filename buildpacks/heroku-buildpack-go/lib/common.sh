@@ -148,17 +148,17 @@ downloadFile() {
             fi
               
             if [ "${fileName}" != "${localName}" ]; then
-              mv "${fileName}" "${localName}"
+                mv "${fileName}" "${localName}"
             fi
             if [ -n "${xCmd}" ]; then
-              ${xCmd} ${targetFile}
+                ${xCmd} ${targetFile}
             fi
             if ! SHAValid "${fileName}" "${targetFile}"; then
-              err ""
-              err "Downloaded file (${fileName}) sha does not match recorded SHA"
-              err "Unable to continue."
-              err ""
-              exit 1
+                err ""
+                err "Downloaded file (${fileName}) sha does not match recorded SHA"
+                err "Unable to continue."
+                err ""
+                exit 1
             fi
         finished
     popd &> /dev/null
