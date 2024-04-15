@@ -54,6 +54,7 @@ x86_64)
     # JDK_URL_1_8=${JDK_URL_1_8:-"$JDK_BASE_URL/openjdk1.8.0_232.tar.gz"}
     # JDK_URL_1_7=${JDK_URL_1_7:-"$JDK_BASE_URL/openjdk1.7.0_242.tar.gz"}
     # JDK_URL_1_6=${JDK_URL_1_6:-"$JDK_BASE_URL/openjdk1.6.0_27.tar.gz"}
+    
     DEFAULT_JDK_VERSION="1.8"
     JDK_BASE_URL=${JDK_BASE_URL:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/jammy-22"}
     JDK_URL_17=${JDK_URL_17:-"$JDK_BASE_URL/openjdk_17.0.9.tar.gz"}
@@ -108,7 +109,7 @@ install_java() {
     mkdir -p "${jdkDir}"
     if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
       jdkUrl=${CUSTOMIZE_RUNTIMES_URL}
-    elif [ ! -z "${ENABLE_ORACLEJDK}" ]; then
+    elif [ -n "${ENABLE_ORACLEJDK}" ]; then
       jdkUrl=${ORACLEJDK_URL:-$ORACLEJDK_URL_11}
     fi
     [ -z "$DEBUG_INFO" ] && echo "" || echo "Download JDK from ${jdkUrl} "
