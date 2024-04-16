@@ -99,17 +99,14 @@ install_iojs() {
 }
 
 install_npm() {
-  local npm_version
   local version="$1"
   local dir="$2"
   local npm_lock="$3"
-  # Verify npm works before capturing and ensure its stderr is inspectable later
-  suppress_output npm --version
-  npm_version="$(npm --version)"
+  local npm_version="$(npm --version)"
 
   # If the user has not specified a version of npm, but has an npm lockfile
   # upgrade them to npm 5.x if a suitable version was not installed with Node
-  if $npm_lock && [ "$version" == "" ] && [ "$(npm_version_major)" -lt "5" ]; then
+  if $npm_lock && [ "$version" == "" ] && [ "${npm_version:0:1}" -lt "5" ]; then
     echo "Detected package-lock.json: defaulting npm to version 5.x.x"
     version="5.x.x"
   fi
@@ -120,26 +117,9 @@ install_npm() {
     echo "npm $npm_version already installed with node"
   else
     echo "Bootstrapping npm $version (replacing $npm_version)..."
-    if ! npm install --unsafe-perm --quiet --no-audit --no-progress -g "npm@$version" >/dev/null; then
-      echo "Unable to install npm $version. " \
-        "Does npm $version exist? " \
-        "Is npm $version compatible with this Node.js version?" && false
+    if ! npm install --unsafe-perm --quiet -g "npm@$version" 2>@1 >/dev/null; then
+      echo "Unable to install npm $version; does it exist?" && false
     fi
-    # Verify npm works before capturing and ensure its stderr is inspectable later
-    suppress_output npm --version
-    echo "npm $(npm --version) installed"
+    echo "npm $version installed"
   fi
-}
-
-suppress_output() {
-  local TMP_COMMAND_OUTPUT
-  TMP_COMMAND_OUTPUT=$(mktemp)
-  trap "rm -rf '$TMP_COMMAND_OUTPUT' >/dev/null" RETURN
-
-  "$@" >"$TMP_COMMAND_OUTPUT" 2>&1 || {
-    local exit_code="$?"
-    cat "$TMP_COMMAND_OUTPUT"
-    return "$exit_code"
-  }
-  return 0
 }
