@@ -54,8 +54,8 @@ dl_webapp_runner(){
     if [ -n "${CUSTOMIZE_RUNTIMES_SERVER}" ]; then
       DOWNLOAD_URL=${CUSTOMIZE_RUNTIMES_SERVER_URL}
     fi
-    status_pending "Start download webapp-runner ${DOWNLOAD_URL}"
-    [ ! -z "$DEBUG_INFO" ] && status_pending "Download webapp-runner from $DOWNLOAD_URL" ||  status_pending "Download webapp-runner ${DOWNLOAD_URL}"
+    status_pending "Start download webapp-runner ${version}"
+    [ ! -z "$DEBUG_INFO" ] && status_pending "Download webapp-runner from $DOWNLOAD_URL" ||  status_pending "Download webapp-runner ${version}"
     try_dl_res $DOWNLOAD_URL
     wget --tries=3 -q "$DOWNLOAD_URL" -O "${BUILD_DIR}/webapp-runner.jar" 
     if [ $? -ne 0 ]; then
