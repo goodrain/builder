@@ -46,6 +46,9 @@ fetch_nginx_tarball() {
         local NGINX_VERSION="1.22.1-x86-64-ubuntu-22.04.2" # update nginx version
     fi
     local NGINX_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/r6d/nginx/nginx-${NGINX_VERSION}.tar.gz"
+    if [ -n "${CUSTOMIZE_RUNTIMES_SERVER}" ]; then
+      NGINX_URL=${CUSTOMIZE_RUNTIMES_SERVER_URL}
+    fi
     local NGINX_PATH="nginx"
     # install nginx if needed
     if [ ! -d "$NGINX_PATH" ]; then
@@ -106,6 +109,9 @@ fetch_apache_tarball() {
     fi
     local APACHE_PATH="apache"
     local APACHE_URL="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/apache-$APACHE_VERSION.tar.gz"
+    if [ -n "${CUSTOMIZE_RUNTIMES_SERVER}" ]; then
+      APACHE_URL=${CUSTOMIZE_RUNTIMES_SERVER_URL}
+    fi
     # install apache if needed
     if [ ! -d "$APACHE_PATH" ]; then
         [ -z "$DEBUG_INFO" ] && echo "-----> Installing Apache $APACHE_VERSION" || echo "-----> Installing Apache $APACHE_VERSION from $APACHE_URL."

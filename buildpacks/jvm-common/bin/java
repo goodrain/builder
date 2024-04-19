@@ -79,7 +79,11 @@ install_java_with_overlay() {
   if [ "$javaVersion" = "stack" ]; then
     status "Using stack JDK"
   else
-    [ -z "${ENABLE_ORACLEJDK}" ] && status_pending "Installing OpenJDK ${javaVersion}" || status_pending "Installing Custom JDK"
+    if [ -z "${ENABLE_ORACLEJDK}" ] || [ -z "${CUSTOMIZE_RUNTIMES}" ];then
+      status_pending "Installing OpenJDK ${javaVersion}"
+    else
+      status_pending "Installing Custom JDK"
+    fi
     install_java ${buildDir} ${javaVersion}
     jdk_overlay ${buildDir}
     _cache_version "${jdkVersion}" "${cacheDir}"
@@ -103,7 +107,9 @@ install_java() {
   if [ ! -f "${jdkTarball}" ] && [ ! -f "${javaExe}" ] || is_java_version_change "${jdkDir}" "${javaVersion}"; then
     rm -rf "${jdkDir}"
     mkdir -p "${jdkDir}"
-    if [ ! -z "${ENABLE_ORACLEJDK}" ]; then
+    if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
+      jdkUrl=${CUSTOMIZE_RUNTIMES_URL}
+    elif [ -n "${ENABLE_ORACLEJDK}" ]; then
       jdkUrl=${ORACLEJDK_URL:-$ORACLEJDK_URL_11}
     fi
     [ -z "$DEBUG_INFO" ] && echo "" || echo "Download JDK from ${jdkUrl} "
@@ -118,7 +124,7 @@ install_java() {
     rm ${jdkTarball}
     install_cacerts ${jdkDir}
     echo "${javaVersion}" >"${jdkDir}/version"
-    if [ ! -z "${ENABLE_ORACLEJDK}" ]; then
+    if [ -n "${ENABLE_ORACLEJDK}" ] || [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
       if [ ! -f "${javaExe}" ]; then
         oracle_jdk_name=$(ls ${jdkDir} | grep -v version)
         status "Synchronize Custom JDK files ${oracle_jdk_name}"

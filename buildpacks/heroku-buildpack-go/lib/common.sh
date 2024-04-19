@@ -115,8 +115,10 @@ knownFile() {
 
 downloadFile() {
     local fileName="${1}"
-
-    if ! knownFile ${fileName}; then
+    if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
+      echo "download the customized version package"
+    else
+      if ! knownFile ${fileName}; then
         err ""
         err "The requested file (${fileName}) is unknown to the buildpack!"
         err ""
@@ -128,6 +130,7 @@ downloadFile() {
         err "    https://devcenter.heroku.com/articles/unknown-go-buildack-files"
         err ""
         exit 1
+      fi
     fi
 
     local targetDir="${2}"
@@ -138,7 +141,12 @@ downloadFile() {
     mkdir -p "${targetDir}"
     pushd "${targetDir}" &> /dev/null
         start "Fetching ${localName}"
-            ${CURL} -O "${BucketURL}/${fileName}"
+            if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
+              ${CURL}  "${CUSTOMIZE_RUNTIMES_URL}" -o ${fileName}
+            else
+              ${CURL} -O "${BucketURL}/${fileName}"
+            fi
+              
             if [ "${fileName}" != "${localName}" ]; then
                 mv "${fileName}" "${localName}"
             fi

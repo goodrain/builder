@@ -12,6 +12,9 @@ fi
 
 # The location of the pre-compiled python binary.
 VENDORED_PYTHON="${VENDOR_URL}/runtimes/$PYTHON_VERSION.tar.gz"
+if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
+  VENDORED_PYTHON=${CUSTOMIZE_RUNTIMES_URL}
+fi
 
 # check if runtime exists
 # Python3.7 and later rely on openssl 1.0.2 and later.

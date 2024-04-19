@@ -53,6 +53,9 @@ dl_webapp_runner(){
             fi   
         fi
     fi
+    if [ -n "${CUSTOMIZE_RUNTIMES_SERVER}" ]; then
+      DOWNLOAD_URL=${CUSTOMIZE_RUNTIMES_SERVER_URL}
+    fi
     status_pending "Start download webapp-runner ${version}"
     [ ! -z "$DEBUG_INFO" ] && status_pending "Download webapp-runner from $DOWNLOAD_URL" ||  status_pending "Download webapp-runner ${version}"
     try_dl_res $DOWNLOAD_URL
