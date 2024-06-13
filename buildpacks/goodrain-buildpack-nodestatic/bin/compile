@@ -124,7 +124,7 @@ install_bins() {
   else
     warn_node_engine "$node_engine"
     install_nodejs "$node_engine" "$BUILD_DIR/.heroku/node" || exit 1
-    install_npm "$npm_engine" "$BUILD_DIR/.heroku/node" $NPM_LOCK || exit 1
+    # install_npm "$npm_engine" "$BUILD_DIR/.heroku/node" $NPM_LOCK || exit 1
     local node_version="$(node --version)"
     mcount "version.node.$node_version"
   fi

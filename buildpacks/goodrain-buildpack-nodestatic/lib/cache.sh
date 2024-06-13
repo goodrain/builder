@@ -17,7 +17,7 @@ load_signature() {
 }
 
 get_cache_status() {
-  if ! ${NODE_MODULES_CACHE:-true}; then
+  if [ "${NODE_MODULES_CACHE:-true}" != "true" ]; then
     echo "disabled"
   elif ! test -d "${CACHE_DIR}/node/"; then
     echo "not-found"
