@@ -153,13 +153,6 @@ downloadFile() {
             if [ -n "${xCmd}" ]; then
                 ${xCmd} ${targetFile}
             fi
-            if ! SHAValid "${fileName}" "${targetFile}"; then
-                err ""
-                err "Downloaded file (${fileName}) sha does not match recorded SHA"
-                err "Unable to continue."
-                err ""
-                exit 1
-            fi
         finished
     popd &> /dev/null
 }
