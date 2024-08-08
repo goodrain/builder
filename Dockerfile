@@ -6,8 +6,6 @@ ENV TZ=Asia/Shanghai
 RUN sed -i "s/#   StrictHostKeyChecking ask/StrictHostKeyChecking no/g" /etc/ssh/ssh_config && \
     mkdir /root/.ssh
 
-ADD ./id_rsa /root/.ssh/id_rsa
-ADD ./id_rsa.pub /root/.ssh/
 ADD ./builder/ /tmp/builder
 ADD ./pre-compile/ /tmp/pre-compile
 ADD ./buildpacks /tmp/buildpacks
