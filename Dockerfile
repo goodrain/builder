@@ -3,15 +3,12 @@ ARG RELEASE_DESC
 
 # 时区设置
 ENV TZ=Asia/Shanghai
-RUN sed -i "s/#   StrictHostKeyChecking ask/StrictHostKeyChecking no/g" /etc/ssh/ssh_config && \
-    mkdir /root/.ssh
 
 ADD ./builder/ /tmp/builder
 ADD ./pre-compile/ /tmp/pre-compile
 ADD ./buildpacks /tmp/buildpacks
 
-RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/id_rsa && \
-    mkdir /app && \
+RUN mkdir /app && \
     addgroup --quiet --gid 200 rain && \
     useradd rain --uid=200 --gid=200 --home-dir /app --no-create-home && \
     /tmp/builder/install-buildpacks && \
