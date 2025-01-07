@@ -94,16 +94,16 @@ fi
 # If Pip isn't up to date:
 if [ "$FRESH_PYTHON" ] || [[ ! $(pip --version) == *$PIP_UPDATE* ]]; then
 
-  puts-step "Installing pip $PIP_UPDATE"
+  # puts-step "Installing pip $PIP_UPDATE"
 
   # Remove old installations.
   rm -fr /app/.heroku/python/lib/python*/site-packages/pip-*
   rm -fr /app/.heroku/python/lib/python*/site-packages/setuptools-*
   RUN_PIP_INDEX_URL="${PIP_INDEX_URL:-https://mirrors.aliyun.com/pypi/simple/}" # change to aliyun mirrors
-  if ! /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i "${RUN_PIP_INDEX_URL}" --default-timeout=100; then
-    puts-warn "Install pip $PIP_UPDATE failure"
-    exit 1
-  fi
+  # if ! /app/.heroku/python/bin/python "$ROOT_DIR/vendor/get-pip.py" pip=="$PIP_UPDATE" -i "${RUN_PIP_INDEX_URL}" --default-timeout=100; then
+  #   puts-warn "Install pip $PIP_UPDATE failure"
+  #   exit 1
+  # fi
   # upgrade pip
   puts-step "Upgrade pip to latest version"
   pushd /app/.heroku/python/bin
