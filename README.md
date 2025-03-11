@@ -22,7 +22,7 @@ code 目录保存代码
 slug 目录保存slug.tgz
 ```bash
 docker run -ti --rm --name=builder \
--e LANG_GOODRAIN_ME="https://buildpack.oss-cn-shanghai.aliyuncs.com" \
+-e LANG_GOODRAIN_ME="https://buildpack.rainbond.com" \
 -e RUNTIME=1.8 \
 -e LANGUAGE=Java-maven \
 -e SLUG_VERSION=demo \

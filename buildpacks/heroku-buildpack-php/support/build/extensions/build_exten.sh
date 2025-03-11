@@ -21,23 +21,23 @@ function php_untar() {
     case $phpver in
     5.5.*)
         phptar=php-5.5.38.tar.gz
-        raphfurl=https://buildpack.oss-cn-shanghai.aliyuncs.com/php-arm64/dist-cedar-14-stable/extensions/no-debug-non-zts-20121212/raphf-1.1.2.tar.gz
+        raphfurl=https://buildpack.rainbond.com/php-arm64/dist-cedar-14-stable/extensions/no-debug-non-zts-20121212/raphf-1.1.2.tar.gz
         ;;
     5.6.*)
         phptar=php-5.6.35.tar.gz
-        raphfurl=https://buildpack.oss-cn-shanghai.aliyuncs.com/php-arm64/dist-cedar-14-stable/extensions/no-debug-non-zts-20131226/raphf-1.1.2.tar.gz
+        raphfurl=https://buildpack.rainbond.com/php-arm64/dist-cedar-14-stable/extensions/no-debug-non-zts-20131226/raphf-1.1.2.tar.gz
         ;;
     7.0.*)
         phptar=php-7.0.29.tar.gz
-        raphfurl=https://buildpack.oss-cn-shanghai.aliyuncs.com/php-arm64/dist-cedar-14-stable/extensions/no-debug-non-zts-20151012/raphf-2.0.0.tar.gz
+        raphfurl=https://buildpack.rainbond.com/php-arm64/dist-cedar-14-stable/extensions/no-debug-non-zts-20151012/raphf-2.0.0.tar.gz
         ;;
     7.1.*)
         phptar=php-7.1.27.tar.gz
-        raphfurl=https://buildpack.oss-cn-shanghai.aliyuncs.com/php-arm64/dist-cedar-14-stable/extensions/no-debug-non-zts-20160303/raphf-2.0.0.tar.gz
+        raphfurl=https://buildpack.rainbond.com/php-arm64/dist-cedar-14-stable/extensions/no-debug-non-zts-20160303/raphf-2.0.0.tar.gz
         ;;
     7.2.*)
         phptar=php-7.2.16.tar.gz
-        raphfurl=https://buildpack.oss-cn-shanghai.aliyuncs.com/php-arm64/dist-cedar-14-stable/extensions/no-debug-non-zts-20170718/raphf-2.0.0.tar.gz
+        raphfurl=https://buildpack.rainbond.com/php-arm64/dist-cedar-14-stable/extensions/no-debug-non-zts-20170718/raphf-2.0.0.tar.gz
         ;;
     esac
     if [ ! -d /app/.heroku/php ]; then

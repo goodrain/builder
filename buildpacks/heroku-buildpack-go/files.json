@@ -249,11 +249,11 @@
   },
   "go1.12.17.linux-amd64.tar.gz": {
     "SHA": "a53dd476129d496047487bfd53d021dd17e0c96895865a0e7d0469ce3db8c8d2",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.12.17.linux-amd64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.12.17.linux-amd64.tar.gz"
   },
   "go1.12.17.linux-arm64.tar.gz": {
     "SHA": "9d0819cce1451abdb090071880fe8771f16a3bcee71d6f6906023d17799574e2",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.12.17.linux-arm64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.12.17.linux-arm64.tar.gz"
   },
   "go1.12.2.linux-amd64.tar.gz": {
     "SHA": "f28c1fde8f293cc5c83ae8de76373cf76ae9306909564f54e0edcf140ce8fe3f",
@@ -329,11 +329,11 @@
   },
   "go1.13.15.linux-amd64.tar.gz": {
     "SHA": "01cc3ddf6273900eba3e2bf311238828b7168b822bb57a9ccab4d7aa2acd6028",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.13.15.linux-amd64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.13.15.linux-amd64.tar.gz"
   },
   "go1.13.15.linux-arm64.tar.gz": {
     "SHA": "a5c59e3f0aeaf6e939790152a8bfabb91d70c9787afb7aee06aef9bd4411c551",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.13.15.linux-arm64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.13.15.linux-arm64.tar.gz"
   },
   "go1.13.2.linux-amd64.tar.gz": {
     "SHA": "293b41a6ccd735eebcfb4094b6931bfd187595555cecf3e4386e9e119220c0b7",
@@ -409,11 +409,11 @@
   },
   "go1.14.15.linux-amd64.tar.gz": {
     "SHA": "c64a57b374a81f7cf1408d2c410a28c6f142414f1ffa9d1062de1d653b0ae0d6",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.14.15.linux-amd64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.14.15.linux-amd64.tar.gz"
   },
   "go1.14.15.linux-arm64.tar.gz": {
     "SHA": "4d964166a189c22032521c63935437c304bb7f01673b196898cff525897a1c27",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.14.15.linux-arm64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.14.15.linux-arm64.tar.gz"
   },
   "go1.14.2.linux-amd64.tar.gz": {
     "SHA": "6272d6e940ecb71ea5636ddb5fab3933e087c1356173c61f4a803895e947ebb3",
@@ -485,11 +485,11 @@
   },
   "go1.15.15.linux-amd64.tar.gz": {
     "SHA": "0885cf046a9f099e260d98d9ec5d19ea9328f34c8dc4956e1d3cd87daaddb345",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.15.15.linux-amd64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.15.15.linux-amd64.tar.gz"
   },
   "go1.15.15.linux-arm64.tar.gz": {
     "SHA": "714abb01af210473dd6af331094ad6847162eff81a7fc7241d24f5a85496c9fa",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.15.15.linux-arm64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.15.15.linux-arm64.tar.gz"
   },
   "go1.15.2.linux-amd64.tar.gz": {
     "SHA": "b49fda1ca29a1946d6bb2a5a6982cf07ccd2aba849289508ee0f9918f6bb4552",
@@ -553,11 +553,11 @@
   },
   "go1.16.15.linux-amd64.tar.gz": {
     "SHA": "77c782a633186d78c384f972fb113a43c24be0234c42fef22c2d8c4c4c8e7475",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.16.15.linux-amd64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.16.15.linux-amd64.tar.gz"
   },
   "go1.16.15.linux-arm64.tar.gz": {
     "SHA": "c2f27f0ce5620a9bc2ff3446165d1974ef94e9b885ec12dbfa3c07e0e198b7ce",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.16.15.linux-arm64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.16.15.linux-arm64.tar.gz"
   },
   "go1.16.2.linux-amd64.tar.gz": {
     "SHA": "542e936b19542e62679766194364f45141fde55169db2d8d01046555ca9eb4b8",
@@ -617,11 +617,11 @@
   },
   "go1.17.13.linux-amd64.tar.gz": {
     "SHA": "4cdd2bc664724dc7db94ad51b503512c5ae7220951cac568120f64f8e94399fc",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.17.13.linux-amd64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.17.13.linux-amd64.tar.gz"
   },
   "go1.17.13.linux-arm64.tar.gz": {
     "SHA": "914daad3f011cc2014dea799bb7490442677e4ad6de0b2ac3ded6cee7e3f493d",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.17.13.linux-arm64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.17.13.linux-arm64.tar.gz"
   },
   "go1.17.2.linux-amd64.tar.gz": {
     "SHA": "f242a9db6a0ad1846de7b6d94d507915d14062660616a61ef7c808a76e4f1676",
@@ -665,11 +665,11 @@
   },
   "go1.18.10.linux-amd64.tar.gz": {
     "SHA": "5e05400e4c79ef5394424c0eff5b9141cb782da25f64f79d54c98af0a37f8d49",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.18.10.linux-amd64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.18.10.linux-amd64.tar.gz"
   },
   "go1.18.10.linux-arm64.tar.gz": {
     "SHA": "160497c583d4c7cbc1661230e68b758d01f741cf4bece67e48edc4fdd40ed92d",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.18.10.linux-arm64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.18.10.linux-arm64.tar.gz"
   },
   "go1.18.2.linux-amd64.tar.gz": {
     "SHA": "e54bec97a1a5d230fc2f9ad0880fcbabb5888f30ed9666eca4a91c5a32e86cbc",
@@ -741,11 +741,11 @@
   },
   "go1.19.9.linux-amd64.tar.gz": {
     "SHA": "e858173b489ec1ddbe2374894f52f53e748feed09dde61be5b4b4ba2d73ef34b",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.19.9.linux-amd64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.19.9.linux-amd64.tar.gz"
   },
   "go1.19.9.linux-arm64.tar.gz": {
     "SHA": "b947e457be9d7b52a082c68e42b6939f9cc151f1ad5b3d8fd646ca3352f6f2f1",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.19.9.linux-arm64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.19.9.linux-arm64.tar.gz"
   },
   "go1.19.linux-amd64.tar.gz": {
     "SHA": "464b6b66591f6cf055bc5df90a9750bf5fbc9d038722bb84a9d56a2bea974be6",
@@ -777,11 +777,11 @@
   },
   "go1.20.4.linux-amd64.tar.gz": {
     "SHA": "698ef3243972a51ddb4028e4a1ac63dc6d60821bf18e59a807e051fee0a385bd",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.20.4.linux-amd64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.20.4.linux-amd64.tar.gz"
   },
   "go1.20.4.linux-arm64.tar.gz": {
     "SHA": "105889992ee4b1d40c7c108555222ca70ae43fccb42e20fbf1eebb822f5e72c6",
-    "URL": "https://buildpack.oss-cn-shanghai.aliyuncs.com/go/go1.20.4.linux-arm64.tar.gz"
+    "URL": "https://buildpack.rainbond.com/go/go1.20.4.linux-arm64.tar.gz"
   },
   "go1.20.linux-amd64.tar.gz": {
     "SHA": "5a9ebcc65c1cce56e0d2dc616aff4c4cedcfbda8cc6f0288cc08cda3b18dcbf1",
