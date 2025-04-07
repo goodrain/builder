@@ -248,9 +248,9 @@ mkdir -p $COMPOSER_HOME
 status "Bootstrapping..."
 
 if [ $ARCH == "arm64" ]; then 
-	s3_url="${LANG_GOODRAIN_ME:-https://buildpack.oss-cn-shanghai.aliyuncs.com}/php-arm64/dist-${STACK}-stable/"
+	s3_url="${LANG_GOODRAIN_ME:-https://buildpack.rainbond.com}/php-arm64/dist-${STACK}-stable/"
 else
-	s3_url="${LANG_GOODRAIN_ME:-https://buildpack.oss-cn-shanghai.aliyuncs.com}/php-new/dist-${STACK}-stable/"
+	s3_url="${LANG_GOODRAIN_ME:-https://buildpack.rainbond.com}/php-new/dist-${STACK}-stable/"
 fi
 # prepend the default repo to the list configured by the user
 # list of repositories to use is in ascening order of precedence
