@@ -30,6 +30,7 @@ WEBSERVER=$(cat $StaticRuntimefile)
 # move app things to www
 mkdir -p /tmp/www
 rsync -av --exclude 'node_modules' ./ /tmp/www
+rm -rf ./*
 mv /tmp/www .
 
 # keep Procfile
