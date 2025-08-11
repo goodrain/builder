@@ -54,8 +54,24 @@ fetch_nginx_tarball() {
     # install nginx if needed
     if [ ! -d "$NGINX_PATH" ]; then
         [ -z "$DEBUG_INFO" ] && echo "-----> Installed Nginx ${NGINX_VERSION}" || echo "-----> Installed Nginx ${NGINX_VERSION} from $NGINX_URL."
+        
+        # 创建缓存目录
+        mkdir -p /tmp/cache/buildpack
+        
+        # 生成缓存文件名（基于版本）
+        local cacheFile="/tmp/cache/buildpack/nginx-${NGINX_VERSION}.tar.gz"
+        
         mkdir -p $NGINX_PATH/conf.d
-        curl --silent --max-time 60 --location $NGINX_URL | tar xz --strip-components 2 -C $NGINX_PATH
+        
+        # 检查缓存是否存在
+        if [ -f "$cacheFile" ]; then
+            echo "使用缓存的 Nginx: $cacheFile"
+            tar xz --strip-components 2 -C $NGINX_PATH < "$cacheFile"
+        else
+            echo "下载 Nginx 到缓存: $cacheFile"
+            curl --silent --max-time 60 --location $NGINX_URL -o "$cacheFile"
+            tar xz --strip-components 2 -C $NGINX_PATH < "$cacheFile"
+        fi
     fi
 
     # update config files
@@ -116,7 +132,22 @@ fetch_apache_tarball() {
     # install apache if needed
     if [ ! -d "$APACHE_PATH" ]; then
         [ -z "$DEBUG_INFO" ] && echo "-----> Installing Apache $APACHE_VERSION" || echo "-----> Installing Apache $APACHE_VERSION from $APACHE_URL."
-        curl --silent --max-time 60 --location $APACHE_URL | tar xz
+        
+        # 创建缓存目录
+        mkdir -p /tmp/cache/buildpack
+        
+        # 生成缓存文件名（基于版本）
+        local cacheFile="/tmp/cache/buildpack/apache-${APACHE_VERSION}.tar.gz"
+        
+        # 检查缓存是否存在
+        if [ -f "$cacheFile" ]; then
+            echo "使用缓存的 Apache: $cacheFile"
+            tar xz < "$cacheFile"
+        else
+            echo "下载 Apache 到缓存: $cacheFile"
+            curl --silent --max-time 60 --location $APACHE_URL -o "$cacheFile"
+            tar xz < "$cacheFile"
+        fi
     fi
     # update config files
     cp $LP_DIR/conf/apache.conf $APACHE_PATH/conf/httpd.conf

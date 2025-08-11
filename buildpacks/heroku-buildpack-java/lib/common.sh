@@ -41,8 +41,25 @@ download_maven() {
   local mavenUrl=$1
   local installDir=$2
   local mavenHome=$3
+  
+  # 创建缓存目录
+  mkdir -p /tmp/cache/buildpack
+  
+  # 生成缓存文件名（基于URL）
+  local cacheFile="/tmp/cache/buildpack/$(basename ${mavenUrl})"
+  
   rm -rf $mavenHome
-  curl --retry 3 --silent --max-time 60 --location ${mavenUrl} | tar xzm -C $installDir
+  
+  # 检查缓存是否存在
+  if [ -f "$cacheFile" ]; then
+    echo "使用缓存的 Maven: $cacheFile"
+    tar xzm -C $installDir < "$cacheFile"
+  else
+    echo "下载 Maven 到缓存: $cacheFile"
+    curl --retry 3 --silent --max-time 60 --location ${mavenUrl} -o "$cacheFile"
+    tar xzm -C $installDir < "$cacheFile"
+  fi
+  
   chmod +x $mavenHome/bin/mvn
 }
 

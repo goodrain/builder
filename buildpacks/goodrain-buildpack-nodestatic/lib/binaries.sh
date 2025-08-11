@@ -16,10 +16,23 @@ install_yarn() {
   fi
   yarn_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/nodejs/yarn/release/yarn-v$number.tar.gz"
 
-  [ -z "$DEBUG_INFO" ] && echo "Downloading and installing yarn ($number)..." || echo "Downloading and installing yarn ($number) from $yarn_url "
-  local code=$(curl "$yarn_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/yarn.tar.gz --write-out "%{http_code}")
-  if [ "$code" != "200" ]; then
-    fail_bin_install yarn "v$number"
+  # 创建缓存目录
+  mkdir -p /tmp/cache/buildpack
+  
+  # 生成缓存文件名（基于URL）
+  local cacheFile="/tmp/cache/buildpack/yarn-v$number.tar.gz"
+  
+  # 检查缓存是否存在
+  if [ -f "$cacheFile" ]; then
+    echo "使用缓存的 Yarn ($number): $cacheFile"
+    cp "$cacheFile" /tmp/yarn.tar.gz
+  else
+    [ -z "$DEBUG_INFO" ] && echo "Downloading and installing yarn ($number)..." || echo "Downloading and installing yarn ($number) from $yarn_url "
+    local code=$(curl "$yarn_url" -L --silent --fail --retry 5 --retry-max-time 15 -o "$cacheFile" --write-out "%{http_code}")
+    if [ "$code" != "200" ]; then
+      fail_bin_install yarn "v$number"
+    fi
+    cp "$cacheFile" /tmp/yarn.tar.gz
   fi
   rm -rf $dir
   mkdir -p "$dir"
@@ -54,10 +67,27 @@ install_nodejs() {
   if [ -n "${CUSTOMIZE_RUNTIMES}" ]; then
     node_url=${CUSTOMIZE_RUNTIMES_URL}
   fi
-  [ -z "$DEBUG_INFO" ] && echo "Downloading and installing node $number..." || echo "Downloading and installing node $number from $node_url"
-  local code=$(curl "$node_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/node.tar.gz --write-out "%{http_code}")
-  if [ "$code" != "200" ]; then
-    fail_bin_install node "v$number"
+  # 创建缓存目录
+  mkdir -p /tmp/cache/buildpack
+  
+  # 生成缓存文件名（基于架构和版本）
+  if [ $ARCH == "arm64" ]; then
+    local cacheFile="/tmp/cache/buildpack/node-v$number-linux-arm64.tar.gz"
+  else
+    local cacheFile="/tmp/cache/buildpack/node-v$number-linux-x64.tar.gz"
+  fi
+  
+  # 检查缓存是否存在
+  if [ -f "$cacheFile" ]; then
+    echo "使用缓存的 Node.js ($number): $cacheFile"
+    cp "$cacheFile" /tmp/node.tar.gz
+  else
+    [ -z "$DEBUG_INFO" ] && echo "Downloading and installing node $number..." || echo "Downloading and installing node $number from $node_url"
+    local code=$(curl "$node_url" -L --silent --fail --retry 5 --retry-max-time 15 -o "$cacheFile" --write-out "%{http_code}")
+    if [ "$code" != "200" ]; then
+      fail_bin_install node "v$number"
+    fi
+    cp "$cacheFile" /tmp/node.tar.gz
   fi
   tar xzf /tmp/node.tar.gz -C /tmp
   rm -rf "$dir"/*
