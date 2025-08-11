@@ -52,10 +52,10 @@ download_maven() {
   
   # 检查缓存是否存在
   if [ -f "$cacheFile" ]; then
-    echo "使用缓存的 Maven: $cacheFile"
+    echo "Using cached Maven: $cacheFile"
     tar xzm -C $installDir < "$cacheFile"
   else
-    echo "下载 Maven 到缓存: $cacheFile"
+    echo "Downloading Maven to cache: $cacheFile"
     curl --retry 3 --silent --max-time 60 --location ${mavenUrl} -o "$cacheFile"
     tar xzm -C $installDir < "$cacheFile"
   fi

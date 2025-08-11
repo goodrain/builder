@@ -354,10 +354,10 @@ _install_pgconfig() {
     
     # 检查缓存是否存在
     if [ -f "$cacheFile" ]; then
-      echo "使用缓存的 pgconfig.jar: $cacheFile"
+      echo "Using cached pgconfig.jar: $cacheFile"
       cp "$cacheFile" ${extDir}/pgconfig.jar
     else
-      echo "下载 pgconfig.jar 到缓存: $cacheFile"
+      echo "Downloading pgconfig.jar to cache: $cacheFile"
       curl --retry 3 -s -L "${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jvm/pgconfig.jar" -o "$cacheFile"
       cp "$cacheFile" ${extDir}/pgconfig.jar
     fi
@@ -388,10 +388,10 @@ install_pinpoit_agent() {
   
   # 检查缓存是否存在
   if [ -f "$cacheFile" ]; then
-    echo "使用缓存的 Pinpoint 代理: $cacheFile"
+    echo "Using cached Pinpoint agent: $cacheFile"
     tar xzm -C "${install_dir}/.pinpoint" < "$cacheFile"
   else
-    echo "下载 Pinpoint 代理到缓存: $cacheFile"
+    echo "Downloading Pinpoint agent to cache: $cacheFile"
     curl --retry 3 --silent --location "$PINPOINT_AGENT" -o "$cacheFile"
     tar xzm -C "${install_dir}/.pinpoint" < "$cacheFile"
   fi
@@ -415,10 +415,10 @@ install_skywalking_agent(){
     
     # 检查缓存是否存在
     if [ -f "$cacheFile" ]; then
-      echo "使用缓存的 Skywalking 代理: $cacheFile"
+      echo "Using cached Skywalking agent: $cacheFile"
       tar xzm -C "${install_dir}/.skywalking" < "$cacheFile"
     else
-      echo "下载 Skywalking 代理到缓存: $cacheFile"
+      echo "Downloading Skywalking agent to cache: $cacheFile"
       curl --retry 3 --silent --location "$SKW_AGENT" -o "$cacheFile"
       tar xzm -C "${install_dir}/.skywalking" < "$cacheFile"
     fi
@@ -440,10 +440,10 @@ install_jmx_exporter_agent() {
   
   # 检查缓存是否存在
   if [ -f "$cacheFile" ]; then
-    echo "使用缓存的 JMX Exporter 代理: $cacheFile"
+    echo "Using cached JMX Exporter agent: $cacheFile"
     cp "$cacheFile" "${install_dir}/.jmx-exporter/jmx_prometheus_javaagent-${JMX_EXPORTER_AGENT_VERSION}.jar"
   else
-    echo "下载 JMX Exporter 代理到缓存: $cacheFile"
+    echo "Downloading JMX Exporter agent to cache: $cacheFile"
     curl --retry 3 --silent --location "${JMX_EXPORTER_AGENT}" -o "$cacheFile"
     cp "$cacheFile" "${install_dir}/.jmx-exporter/jmx_prometheus_javaagent-${JMX_EXPORTER_AGENT_VERSION}.jar"
   fi

@@ -65,10 +65,10 @@ fetch_nginx_tarball() {
         
         # 检查缓存是否存在
         if [ -f "$cacheFile" ]; then
-            echo "使用缓存的 Nginx: $cacheFile"
+            echo "Using cached Nginx: $cacheFile"
             tar xz --strip-components 2 -C $NGINX_PATH < "$cacheFile"
         else
-            echo "下载 Nginx 到缓存: $cacheFile"
+            echo "Downloading Nginx to cache: $cacheFile"
             curl --silent --max-time 60 --location $NGINX_URL -o "$cacheFile"
             tar xz --strip-components 2 -C $NGINX_PATH < "$cacheFile"
         fi
@@ -141,10 +141,10 @@ fetch_apache_tarball() {
         
         # 检查缓存是否存在
         if [ -f "$cacheFile" ]; then
-            echo "使用缓存的 Apache: $cacheFile"
+            echo "Using cached Apache: $cacheFile"
             tar xz < "$cacheFile"
         else
-            echo "下载 Apache 到缓存: $cacheFile"
+            echo "Downloading Apache to cache: $cacheFile"
             curl --silent --max-time 60 --location $APACHE_URL -o "$cacheFile"
             tar xz < "$cacheFile"
         fi

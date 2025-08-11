@@ -24,7 +24,7 @@ install_yarn() {
   
   # 检查缓存是否存在
   if [ -f "$cacheFile" ]; then
-    echo "使用缓存的 Yarn ($number): $cacheFile"
+    echo "Using cached Yarn ($number): $cacheFile"
     cp "$cacheFile" /tmp/yarn.tar.gz
   else
     [ -z "$DEBUG_INFO" ] && echo "Downloading and installing yarn ($number)..." || echo "Downloading and installing yarn ($number) from $yarn_url "
@@ -79,7 +79,7 @@ install_nodejs() {
   
   # 检查缓存是否存在
   if [ -f "$cacheFile" ]; then
-    echo "使用缓存的 Node.js ($number): $cacheFile"
+    echo "Using cached Node.js ($number): $cacheFile"
     cp "$cacheFile" /tmp/node.tar.gz
   else
     [ -z "$DEBUG_INFO" ] && echo "Downloading and installing node $number..." || echo "Downloading and installing node $number from $node_url"
