@@ -73,7 +73,7 @@ distributionBase=GRADLE_USER_HOME
 distributionPath=wrapper/dists
 zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-#{gradle_version}-bin.zip
+distributionUrl=https\://mirrors.aliyun.com/macports/distfiles/gradle/gradle-#{gradle_version}-bin.zip
 EOF
   end
   `git add #{propsFile}`
