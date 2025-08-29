@@ -43,20 +43,9 @@ restore_default_cache_directories() {
   local build_dir=${1:-}
   local cache_dir=${2:-}
 
-  # node_modules
-  if [[ -e "$build_dir/node_modules" ]]; then
-    echo "- node_modules is checked into source control and cannot be cached"
-  elif [[ -e "$cache_dir/node/node_modules" ]]; then
-    echo "- node_modules"
-    mkdir -p "$(dirname "$build_dir/node_modules")"
-    mv "$cache_dir/node/node_modules" "$build_dir/node_modules"
-  else
-    echo "- node_modules (not cached - skipping)"
-  fi
-
-  # bower_components, should be silent if it is not in the cache
-  if [[ -e "$cache_dir/node/bower_components" ]]; then
-    echo "- bower_components"
+  if [[ -e "$cache_dir/node/node_modules" ]]; then
+    echo "- node_modules (using cache via symlink)"
+    ln -sf "$cache_dir/node/node_modules" "$build_dir/node_modules"
   fi
 }
 
@@ -91,23 +80,13 @@ save_default_cache_directories() {
   local build_dir=${1:-}
   local cache_dir=${2:-}
 
-  # node_modules
-  if [[ -e "$build_dir/node_modules" ]]; then
+  # If node_modules is a symlink to cache, no need to copy
+  if [[ -L "$build_dir/node_modules" ]]; then
+    echo "- node_modules (symlink - no copy needed)"
+  elif [[ -e "$build_dir/node_modules" ]]; then
     echo "- node_modules"
-    mkdir -p "$cache_dir/node/node_modules"
-    cp -a "$build_dir/node_modules" "$(dirname "$cache_dir/node/node_modules")"
-  else
-    # this can happen if there are no dependencies
-    mcount "cache.no-node-modules"
-    echo "- node_modules (nothing to cache)"
-  fi
-
-  # bower_components
-  if [[ -e "$build_dir/bower_components" ]]; then
-    mcount "cache.saved-bower-components"
-    echo "- bower_components"
-    mkdir -p "$cache_dir/node/bower_components"
-    cp -a "$build_dir/bower_components" "$(dirname "$cache_dir/node/bower_components")"
+    mkdir -p "$cache_dir/node"
+    cp -a "$build_dir/node_modules" "$cache_dir/node/"
   fi
 }
 
