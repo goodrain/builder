@@ -15,6 +15,7 @@ BPLOG_PREFIX="buildpack.nodejs"
 BUILD_DIR=${1:-}
 CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
+mkdir -p "$CACHE_DIR"
 BP_DIR=$(
   cd "$(dirname ${0:-})"
   cd ..
@@ -172,17 +173,7 @@ restore_cache() {
     fi
   elif [[ "$cache_status" == "new-signature" ]]; then
     header "Restoring cache"
-    if [[ "$cache_directories" == "" ]]; then
-      echo "Cached directories were not restored due to a change in version of node, npm, yarn or stack"
-      echo "Module installation may take longer for this build"
-    else
-      # If the user has specified custom cache directories, be more explicit
-      echo "Invalidating cache due to a change in version of node, npm, yarn or stack"
-      echo "Will not restore the following directories for this build:"
-      for directory in $(<$cache_directories); do
-        echo "  $directory"
-      done
-    fi
+    echo "Cache invalidated (version change)"
   else
     # No cache exists, be silent
     :
@@ -191,7 +182,7 @@ restore_cache() {
   mcount "cache.$cache_status"
 }
 
-# restore_cache | output "$LOG_FILE"
+restore_cache | output "$LOG_FILE"
 
 build_dependencies() {
   run_if_present 'heroku-prebuild'
@@ -249,7 +240,7 @@ cache_build() {
   save_signature
 }
 
-# cache_build | output "$LOG_FILE"
+cache_build | output "$LOG_FILE"
 
 prune_devdependencies() {
   if $YARN; then
