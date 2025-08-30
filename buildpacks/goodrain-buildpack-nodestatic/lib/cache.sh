@@ -1,11 +1,21 @@
 source $BP_DIR/lib/binaries.sh
 
 create_signature() {
-  echo "${STACK}; $(node --version); $(npm --version); $(yarn --version 2>/dev/null || true); ${PREBUILD}"
+  # Simply use package.json hash - that's all we need
+  if [[ -f "$BUILD_DIR/package.json" ]]; then
+    md5sum "$BUILD_DIR/package.json" 2>/dev/null | cut -d' ' -f1
+  else
+    echo "no-package-json"
+  fi
 }
 
 save_signature() {
   create_signature > $CACHE_DIR/node/signature
+  
+  # Save package.json for reference
+  if [[ -f "$BUILD_DIR/package.json" ]]; then
+    cp "$BUILD_DIR/package.json" "$CACHE_DIR/node/package.json.cached"
+  fi
 }
 
 load_signature() {
@@ -17,7 +27,7 @@ load_signature() {
 }
 
 get_cache_status() {
-  if [ "${NODE_MODULES_CACHE:-true}" != "true" ]; then
+  if [ "${NODE_MODULES_CACHE:-false}" = "true" ]; then
     echo "disabled"
   elif ! test -d "${CACHE_DIR}/node/"; then
     echo "not-found"
@@ -43,9 +53,10 @@ restore_default_cache_directories() {
   local build_dir=${1:-}
   local cache_dir=${2:-}
 
-  if [[ -e "$cache_dir/node/node_modules" ]]; then
-    echo "- node_modules (using cache via symlink)"
-    ln -sf "$cache_dir/node/node_modules" "$build_dir/node_modules"
+  if [[ -e "$cache_dir/node/node_modules" ]] && [[ "$(ls -A "$cache_dir/node/node_modules" 2>/dev/null)" ]]; then
+    echo "- node_modules (cache exists)"
+  else
+    echo "- node_modules (cache empty, will install fresh)"
   fi
 }
 

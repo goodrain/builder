@@ -49,9 +49,15 @@ EOF
 #/bin/bash
 # Linux OS always have sed cmd, but not envsubst for envrender
 # Make conf files always can be render
-sed -i -r "s#\/app#\$HOME#g" \$HOME/nginx/conf/nginx.conf
-sed -i -r "s#\/app#\$HOME#g" \$HOME/nginx/conf.d/web.conf
-sed -i -r  "s/(listen ).*/\1\$PORT;/" \$HOME/nginx/conf.d/web.conf
+# Only modify nginx configs if they are writable (skip ConfigMap mounted files)
+if [ -w \$HOME/nginx/conf/nginx.conf ]; then
+  sed -i -r "s#\/app#\$HOME#g" \$HOME/nginx/conf/nginx.conf
+fi
+
+if [ -w \$HOME/nginx/conf.d/web.conf ]; then
+  sed -i -r "s#\/app#\$HOME#g" \$HOME/nginx/conf.d/web.conf
+  sed -i -r "s/(listen ).*/\1\$PORT;/" \$HOME/nginx/conf.d/web.conf
+fi
 \$HOME/nginx/sbin/envrender \$HOME/nginx/conf.d/web.conf
 touch \$HOME/nginx/logs/access.log
 touch \$HOME/nginx/logs/error.log

@@ -13,9 +13,11 @@ BPLOG_PREFIX="buildpack.nodejs"
 ### Configure directories
 
 BUILD_DIR=${1:-}
-CACHE_DIR=${2:-}
+CACHE_DIR=${2:-/tmp/cache}
 ENV_DIR=${3:-}
-mkdir -p "$CACHE_DIR"
+
+# Ensure cache directory exists
+mkdir -p "$CACHE_DIR/node"
 BP_DIR=$(
   cd "$(dirname ${0:-})"
   cd ..
@@ -190,7 +192,46 @@ build_dependencies() {
   local cache_status="$(get_cache_status)"
   local start=$(nowms)
 
-  if $YARN; then
+  # Force reset cache if needed
+  if [[ "${RESET_CACHE:-false}" = "true" ]]; then
+    echo "-----> Clearing cache (RESET_CACHE=true)"
+    rm -rf "$CACHE_DIR/node"
+    mkdir -p "$CACHE_DIR/node"
+    cache_status="not-found"
+  fi
+  
+  if [[ -f "$CACHE_DIR/node/signature" ]]; then
+    local cached_sig="$(cat "$CACHE_DIR/node/signature")"
+    local current_sig="$(create_signature)"
+    
+    if [[ "$cached_sig" != "$current_sig" ]]; then
+      echo "-----> package.json changed, rebuilding dependencies"
+      cache_status="new-signature"
+    fi
+  fi
+  
+  # Check if we have valid cache to avoid reinstalling
+  local has_cache=false
+  if [[ -d "$CACHE_DIR/node/node_modules" ]] && [[ "$(ls -A "$CACHE_DIR/node/node_modules" 2>/dev/null)" ]] && [[ "$cache_status" == "valid" ]]; then
+    has_cache=true
+    echo "-----> Using cached dependencies (cache valid)"
+    ln -sf "$CACHE_DIR/node/node_modules" "$BUILD_DIR/node_modules"
+  else
+    # Remove existing node_modules and create symlink for fresh install
+    if [[ -e "$BUILD_DIR/node_modules" ]] && [[ ! -L "$BUILD_DIR/node_modules" ]]; then
+      echo "-----> Removing existing node_modules to enable cache symlink"
+      rm -rf "$BUILD_DIR/node_modules"
+    fi
+    
+    mkdir -p "$CACHE_DIR/node/node_modules"
+    echo "-----> Creating cache symlink for fresh install: $BUILD_DIR/node_modules -> $CACHE_DIR/node/node_modules"
+    ln -sf "$CACHE_DIR/node/node_modules" "$BUILD_DIR/node_modules"
+  fi
+
+  # Only install if we don't have valid cache
+  if [[ "$has_cache" == "true" ]]; then
+    echo "-----> Skipping npm/yarn install (using cached dependencies)"
+  elif $YARN; then
     yarn_node_modules "$BUILD_DIR"
   elif $PREBUILD; then
     echo "Prebuild detected (node_modules already exists)"
@@ -225,8 +266,8 @@ static_build | output "$LOG_FILE"
 cache_build() {
   local cache_directories="$(get_cache_directories)"
 
-  clear_cache
-  if ! ${NODE_MODULES_CACHE:-true}; then
+  # Don't clear cache - we want to keep it!
+  if [ "${NODE_MODULES_CACHE:-false}" = "true" ]; then
     # we've already warned that caching is disabled in the restore step
     # so be silent here
     :

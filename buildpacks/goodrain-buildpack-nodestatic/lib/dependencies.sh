@@ -90,14 +90,6 @@ yarn_node_modules() {
   local production=${YARN_PRODUCTION:-false}
 
   cd "$build_dir"
-  
-  # Use cache directory directly if node_modules doesn't exist
-  if [[ ! -e "$build_dir/node_modules" ]] && [[ -d "$CACHE_DIR/node" ]]; then
-    echo "Installing to cache directory: $CACHE_DIR/node/node_modules"
-    mkdir -p "$CACHE_DIR/node/node_modules"
-    ln -sf "$CACHE_DIR/node/node_modules" "$build_dir/node_modules"
-  fi
-
   echo "Installing node modules (yarn.lock)"
   yarn config set "strict-ssl" false -g
   monitor "yarn-install" yarn install --registry=${YARN_REGISTRY:-https://registry.npmmirror.com} --production=$production --frozen-lockfile --ignore-engines 2>&1
@@ -127,13 +119,6 @@ npm_node_modules() {
 
   if [ -e $build_dir/package.json ]; then
     cd $build_dir
-    
-    # Use cache directory directly if node_modules doesn't exist
-    if [[ ! -e "$build_dir/node_modules" ]] && [[ -d "$CACHE_DIR/node" ]]; then
-      echo "Installing to cache directory: $CACHE_DIR/node/node_modules"
-      mkdir -p "$CACHE_DIR/node/node_modules"
-      ln -sf "$CACHE_DIR/node/node_modules" "$build_dir/node_modules"
-    fi
 
     if [ -e $build_dir/package-lock.json ]; then
       echo "Installing node modules (package.json + package-lock)"
