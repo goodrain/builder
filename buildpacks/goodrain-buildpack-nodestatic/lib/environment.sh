@@ -21,7 +21,7 @@ export JQ=${JQBIN}
 
 create_default_env() {
   export NPM_CONFIG_LOGLEVEL=${NPM_CONFIG_LOGLEVEL:-info}
-  export NODE_MODULES_CACHE=${NODE_MODULES_CACHE:-true}
+  export NODE_MODULES_CACHE=${NODE_MODULES_CACHE:-false}
   export NODE_ENV=${NODE_ENV:-production}
   export NODE_VERBOSE=${NODE_VERBOSE:-false}
 }
