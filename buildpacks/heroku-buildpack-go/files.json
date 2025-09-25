@@ -787,6 +787,36 @@
     "SHA": "5a9ebcc65c1cce56e0d2dc616aff4c4cedcfbda8cc6f0288cc08cda3b18dcbf1",
     "URL": "https://dl.google.com/go/go1.20.linux-amd64.tar.gz"
   },
+  "go1.21.13.linux-amd64.tar.gz": {
+    "URL": "https://buildpack.rainbond.com/go/go1.21.13.linux-amd64.tar.gz"
+  },
+  "go1.21.13.linux-arm64.tar.gz": {
+    "URL": "https://buildpack.rainbond.com/go/go1.21.13.linux-arm64.tar.gz"
+  },
+  "go1.22.12.linux-amd64.tar.gz": {
+    "URL": "https://buildpack.rainbond.com/go/go1.22.12.linux-amd64.tar.gz"
+  },
+  "go1.22.12.linux-arm64.tar.gz": {
+    "URL": "https://buildpack.rainbond.com/go/go1.22.12.linux-arm64.tar.gz"
+  },
+  "go1.23.12.linux-amd64.tar.gz": {
+    "URL": "https://buildpack.rainbond.com/go/go1.23.12.linux-amd64.tar.gz"
+  },
+  "go1.23.12.linux-arm64.tar.gz": {
+    "URL": "https://buildpack.rainbond.com/go/go1.23.12.linux-arm64.tar.gz"
+  },
+  "go1.24.7.linux-amd64.tar.gz": {
+    "URL": "https://buildpack.rainbond.com/go/go1.24.7.linux-amd64.tar.gz"
+  },
+  "go1.24.7.linux-arm64.tar.gz": {
+    "URL": "https://buildpack.rainbond.com/go/go1.24.7.linux-arm64.tar.gz"
+  },
+  "go1.25.1.linux-amd64.tar.gz": {
+    "URL": "https://buildpack.rainbond.com/go/go1.25.1.linux-amd64.tar.gz"
+  },
+  "go1.25.1.linux-arm64.tar.gz": {
+    "URL": "https://buildpack.rainbond.com/go/go1.25.1.linux-arm64.tar.gz"
+  },
   "go1.3.1.linux-amd64.tar.gz": {
     "SHA": "3af011cc19b21c7180f2604fd85fbc4ddde97143",
     "URL": "https://storage.googleapis.com/golang/go1.3.1.linux-amd64.tar.gz"
