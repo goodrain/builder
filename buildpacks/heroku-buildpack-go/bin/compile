@@ -266,10 +266,10 @@ ensureGo() {
     local goFile=""
     local txt="Installing ${goVersion}"
     if [ -d "${goPath}" ]; then
-        step "Using ${goVersion}"
+        step "Using ${goVersion} from cache: ${cache}/${goVersion}/"
     else
         #For a go version change, we delete everything
-        step "New Go Version, clearing old cache"
+        step "New Go Version, clearing cache (${cache})"
         if [ -d "${cache}/go-path" ]; then
             find "${cache}/go-path" ! -perm -u=w -print0 | xargs -r -0 chmod u+w 2>&1
         fi

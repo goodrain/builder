@@ -105,6 +105,11 @@ export_env_global JQBIN "/tmp/pre-compile/bin/jq"
 # enables PATH variables to be accumulated in the runner environment
 export_env_global PATH \$PATH:$PATH:/tmp/pre-compile/bin/
 
+# Ensure UTF-8 locale so Chinese filenames are handled correctly during build
+[ -z "${LANG}" ] && export_env_global LANG C.UTF-8
+[ -z "${LC_ALL}" ] && export_env_global LC_ALL C.UTF-8
+[ -z "${LC_CTYPE}" ] && export_env_global LC_CTYPE C.UTF-8
+
 read_json() {
     key=$1
     echo $PROC_ENV | jq --raw-output "$key // \"\"" || return 1

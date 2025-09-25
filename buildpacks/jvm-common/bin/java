@@ -59,8 +59,8 @@ x86_64)
 
     DEFAULT_JDK_VERSION="1.8"
     JDK_BASE_URL=${JDK_BASE_URL:-"${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/jdk/jammy-22"}
-    JDK_URL_25=${JDK_URL_25:-"$JDK_BASE_URL/arm64/openjdk-25.0.0.tar.gz"}
-    JDK_URL_21=${JDK_URL_21:-"$JDK_BASE_URL/arm64/openjdk-21.0.2.tar.gz"}
+    JDK_URL_25=${JDK_URL_25:-"$JDK_BASE_URL/openjdk-25.0.0.tar.gz"}
+    JDK_URL_21=${JDK_URL_21:-"$JDK_BASE_URL/openjdk-21.0.2.tar.gz"}
     JDK_URL_17=${JDK_URL_17:-"$JDK_BASE_URL/openjdk_17.0.9.tar.gz"}
     JDK_URL_16=${JDK_URL_16:-"$JDK_BASE_URL/openjdk16.0.2_7.tar.gz"}
     JDK_URL_15=${JDK_URL_15:-"$JDK_BASE_URL/openjdk15.0.2_7.tar.gz"}
@@ -107,6 +107,10 @@ install_java() {
   local jdkDir="${baseDir}"/.jdk
   local jdkTarball="${jdkDir}"/jdk.tar.gz
   local javaExe="${jdkDir}/bin/java"
+  
+  # 创建缓存目录
+  mkdir -p /tmp/cache/buildpack
+  
   mkdir -p "${jdkDir}"
   if [ ! -f "${jdkTarball}" ] && [ ! -f "${javaExe}" ] || is_java_version_change "${jdkDir}" "${javaVersion}"; then
     rm -rf "${jdkDir}"
@@ -116,14 +120,33 @@ install_java() {
     elif [ -n "${ENABLE_ORACLEJDK}" ]; then
       jdkUrl=${ORACLEJDK_URL:-$ORACLEJDK_URL_11}
     fi
+    
+    # 从URL中提取文件名作为缓存文件名
+    local cacheFileName=$(basename "${jdkUrl}")
+    local cacheFile="/tmp/cache/buildpack/${cacheFileName}"
     [ -z "$DEBUG_INFO" ] && echo "" || echo "Download JDK from ${jdkUrl} "
     validate_jdk_url ${jdkUrl} ${jdkVersion}
-    curl --retry 3 --silent --show-error --location ${jdkUrl} --output ${jdkTarball}
+    
+    # 检查缓存是否存在
+    if [ -f "$cacheFile" ]; then
+      echo "Using cached JDK: $cacheFile"
+      cp "$cacheFile" ${jdkTarball}
+    else
+      echo "Downloading JDK to cache: $cacheFile"
+      curl --retry 3 --silent --show-error --location ${jdkUrl} --output "$cacheFile"
+      cp "$cacheFile" ${jdkTarball}
+    fi
     # for arm64 and amd64
     if [ $ARCH == "arm64" ]; then
       tar pxzf ${jdkTarball} --strip-components 1 --directory "${jdkDir}"
     elif [ $ARCH == "x86_64" ]; then
-      tar pxzf ${jdkTarball} -C "${jdkDir}"
+      # Use strip-components for newer JDK versions (jammy-22 stack)
+      # Keep old behavior for cedar stack to maintain compatibility
+      if [[ "${jdkUrl}" == *"/jdk/jammy-22/"* ]]; then
+        tar pxzf ${jdkTarball} --strip-components 1 --directory "${jdkDir}"
+      else
+        tar pxzf ${jdkTarball} -C "${jdkDir}"
+      fi
     fi
     rm ${jdkTarball}
     install_cacerts ${jdkDir}
