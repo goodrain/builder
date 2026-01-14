@@ -10,11 +10,29 @@ fetch_nginx_tarball() {
     local nginx_tarball_url="${LANG_GOODRAIN_ME:-http://lang.goodrain.me}/static/r6d/nginx/nginx-${version}.tar.gz"
     local NGINX_PATH="nginx"
     local BP_DIR=$1
+
+    # 创建缓存目录
+    mkdir -p /tmp/cache/buildpack
+
+    # 生成缓存文件名（基于版本）
+    local cacheFile="/tmp/cache/buildpack/nginx-${version}.tar.gz"
+
     # install nginx if needed
     if [ ! -d "$NGINX_PATH" ]; then
-        echo "-----> Installed Nginx ${version}"
         mkdir -p $NGINX_PATH/conf.d
-        curl --silent --max-time 60 --location $nginx_tarball_url | tar xz --strip-components 2 -C $NGINX_PATH
+        # 检查缓存是否存在
+        if [ -f "$cacheFile" ]; then
+            echo "-----> Using cached Nginx (${version}): $cacheFile"
+            tar xzf "$cacheFile" --strip-components 2 -C $NGINX_PATH
+        else
+            echo "-----> Downloading and installing Nginx ${version}..."
+            local code=$(curl "$nginx_tarball_url" -L --silent --fail --retry 5 --retry-max-time 60 -o "$cacheFile" --write-out "%{http_code}")
+            if [ "$code" != "200" ]; then
+                echo "Unable to download nginx: $code" && exit 1
+            fi
+            tar xzf "$cacheFile" --strip-components 2 -C $NGINX_PATH
+        fi
+        echo "-----> Installed Nginx ${version}"
     fi
 
     # update config files
