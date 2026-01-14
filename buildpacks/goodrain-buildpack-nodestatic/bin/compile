@@ -251,6 +251,9 @@ header "Building dependencies" | output "$LOG_FILE"
 build_dependencies | output "$LOG_FILE"
 
 static_build() {
+  # Increase Node.js memory limit to 4GB for build process
+  export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=4096}"
+
   if $YARN; then
     ${NODE_BUILD_CMD:-yarn run build} || exit 1
   else
